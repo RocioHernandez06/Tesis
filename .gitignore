@@ -1,4 +1,6 @@
 _site/
+_book/
+_freeze/
 .quarto/
 *.log
 .DS_Store
@@ -9,4 +11,6 @@ __pycache__/
 .venv/
 env/
 venv/
-_site/
+chapters/cache/
+
+/.quarto/
