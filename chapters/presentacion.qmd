@@ -1,0 +1,438 @@
+---
+title: "Modelo de Optimización para Localización de Almacenes Preposicionados e Inventario Humanitario"
+author: Yulissa del Rocío Hernández Vázquez
+format:
+  beamer:
+    theme: "Madrid"
+    colortheme: "dolphin"
+    slide-level: 2
+    keep-tex: true
+    title-slide-attributes:
+      background-image: none
+      center: true
+    header-includes: |
+      \usepackage{array}
+      \usepackage{ragged2e}
+      \usepackage{graphicx}
+      \usepackage{xcolor}
+      \usepackage{tikz}
+      \usepackage{setspace}
+      \setbeamercolor{frametitle}{bg=blue!60!black, fg=white}
+      \setbeamertemplate{frametitle}{
+        \nointerlineskip
+        \vskip-0.4cm
+        \begin{beamercolorbox}[wd=\paperwidth,ht=1cm,dp=0.2cm,leftskip=0.3cm]{frametitle}
+          \usebeamerfont{frametitle}\insertframetitle
+        \end{beamercolorbox}
+      }
+      \setbeamertemplate{title page}{
+          % --- Fondo blanco ---
+          \setbeamercolor{background canvas}{bg=white}
+          \centering
+
+          % --- Franja azul sólo detrás del título ---
+          \begin{tikzpicture}[remember picture,overlay]
+           \fill[blue!50!black] ([yshift=-1cm]current page.north west) rectangle ([yshift=-3.2cm]current page.north east);
+          \end{tikzpicture}
+
+          % --- Título en blanco sobre fondo azul ---
+          {\color{white}\Large\textbf{\inserttitle}\par}
+          \vspace{0.4cm}
+          % --- Autor, carrera y asesor ---
+          {\large\textbf{Yulissa del Rocío Hernández Vázquez}\par}      
+          {\small Licenciatura en Matemáticas Aplicadas – FCFM UNACH\par}
+          {\small Asesor: Yofre Hernán García Gómez\par}
+
+          % --- Fecha ---
+          \vspace{0.4cm}
+          {\large Octubre 2025\par}
+
+          % --- Logos centrados y más juntos debajo de la fecha ---
+          \vspace{0.3cm}
+          \begin{center}
+          \includegraphics[width=2cm]{logo.png}
+          \hspace{0.1cm}
+          \includegraphics[width=1.7cm]{FCFM-logo.png}
+          \end{center}
+      }
+  html:
+    theme: "cosmo"
+    toc: true
+    toc-depth: 2
+    css: styles.css
+bibliography: referencias.bib
+nocite: '@*'
+
+---
+:::{style="text-align: justify"}
+
+## Contenido
+
+ 1. Introducción 
+ 2. Marco Teórico: Problema de Localización
+ 3. Modelo de Inventarios EOQ Estocástico
+ 4. Función Objetivo Integrada
+ 5. Métricas de Desempeño
+ 6. Aplicación en Chiapas
+ 7. Escenarios Evaluados
+ 8. Conclusiones
+
+## Introducción
+::: {.columns}
+
+:::: {.column width="60%" .center}
+\justifying
+\setstretch{1.3}
+
+La alta recurrencia de inundaciones y deslizamientos en \textbf{Chiapas} afecta comunidades vulnerables. Este estudio busca optimizar la respuesta humanitaria mediante la planificación previa, la ubicación estratégica de almacenes y la gestión eficiente de recursos.
+
+![](puente.png){width=55%}
+::::
+
+:::: {.column width="40%" .center}
+![](inundacion.png){width=100%}
+![](rio.png){width=100%}
+::::
+
+:::
+
+
+## Objetivo Principal
+
+::: {.columns}
+:::: {.column width="50%"}
+\justifying
+\setstretch{1.3}
+Desarrollar un modelo matemático integrado para optimizar la logística humanitaria, determinando la ubicación estratégica de almacenes, niveles de inventario y asignación de recursos que minimicen los costos operativos durante emergencias.
+::::
+
+:::: {.column width="50%"}
+\centering
+![](chiapas_almacen.png){width=80%}
+::::
+
+:::
+
+## Marco Teórico: Problema de Localización
+
+Formulación Matemática
+
+**Conjuntos:**
+
+- $I$: Localidades candidatas para almacenes
+- $J$: Localidades demandantes (inundables)  
+- $P$: Productos humanitarios
+
+**Variables de Decisión:**
+
+- $Y_i = 1$ si se instala almacén en $i \in I$, $0$ en otro caso
+- $Y_{ij} = 1$ si localidad $j$ es asignada a almacén $i$, $0$ en otro caso
+
+**Parámetros Clave:**
+
+- $w_i$: Peso posicional (aptitud logística)
+- $c_{ij}$: Costo de transporte
+- $f_i$: Costo fijo de establecimiento
+
+## Restricciones de Localización-Asignación
+
+ **Restricciones del Modelo**
+
+Asignación Única:
+$$\sum_{i \in I} Y_{ij} = 1 \quad \forall j \in J$$
+
+Factibilidad:
+$$Y_{ij} \leq Y_i \quad \forall i \in I, j \in J$$
+
+Número de Almacenes:
+$$\sum_{i \in I} Y_i = A$$
+
+Donde $A$ es el número máximo de almacenes a instalar
+
+## Modelo de Inventarios EOQ con demanda Estocástica
+::: {.columns}
+:::: {.column width="50%"}
+
+**Cantidad Económica de Pedido:**
+$$Q^* = \sqrt{\frac{2DS}{H}}$$
+
+**Componentes:**
+
+- $D$: Demanda anual del producto
+- $S$: Costo de ordenar por pedido
+- $H$: Costo de mantener inventario
+::::
+
+:::: {.column width="50%"}
+![](ayuda.png){width=85%}
+::::
+
+:::
+
+ **Adaptación para Contexto Humanitario**
+
+- **Demanda estocástica** por incertidumbre en afectación
+- **Horizonte temporal** ajustado a emergencias
+- **Múltiples productos** con características diferentes
+
+## Inventario de Seguridad y Punto de Reorden
+::: {.columns}
+:::: {.column width="50%"}
+**Inventario de Seguridad:**
+$$SS = Z_{\alpha} \cdot \sigma_d \cdot \sqrt{L}$$
+
+**Punto de Reorden:**
+$$R = d \cdot L + SS$$
+::::
+
+:::: {.column width="50%"}
+![](ayu.png){width=85%}
+::::
+
+:::
+
+**donde:**
+
+- $Z_{\alpha}$: Valor Z para nivel de servicio $\alpha$ (95%)
+- $\sigma_d$: Desviación estándar de demanda diaria
+- $L$: Tiempo de entrega en días
+- $d$: Demanda diaria promedio
+
+## Función de Pérdida Normal
+
+Para estimar el riesgo de escasez, usamos la función de pérdida asociada a
+la distribución normal:
+
+::: {.columns}
+:::: {.column width="40%"}
+$$E[Z] = \phi(Z) - Z(1 - \Phi(Z))$$
+::::
+:::: {.column width="60%"}
+![](funcion_perdida.png){width=100%}
+::::
+::::
+
+**Aplicación en Fill Rate:**
+
+- **Fill Rate** = Proporción de demanda satisfecha
+- **Relación directa** con nivel de servicio
+- **Base para cálculo** de costos por escasez
+
+## Función Objetivo
+
+**Minimización de Costos Totales**
+
+$$
+\min Z =
+\sum_{i \in I} f_i Y_i +
+\sum_{i \in I} \sum_{j \in J} w_i c_{ij} Y_{ij} +
+\sum_{i \in I} \sum_{p \in P} TC_{ip}
+$$
+
+Esta función minimiza el **costo total del sistema logístico humanitario**, combinando decisiones de **localización, transporte e inventario**.
+
+## Componentes del Costo de Inventario
+
+
+$$
+TC_{ip} =
+{\color{blue}\frac{C^{op}_i D^p_j}{Q^p_{ij}} +
+C^{sp}_i \left(\frac{Q^p_{ij}}{2} + SS\right) +
+C^p_i D^p_j} {\color{red}+
+\frac{D^p_j}{Q^p_{ij}} (C^f_i + \sigma_d E[Z] B)}
+$$
+
+
+
+- ${\textcolor{blue}{\textbf{Costo de pedido o preparación}}}$: se reduce al aumentar la cantidad pedida.  
+- ${\textcolor{blue}{\textbf{Costo de mantenimiento o almacenamiento}}}$: considerando el inventario promedio y la seguridad $SS$.  
+- ${\textcolor{blue}{\textbf{Costo de adquisición}}}$: asociado a la demanda esperada $D^p_j$ del producto $p$.  
+- ${\textcolor{red}{\textbf{Costo esperado de faltante}}}$: incorpora la variabilidad de la demanda $\sigma_d$ y el costo unitario de escasez $B$.  
+
+## Peso Posicional
+::: {.columns}
+:::: {.column width="50%"}
+**Multicriterio para Selección**
+
+Componentes del Peso Posicional $w_i$:
+
+- **Accesibilidad por carretera** 
+- **Existencia de servicios básicos**
+- **Infraestructura disponible**
+::::
+
+:::: {.column width="50%"}
+![](peso.png){width=85%}
+::::
+
+:::
+
+**Objetivo:**
+
+Priorizar localidades con **mayor capacidad logística** y **menor vulnerabilidad estructural**
+
+## Métricas de Desempeño
+
+
+**Fill Rate del Sistema:**
+$$FR_{sistema} = \frac{\sum_{i \in I} \sum_{p \in P} D_{ip} \cdot FR_{ip}}{\sum_{i \in I} \sum_{p \in P} D_{ip}}$$
+
+**Costo Total por Persona Atendida:**
+
+$$Costo_{pe} = \frac{Costo_{t}}{Poblacion_{a}}$$
+
+**Tiempo Promedio de Respuesta:**
+$$T_{respuesta} = \frac{\sum_{i \in I} \sum_{j \in J} t_{ij} \cdot Y_{ij}}{\sum_{i \in I} \sum_{j \in J} Y_{ij}}$$
+
+Donde:
+
+- $t_{ij}$ : tiempo de transporte (horas) desde el almacén $𝑖$  hasta la zona afectada $𝑗$.
+
+## Aplicación en Chiapas
+::: {.columns}
+:::: {.column width="60%"}
+\justifying
+**Características de Chiapas:**
+
+- **Alta vulnerabilidad** a inundaciones y deslizamientos
+- **Topografía compleja** que afecta accesibilidad
+- **Población dispersa** en comunidades rurales
+- **Recursos limitados** para logística humanitaria
+
+**Productos Humanitarios Considerados:**
+
+- Agua potable (2 litros/persona/día)
+- Alimentos no perecederos
+- Kits de medicamentos básicos
+- Ropa y cobijas
+- Artículos de higiene personal
+::::
+
+:::: {.column width="40%"}
+![](chiapas.png){width=80%}
+![](productos.png){width=100%}
+::::
+
+:::
+
+## Cálculo del Peso Posicional — Caso Chiapas
+
+El peso posicional $w_j$ integra cinco dimensiones logísticas de relevancia humanitaria, cada una con ponderación del 20 %. Se normalizaron todas las variables en el rango $[0,1]$:
+
+$$w_i = 0.20 (Diconsa_i +  AccesoVial_i +  Escuelas_i +  Servicios_i + Poblacion_i)$$
+
+**Top 5 localidades con mayor potencial logístico (Cacahoatán):**
+
+| **#** | **Localidad** | **Peso** |
+|:--:|:----------------|:--:|
+| 1 | Salvador Urbina | **1.000** |
+| 2 | Faja de Oro | **0.983** |
+| 3 | Cacahoatán | 0.849 |
+| 4 | Rosario Ixtal | 0.749 |
+| 5 | Mixcum | 0.657 |
+
+
+## Escenarios Evaluados — Cacahoatán
+
+**Objetivo:** Analizar la sensibilidad del modelo ante restricciones espaciales.
+
+🔹 Escenario A: Sin radio de afectación
+
+- Se evaluaron **2 almacenes candidatos**.  
+- El modelo seleccionó **1 almacén óptimo** que cubre las 4 localidades.  
+- Solución **eficiente en costo** y **plena cobertura** del territorio.
+
+::: {.columns}
+:::: {.column width="60%"}
+| Indicador | Resultado |
+|-----------|-----------|
+| Cobertura | 100 % |
+| Población atendida | 7,407 personas |
+| Localidades cubiertas | 4 |
+| Fill rate promedio | 100 % |
+| Costo total anual | \$195,459,693 MXN |
+::: 
+:::: {.column width="40%"}
+![](almacen.png){width=80%}
+::: 
+::: 
+ 
+
+## Continuación Escenarios Evaluados — Cacahoatán
+::: {.columns}
+:::: {.column width="50%"}
+
+🔹 Escenario B: Con radio de afectación $r = 5$ km
+
+- El **almacén 1** queda **dentro del radio de influencia** del segundo.  
+- El modelo selecciona el **almacén 2** como óptimo.  
+- Se mantiene **cobertura total**, pero con **mayor eficiencia espacial**.
+::: 
+:::: {.column width="50%"}
+![](radio.png){width=70%}
+:::
+:::
+
+::: {.block data-bg="gray!10"}
+ La restricción geográfica redefine la ubicación óptima, evidenciando la importancia de integrar criterios espaciales en la localización humanitaria.
+:::
+
+
+## Análisis de Sensibilidad
+
+**Factor de Afectación:**
+
+- Escenario base: **30%** de población afectada
+- Análisis de sensibilidad: **20% - 50%**
+
+**Nivel de Servicio:**
+
+- Objetivo principal: **95%** fill rate
+- Variación: **90% - 99%**
+
+**Número de Almacenes:**
+
+- Rango evaluado: **1 - 4 almacenes**
+- Trade-off: **Costo vs. Cobertura**
+
+## Conclusiones
+
+ Hallazgos Principales
+
+**Efectividad del Modelo:**
+
+- **Integración exitosa** de localización e inventario
+- **Balance óptimo** entre costos y nivel de servicio
+- **Aplicabilidad práctica** en contextos reales
+
+**Contribuciones:**
+
+- **Marco decisiona**l para planificación pre-desastre
+- **Herramienta cuantitativa** para agencias humanitarias
+- **Base metodológica** replicable en otros municipios
+
+
+\vspace{1em}
+
+\begin{block}{}
+\centering
+\large
+\textit{
+“Chiapas y Veracruz enfrentan desastres distintos, pero comparten una misma esperanza:  
+que la preparación salve más vidas que la reacción,  
+porque entre montañas o planicies, el agua no distingue fronteras,  
+pero la prevención sí puede marcar la diferencia.”
+}
+\end{block}
+
+## Recomendaciones para Cacahoatán
+
+- **Implementar configuración** de 2 almacenes
+- **Mantener inventarios** según cálculo EOQ con demanda Estocástica
+- **Monitorear continuamente** factores de riesgo
+
+## Referencias
+::: {#refs}
+:::
+
+:::

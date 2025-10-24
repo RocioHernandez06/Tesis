@@ -1,0 +1,12 @@
+_site/
+.quarto/
+*.log
+.DS_Store
+__pycache__/
+*.pyc
+.python-version
+.env
+.venv/
+env/
+venv/
+_site/

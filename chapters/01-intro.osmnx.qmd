@@ -1,0 +1,852 @@
+---
+title: "Redes LSTM ( Long Short-Term Memory): Memoria a Largo y Corto Plazo"
+author: "Presentación sobre Redes Neuronales Recurrentes"
+date: "Octubre 2025"
+format:
+  beamer:
+    keep-tex: true
+    slide-level: 2
+    theme: "Madrid"
+    colortheme: "dolphin"
+  html:
+    theme: "cosmo"
+    toc: true
+    toc-depth: 2
+    css: styles.css
+---
+
+## ¿Qué son las LSTM?
+
+- **Extensión de las RNN** diseñadas para capturar dependencias temporales de secuencias largas
+- Las RNN básicas **luchan por capturar** dependencias largas en el tiempo
+- Introducen el concepto de **"celda de memoria"** que puede mantener, escribir o leer información
+- Controladas por **estructuras llamadas puertas** que gestionan el flujo de información
+
+## Problemas que Resuelven las LSTM
+
+### Limitaciones de las RNN Básicas
+- **Problema del gradiente de fuga**
+- Dificultad para considerar **secuencias de entrada largas**
+- **Pérdida de contexto** en dependencias temporales largas
+
+### Soluciones de las LSTM
+- Las alteraciones en los LSTM **abordan el problema del gradiente de fuga**
+- Permiten considerar **secuencias de entrada mucho más largas**
+- **Preservan el contexto** de manera más efectiva
+
+## Arquitectura LSTM: Las Tres Puertas
+
+### Componentes Fundamentales
+1. **Puerta de entrada** - Decide qué valores son importantes
+2. **Puerta de olvido** - Descarta información innecesaria  
+3. **Puerta de salida** - Decide qué información pasar al siguiente paso
+
+### Características Comunes
+- Consideran las **entradas del paso de tiempo anterior**
+- Modifican la **memoria del modelo** y los **pesos de entrada**
+- Utilizan **funciones de activación específicas** para cada puerta
+
+![Arquitectura LSTM](LSTM.png){width=50%}
+
+## Puerta de Olvido
+
+### Función Principal
+Descarta **información que el modelo considera innecesaria** para tomar decisiones.
+Ecuación Matemática
+$$f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f)$$
+
+### Componentes
+- $W_f$: **peso de la puerta del olvido**
+- $b_f$: **sesgo de la puerta de olvido**
+- $\sigma$: **función sigmoidea** (valores 0-1)
+
+### Interpretación
+- **0**: Olvidar completamente
+- **1**: Retener completamente
+- Determina qué información del estado anterior conservar
+
+## Puerta de Entrada
+
+### Función Principal
+Decide **qué valores son importantes** y deben transmitirse por el modelo.
+
+### Ecuaciones
+**Decidir qué actualizar:**
+$$i_t = \sigma(W_i \cdot [h_{t-1}, x_t] + b_i)$$
+
+**Generar valores candidatos:**
+$$\tilde{C}_t = \tanh(W_C \cdot [h_{t-1}, x_t] + b_C)$$
+
+### Funciones de Activación
+- **Sigmoidea**: decide qué valores transmitir (0 = reducir, 1 = conservar)
+- **TanH**: decide importancia de valores (-1 a 1)
+
+## Célula de Memoria Candidata
+
+### Función
+Genera **nueva información potencial** para almacenar en el estado de la celda.
+
+### Ecuación
+$$\tilde{C}_t = \tanh(W_C \cdot [h_{t-1}, x_t] + b_C)$$
+
+### Características
+- Genera **valores candidatos** para agregar al estado
+- Función **tanh** asegura valores entre -1 y 1
+- Representa **información potencial** para almacenar
+
+## Actualización del Estado de la Celda
+
+### Proceso de Actualización
+$$C_t = f_t \cdot C_{t-1} + i_t \cdot \tilde{C}_t$$
+
+### Explicación del Proceso
+1. Estado anterior ($C_{t-1}$) × Puerta de olvido ($f_t$)
+2. Valores candidatos ($\tilde{C}_t$) × Puerta de entrada ($i_t$)
+3. **Suma** para formar nuevo estado ($C_t$)
+
+### Interpretación
+Combina información conservada con nueva información importante.
+
+## Puerta de Salida
+
+### Función Principal
+Decide **qué valores pasar al siguiente paso de tiempo**.
+
+### Ecuación
+$$o_t = \sigma(W_o \cdot [h_{t-1}, x_t] + b_o)$$
+
+### Proceso de Decisión
+- Analiza valores y asigna importancia (-1 a 1)
+- Regula datos antes del siguiente cálculo
+- Decide **salida final** del estado actual
+
+## Actualización del Estado Oculto
+
+### Ecuación Final
+$$h_t = o_t \cdot \tanh(C_t)$$
+
+### Funcionalidad
+- Estado oculto se actualiza según estado de celda y puerta de salida
+- Se usa como **salida para paso actual**
+- Sirve como **entrada para siguiente paso**
+
+## Flujo Completo LSTM
+
+### Proceso Secuencial
+1. **Puerta de Olvido**: Qué información conservar (sigmoidea 0-1)
+2. **Puerta de Entrada**: Qué nueva información incorporar (sigmoidea + tanh)
+3. **Actualización Estado**: $C_t = f_t \cdot C_{t-1} + i_t \cdot \tilde{C}_t$
+4. **Puerta de Salida**: Qué información emitir (sigmoidea)
+5. **Estado Oculto**: $h_t = o_t \cdot \tanh(C_t)$
+
+## Aplicaciones Prácticas
+
+### Campos de Uso
+- **Procesamiento de lenguaje natural**
+- **Reconocimiento de voz**
+- **Predicción de series temporales**
+- **Sistemas de recomendación**
+- **Análisis de datos secuenciales**
+
+### Beneficios Clave
+- **Manejan dependencias largas** eficientemente
+- **Resuelven problema del gradiente de fuga**
+- **Preservan contexto** en secuencias largas
+- **Flexibles** para diversos datos temporales
+
+
+### Impacto
+Las LSTM representan **evolución significativa** sobre RNN tradicionales, permitiendo manejo efectivo de **dependencias temporales largas**.
+
+
+## ¿Qué es una capa LSTM en el contexto de inundaciones?
+
+Es una capa de red neuronal recurrente especializada en procesar **datos secuenciales temporales**:
+
+- Series de tiempo de **niveles de ríos**
+- Datos de **precipitación** acumulada  
+- **Humedad del suelo** histórica
+- Variables meteorológicas temporales
+
+**Diseño con "puertas"** le permite:
+- Recordar **patrones importantes** (picos de lluvia antecedentes)
+- Olvidar **información irrelevante** (días sin lluvia)
+- Predecir **eventos extremos** con horas/días de anticipación
+
+## Parámetros principales (en contexto de inundaciones)
+
+### Configuración clave para hidrología
+
+**units** → Número de celdas LSTM. Más unidades capturan patrones complejos  
+*Ejemplo: 50 unidades para predecir crecidas en una cuenca grande*
+
+**return_sequences** → Si es True, devuelve salidas en cada paso temporal  
+*Útil para conectar otra LSTM después*
+
+**return_state** → Devuelve estados internos  
+*Para modelos avanzados de atención o inicialización*
+
+**activation** → Función de activación  
+*Por defecto tanh para estabilidad*
+
+**input_shape** → Forma de la entrada: (pasos_temporales, características)  
+*Ejemplo: (30, 5) para 30 días con 5 variables meteorológicas*
+
+## Ejemplo conceptual con datos reales
+
+### Secuencia de 7 días de datos hidrológicos
+
+**Entrada (7 días × 4 características):**
+
+| Día | Precipitación | Nivel Río | Humedad Suelo | Temperatura |
+|-----|---------------|-----------|---------------|-------------|
+| 1 | 5mm | 2.0m | 60% | 20°C |
+| 2 | 10mm | 2.2m | 70% | 18°C |
+| 3 | 25mm | 2.5m | 80% | 16°C |
+| 4 | 40mm | 2.8m | 85% | 15°C |
+| 5 | 35mm | 3.0m | 90% | 14°C |
+| 6 | 45mm | 3.2m | 92% | 15°C |
+| 7 | 50mm | 3.5m | 95% | 15°C |
+
+### Procesamiento LSTM
+Una LSTM con **units=3** procesará esta secuencia día a día, actualizando su **"memoria"** con la evolución de las variables.
+
+## Ejemplo interpretativo para predicción de inundaciones
+
+### Configuración del modelo
+`LSTM(units=10, return_sequences=False, input_shape=(30, 6))`
+
+#### a) Entrada
+30 días históricos con 6 variables:
+- Precipitación
+- Nivel del río  
+- Humedad del suelo
+- Temperatura
+- Velocidad del viento
+- Presión atmosférica
+
+#### b) Proceso
+
+**units=10** → La capa tiene 10 celdas LSTM para capturar patrones complejos  
+*Ejemplo: correlaciones entre lluvia acumulada y subida del río*
+
+**return_sequences=False** → Solo devuelve la salida del último día  
+*Para predecir inundación al día siguiente*
+
+**Puertas de olvido** descartan datos no relevantes  
+*Ejemplo: días secos antiguos*
+
+**Puertas de entrada** guardan información crítica  
+*Ejemplo: lluvia intensa reciente*
+
+#### c) Salida
+
+**Forma**: (batch_size, 10)
+
+**Interpretación**: Cada valor del vector representa un patrón aprendido:
+- Valor 1: "alta humedad acumulada"
+- Valor 2: "tendencia de subida rápida del río"
+- Valor 3: "patrón de precipitación intensa"
+- ... etc.
+
+Este vector se alimenta a una capa densa para predecir **probabilidad de inundación**.
+
+## Analogía intuitiva
+
+Piensa en la LSTM como un **experto en hidrología** que analiza un informe diario:
+
+ Forget gate
+
+Como cuando decide que una **lluvia leve de hace 20 días** ya no es relevante para el riesgo actual.
+
+Input gate  
+Cuando subraya datos importantes: **"¡Lluvia de 100mm en 3 días!"**
+
+ Output gate
+Cuando emite un alerta gradual: **"Río subiendo 0.5m/día → riesgo en 48h"**
+
+Evolución del análisis
+
+- **Capas simples**: Variables individuales
+
+- **Capas múltiples**: Interacciones complejas
+
+- **Ejemplo avanzado**: "Suelo saturado + lluvia intensa = inundación repentina"
+
+## Mini-ejemplo numérico simplificado
+
+### Entrada de 3 días para predecir crecida
+
+| Día | Precipitación | Nivel Río | Normalizado |
+|-----|---------------|-----------|-------------|
+| 1 | 10mm | 1.5m | [0.1, 0.15] |
+| 2 | 30mm | 1.7m | [0.3, 0.17] |
+| 3 | 60mm | 2.0m | [0.6, 0.2] |
+
+### Procesamiento paso a paso
+
+**Estado inicial**: h₀ = [0, 0], c₀ = [0, 0]
+
+**Paso 1 (Día 1)**:
+- LSTM detecta lluvia moderada → actualiza ligeramente su estado
+- h₁ = [0.02, 0.01], c₁ = [0.03, 0.02]
+
+**Paso 2 (Día 2)**:
+- Lluvia alta → puerta de entrada guarda esta información
+- h₂ = [0.15, 0.1], c₂ = [0.2, 0.12]
+
+**Paso 3 (Día 3)**:
+- Lluvia extrema + nivel subiendo → puerta de olvido mantiene todo el historial reciente
+- **Salida**: h₃ = [0.8, 0.6] (indica alto riesgo)
+
+### Resultado final
+Una capa densa traduce esto a: **Probabilidad_inundación = 85%**
+
+## ¿Por qué es útil para inundaciones?
+
+### Captura la no linealidad de las cuencas
+*Ejemplo: el suelo se satura después de X días de lluvia*
+
+### Modela retrasos temporales  
+*Ejemplo: la lluvia tarda horas en afectar el río aguas abajo*
+
+### Puede integrar múltiples fuentes de datos
+- Satélites
+- Sensores terrestres  
+- Pronósticos meteorológicos
+
+### Usada en sistemas de alerta temprana
+Como el **EFAS** (European Flood Awareness System)
+
+## Resumen de ventajas
+
+### Para predicción hidrológica
+- **Memoria persistente** para eventos lejanos críticos
+- **Adaptabilidad** a diferentes tipos de cuencas
+- **Robustez** con datos imperfectos o incompletos
+
+### Para gestión de emergencias
+- **Alertas tempranas** con mayor anticipación
+- **Mejor precisión** en predicción de eventos extremos
+- **Integración** de múltiples fuentes de información
+
+## Aplicaciones en sistemas reales
+
+### Casos de implementación
+- **Sistemas de alerta temprana** nacionales y regionales
+- **Monitoreo de cuencas** críticas
+- **Predicción de crecidas** repentinas
+- **Gestión de embalses** y recursos hídricos
+
+### Beneficios demostrados
+- **Reducción de daños** económicos
+- **Protección de vidas** humanas
+- **Optimización** de recursos de emergencia
+- **Mejora** en la toma de decisiones
+
+## Generación de Datos de Inundaciones
+
+```{python}
+#| label: gen-datos
+#| echo: true
+#| warning: false
+#| message: false
+#| fig-cap: "Generación de datos sintéticos para predicción de inundaciones"
+#| code-fold: false
+
+# =============================
+# 1. IMPORTAR LIBRERÍAS Y GENERAR DATOS DE INUNDACIONES
+# ===============================
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import LSTM, Dense, Dropout, Input
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.callbacks import EarlyStopping
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from tensorflow.keras.metrics import Precision, Recall
+
+# Configurar semilla para reproducibilidad
+np.random.seed(123)
+tf.random.set_seed(123)
+
+# Generar datos 
+n = 1500  # Más datos para mejor entrenamiento LSTM
+
+lluvia_total = np.random.gamma(shape=3, scale=25, size=n)
+intensidad_lluvia = np.random.gamma(shape=2, scale=15, size=n)
+duracion_lluvia = np.random.lognormal(mean=np.log(2), sigma=0.4, size=n)
+capacidad_drenaje = np.random.lognormal(mean=np.log(60), sigma=0.3, size=n)
+impermeabilidad = np.random.beta(a=5, b=2, size=n)
+
+# Calcular riesgo 
+riesgo = (
+    0.6 * (lluvia_total / 80) +           # Escala mejorada
+    0.5 * (intensidad_lluvia / 60) +      # Más peso a intensidad
+    0.6 * (impermeabilidad * 1.2) +       # Impermeabilidad escalada
+    -0.7 * (capacidad_drenaje / 50) +     # Más impacto del drenaje
+    0.4 * (duracion_lluvia / 5)           # Duración con mejor escala
+)
+
+# Probabilidad de inundación
+prob_inundacion = 1 / (1 + np.exp(-5 * (riesgo - 0.5)))
+zona_inundada = np.random.binomial(1, prob_inundacion)
+
+# Crear DataFrame
+df = pd.DataFrame({
+    'lluvia_total': lluvia_total,
+    'intensidad_lluvia': intensidad_lluvia,
+    'duracion_lluvia': duracion_lluvia,
+    'capacidad_drenaje': capacidad_drenaje,
+    'impermeabilidad': impermeabilidad,
+    'zona_inundada': zona_inundada
+})
+
+print("✅ Datos generados exitosamente")
+print(f"📊 Dimensiones: {df.shape}")
+print(f"🎯 Balance de clases: {df['zona_inundada'].value_counts().to_dict()}")
+```
+
+```{python}
+#| label: stats-datos
+#| echo: true
+#| warning: false
+#| message: false
+#| fig-cap: "Estadísticas descriptivas de los datos generados"
+
+print("\n📈 ESTADÍSTICAS DESCRIPTIVAS:")
+print(df.describe().round(3))
+```
+
+```{python}
+#| label: head-datos
+#| echo: true
+#| warning: false
+#| message: false
+
+print("\n📋 MUESTRA DE DATOS (primeras 5 filas):")
+print(df.head().round(3))
+```
+
+```{python}
+# =============================================================================
+# 2. PREPARACIÓN DE DATOS - SIN SECUENCIAS TEMPORALES
+# =============================================================================
+
+features = ['lluvia_total', 'intensidad_lluvia', 'duracion_lluvia', 'capacidad_drenaje', 'impermeabilidad']
+target = 'zona_inundada'
+
+# Normalizar características
+scaler = MinMaxScaler()
+X_scaled = scaler.fit_transform(df[features])
+y = df[target].values
+
+# División tradicional (NO temporal)
+split_idx = int(0.8 * len(X_scaled))
+X_train, X_test = X_scaled[:split_idx], X_scaled[split_idx:]
+y_train, y_test = y[:split_idx], y[split_idx:]
+
+print(f"📊 DIVISIÓN DE DATOS :")
+print(f"Entrenamiento: {X_train.shape[0]} muestras")
+print(f"Prueba: {X_test.shape[0]} muestras")
+print(f"Características: {X_train.shape[1]}")
+```
+
+```{python}
+# =============================================================================
+# 3. MODELO DENSE SIMPLE  - CON CLASS WEIGHT
+# =============================================================================
+class SimpleDenseClassifier:
+    def __init__(self, n_features, x_train, y_train, x_test, y_test):
+        self.model = None
+        self.n_features = n_features
+        self.x_train = x_train
+        self.y_train = y_train
+        self.x_test = x_test
+        self.y_test = y_test
+        self.history = None
+    
+    def build_model(self, hidden_units=32, dropout_rate=0.3, learning_rate=0.001):
+        """
+        Construye modelo Dense simple para clasificación
+        """
+        self.model = Sequential([
+            Input(shape=(self.n_features,)),
+            Dense(hidden_units, activation='relu'),
+            Dropout(dropout_rate),
+            Dense(hidden_units//2, activation='relu'),
+            Dropout(0.1),
+            Dense(1, activation='sigmoid')
+        ])
+        
+        optimizer = Adam(learning_rate=learning_rate)
+        self.model.compile(
+            optimizer=optimizer,
+            loss='binary_crossentropy',
+             metrics=['accuracy', Precision(name='precision'), Recall(name='recall')]
+        )
+        
+        return self.model
+    
+    def train(self, epochs=100, batch_size=32, verbose=1, class_weight=None):
+        """
+        Entrena el modelo CON CLASS WEIGHT
+        """
+        early_stopping = EarlyStopping(
+            monitor='val_loss',
+            patience=10,
+            restore_best_weights=True,
+            verbose=1
+        )
+        
+        self.history = self.model.fit(
+            self.x_train, self.y_train,
+            epochs=epochs,
+            batch_size=batch_size,
+            validation_data=(self.x_test, self.y_test),
+            callbacks=[early_stopping],
+            verbose=verbose,
+            shuffle=True,
+            class_weight=class_weight  # LINEA NUEVA
+        )
+        
+        return self.history
+    
+    def evaluate(self):
+        """
+        Evalúa el modelo
+        """
+        print("\n📊 EVALUACIÓN DEL MODELO DENSE")
+        print("=" * 50)
+        
+        loss, accuracy, precision, recall = self.model.evaluate(self.x_test, self.y_test, verbose=0)
+        y_pred_proba = self.model.predict(self.x_test, verbose=0)
+        y_pred = (y_pred_proba > 0.5).astype(int).flatten()
+        
+        print(f"Precisión: {accuracy:.4f}")
+        print(f"Pérdida: {loss:.4f}")
+        print(f"Precisión (metric): {precision:.4f}")
+        print(f"Recall: {recall:.4f}")
+        
+        print("\n📈 REPORTE DE CLASIFICACIÓN:")
+        print(classification_report(self.y_test, y_pred, 
+                                  target_names=['No Inundación', 'Inundación']))
+        
+        return y_pred, y_pred_proba
+    
+    def plot_training_history(self):
+        """
+        Grafica la evolución del entrenamiento
+        """
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
+        
+        # Pérdida
+        ax1.plot(self.history.history['loss'], label='Entrenamiento')
+        ax1.plot(self.history.history['val_loss'], label='Validación')
+        ax1.set_title('Evolución de la Pérdida')
+        ax1.set_xlabel('Época')
+        ax1.set_ylabel('Pérdida')
+        ax1.legend()
+        ax1.grid(True, alpha=0.3)
+        
+        # Precisión
+        ax2.plot(self.history.history['accuracy'], label='Entrenamiento')
+        ax2.plot(self.history.history['val_accuracy'], label='Validación')
+        ax2.set_title('Evolución de la Precisión')
+        ax2.set_xlabel('Época')
+        ax2.set_ylabel('Precisión')
+        ax2.legend()
+        ax2.grid(True, alpha=0.3)
+        
+        plt.tight_layout()
+        plt.show()
+
+# Crear y entrenar modelo simple
+dense_classifier = SimpleDenseClassifier(
+    n_features=len(features),
+    x_train=X_train,
+    y_train=y_train,
+    x_test=X_test,
+    y_test=y_test
+)
+
+# Construir modelo
+model = dense_classifier.build_model(
+    hidden_units=32,
+    dropout_rate=0.3,
+    learning_rate=0.001
+)
+
+print("🏗️ ARQUITECTURA DEL MODELO DENSE:")
+model.summary()
+```
+```{python}
+# =============================================================================
+#   ARQUITECTURA CON DROPOUT INTEGRADO
+# =============================================================================
+# echo : false 
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+import numpy as np
+
+def visualizar_arquitectura_corregida():
+    fig, ax = plt.subplots(1, 1, figsize=(16, 10))
+    
+    # Configuración
+    ax.set_xlim(0, 12)
+    ax.set_ylim(0, 15)
+    ax.set_aspect('equal')
+    ax.axis('off')
+    
+    # Título
+    ax.text(6, 14.5, 'ARQUITECTURA DE LA RED NEURONAL - MODELO DENSE', 
+            ha='center', va='center', fontsize=18, fontweight='bold')
+    
+    # Colores
+    colores = {
+        'entrada': 'lightblue',
+        'oculta': 'lightgreen', 
+        'dropout': 'orange',
+        'salida': 'red',
+        'prediccion': 'yellow'
+    }
+    
+    # ==================== CAPA DE ENTRADA ====================
+    ax.text(1, 12, 'CAPA DE ENTRADA\n(5 características)', 
+            ha='center', va='center', fontsize=12, fontweight='bold',
+            bbox=dict(boxstyle="round,pad=0.3", facecolor=colores['entrada']))
+    
+    # Neuronas de entrada (5 características)
+    for i in range(5):
+        y_pos = 11 - i * 0.8
+        ax.plot(1, y_pos, 'o', markersize=10, color='blue')
+        # Conexiones a capa oculta 1
+        for j in range(32):
+            target_y = 10 - (j * 0.25)  # 32 neuronas en capa 1
+            ax.plot([1.1, 2.9], [y_pos, target_y], 'gray', alpha=0.1, linewidth=0.5)
+    
+    # ==================== CAPA OCULTA 1 ====================
+    ax.text(4, 12, 'CAPA OCULTA 1\n(32 neuronas + Dropout 30%)', 
+            ha='center', va='center', fontsize=12, fontweight='bold',
+            bbox=dict(boxstyle="round,pad=0.3", facecolor=colores['oculta']))
+    
+    # 32 neuronas capa 1
+    neuronas_capa1 = []
+    for i in range(32):
+        y_pos = 11 - i * 0.25
+        neuronas_capa1.append(y_pos)
+        # Neurona activa (70%)
+        if i % 3 != 0:  # 70% de neuronas activas
+            ax.plot(4, y_pos, 'o', markersize=6, color='green')
+        else:  # 30% dropout (apagadas)
+            ax.plot(4, y_pos, 'x', markersize=8, color='red')
+    
+    # Conexiones a capa oculta 2
+    for i, y1 in enumerate(neuronas_capa1):
+        if i % 3 != 0:  # Solo neuronas activas se conectan
+            for j in range(16):
+                target_y = 9 - (j * 0.4)  # 16 neuronas en capa 2
+                ax.plot([4.1, 5.9], [y1, target_y], 'gray', alpha=0.1, linewidth=0.5)
+    
+    # ==================== CAPA OCULTA 2 ====================
+    ax.text(7, 10, 'CAPA OCULTA 2\n(16 neuronas + Dropout 30%)', 
+            ha='center', va='center', fontsize=12, fontweight='bold',
+            bbox=dict(boxstyle="round,pad=0.3", facecolor=colores['oculta']))
+    
+    # 16 neuronas capa 2
+    neuronas_capa2 = []
+    for i in range(16):
+        y_pos = 9 - i * 0.4
+        neuronas_capa2.append(y_pos)
+        # Neurona activa (70%)
+        if i % 3 != 0:  # 70% de neuronas activas
+            ax.plot(7, y_pos, 'o', markersize=7, color='green')
+        else:  # 30% dropout (apagadas)
+            ax.plot(7, y_pos, 'x', markersize=9, color='red')
+    
+    # Conexiones a capa salida
+    for i, y2 in enumerate(neuronas_capa2):
+        if i % 3 != 0:  # Solo neuronas activas se conectan
+            ax.plot([7.1, 8.9], [y2, 6], 'gray', alpha=0.3, linewidth=1)
+    
+    # ==================== CAPA DE SALIDA ====================
+    ax.text(10, 7, 'CAPA DE SALIDA\n(1 neurona)', 
+            ha='center', va='center', fontsize=12, fontweight='bold',
+            bbox=dict(boxstyle="round,pad=0.3", facecolor=colores['salida']))
+    
+    # Neurona de salida
+    ax.plot(10, 6, 'o', markersize=12, color='red')
+    
+    # ==================== PREDICCIÓN ====================
+    ax.text(10, 4, 'PREDICCIÓN FINAL\n0% - 100% probabilidad\nINUNDACIÓN / NO INUNDACIÓN', 
+            ha='center', va='center', fontsize=11, fontweight='bold',
+            bbox=dict(boxstyle="round,pad=0.3", facecolor=colores['prediccion']))
+    
+    # ==================== FLUJOS PRINCIPALES ====================
+    # Flechas entre capas
+    ax.arrow(1.5, 10, 1.8, 0, head_width=0.2, head_length=0.2, fc='black', ec='black')
+    ax.text(2.5, 10.3, '5 → 32 conexiones', ha='center', va='center', fontsize=9)
+    
+    ax.arrow(4.5, 8, 1.8, 0, head_width=0.2, head_length=0.2, fc='black', ec='black')
+    ax.text(5.5, 8.3, '32 → 16 conexiones', ha='center', va='center', fontsize=9)
+    
+    ax.arrow(7.5, 6, 1.8, 0, head_width=0.2, head_length=0.2, fc='black', ec='black')
+    ax.text(8.5, 6.3, '16 → 1 conexión', ha='center', va='center', fontsize=9)
+    
+    # ==================== DETALLES TÉCNICOS ====================
+    detalles = [
+        "• Cada neurona se conecta con TODAS las de la siguiente capa",
+        "• Dropout: 30% de neuronas se APAGAN aleatoriamente en entrenamiento",
+        "• Activación: ReLU en capas ocultas, Sigmoid en salida",
+        "• Entrada: 5 características → Salida: 1 probabilidad"
+    ]
+    
+    for i, detalle in enumerate(detalles):
+        ax.text(6, 2 - i*0.4, detalle, ha='center', va='center', fontsize=10)
+    
+    plt.tight_layout()
+    plt.show()
+
+# Ejecutar visualización 
+print("ARQUITECTURA CON DROPOUT INTEGRADO")
+visualizar_arquitectura_corregida()
+```
+```{python}
+# =============================================================================
+# 4. ENTRENAMIENTO Y EVALUACIÓN  - CON PESOS BALANCEADOS
+# =============================================================================
+#| results: 'hide'
+#| message: false
+#| warning: false
+from sklearn.utils.class_weight import compute_class_weight
+import numpy as np
+
+# Calcular pesos automáticamente para balancear clases
+class_weights = compute_class_weight(
+    'balanced', 
+    classes=np.unique(y_train), 
+    y=y_train
+)
+class_weight_dict = {0: class_weights[0], 1: class_weights[1]}
+
+print(f"⚖️ PESOS BALANCEADOS CALCULADOS:")
+print(f"Peso Clase 0 (No inundación): {class_weight_dict[0]:.3f}")
+print(f"Peso Clase 1 (Inundación): {class_weight_dict[1]:.3f}")
+
+# Entrenar modelo CON PESOS BALANCEADOS
+history = dense_classifier.train(
+    epochs=200, 
+    batch_size=32, 
+    verbose=1,
+    class_weight=class_weight_dict  # LINEA MAGICA
+)
+
+# Graficar evolución del entrenamiento
+dense_classifier.plot_training_history()
+
+# Evaluar modelo
+y_pred, y_pred_proba = dense_classifier.evaluate()
+
+# Matriz de confusión
+print("\n🎯 MATRIZ DE CONFUSIÓN:")
+cm = confusion_matrix(y_test, y_pred)
+fig, ax = plt.subplots(figsize=(8, 6))
+im = ax.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
+ax.figure.colorbar(im, ax=ax)
+ax.set(xticks=[0, 1], yticks=[0, 1],
+       xticklabels=['No Inundación', 'Inundación'], 
+       yticklabels=['No Inundación', 'Inundación'],
+       title='Matriz de Confusión - Modelo Dense',
+       ylabel='Real', xlabel='Predicho')
+
+# Anotar valores en la matriz
+thresh = cm.max() / 2.
+for i in range(cm.shape[0]):
+    for j in range(cm.shape[1]):
+        ax.text(j, i, format(cm[i, j], 'd'),
+                ha="center", va="center",
+                color="white" if cm[i, j] > thresh else "black")
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+# =============================================================================
+# 5. VISUALIZACIÓN DE PREDICCIONES INDIVIDUALES
+# =============================================================================
+# echo: false
+print("\n🔍 PRIMERAS 6 PREDICCIONES vs REALIDAD:")
+print("=" * 50)
+
+# Crear un DataFrame para visualización
+resultados_df = pd.DataFrame({
+    'Muestra': range(1, 7),
+    'Lluvia_Total': X_test[:6, 0] * (df['lluvia_total'].max() - df['lluvia_total'].min()) + df['lluvia_total'].min(),
+    'Intensidad': X_test[:6, 1] * (df['intensidad_lluvia'].max() - df['intensidad_lluvia'].min()) + df['intensidad_lluvia'].min(),
+    'Drenaje': X_test[:6, 3] * (df['capacidad_drenaje'].max() - df['capacidad_drenaje'].min()) + df['capacidad_drenaje'].min(),
+    'Real': y_test[:6],
+    'Predicho': y_pred[:6],
+    'Probabilidad': y_pred_proba[:6].flatten()
+})
+
+# Mostrar tabla
+for i in range(6):
+    real_str = "🔵 INUNDACIÓN" if resultados_df['Real'].iloc[i] == 1 else "⚫ NO INUNDACIÓN"
+    pred_str = "🔴 INUNDACIÓN" if resultados_df['Predicho'].iloc[i] == 1 else "⚪ NO INUNDACIÓN"
+    prob = resultados_df['Probabilidad'].iloc[i]
+    
+    print(f"Muestra {i+1}:")
+    print(f"  Lluvia: {resultados_df['Lluvia_Total'].iloc[i]:.1f}mm | Intensidad: {resultados_df['Intensidad'].iloc[i]:.1f}mm/h")
+    print(f"  Drenaje: {resultados_df['Drenaje'].iloc[i]:.1f}% | Prob: {prob:.3f}")
+    print(f"  Real: {real_str}")
+    print(f"  Pred: {pred_str}")
+    print(f"  {'✅ ACIERTO' if resultados_df['Real'].iloc[i] == resultados_df['Predicho'].iloc[i] else '❌ ERROR'}")
+    print("-" * 40)
+
+# Gráfica de comparación
+plt.figure(figsize=(12, 6))
+
+# Gráfica 1: Valores reales vs predichos
+plt.subplot(1, 2, 1)
+indices = range(1, 7)
+plt.plot(indices, y_test[:6], 'bo-', label='Real', linewidth=2, markersize=8)
+plt.plot(indices, y_pred[:6], 'ro--', label='Predicho', linewidth=2, markersize=8)
+plt.plot(indices, y_pred_proba[:6], 'gx-', label='Probabilidad', linewidth=1, markersize=6)
+
+plt.title('Comparación: Real vs Predicho\n(Primeras 6 muestras)')
+plt.xlabel('Número de Muestra')
+plt.ylabel('Valor')
+plt.xticks(indices)
+plt.legend()
+plt.grid(True, alpha=0.3)
+
+# Gráfica 2: Probabilidades con umbral
+plt.subplot(1, 2, 2)
+bars = plt.bar(indices, y_pred_proba[:6].flatten(), color=['red' if x > 0.5 else 'blue' for x in y_pred_proba[:6]])
+plt.axhline(y=0.5, color='black', linestyle='--', label='Umbral (0.5)')
+plt.title('Probabilidades de Predicción\n(Rojo > 0.5 = Inundación)')
+plt.xlabel('Número de Muestra')
+plt.ylabel('Probabilidad')
+plt.xticks(indices)
+plt.legend()
+
+# Añadir valores en las barras
+for bar, prob, real, pred in zip(bars, y_pred_proba[:6], y_test[:6], y_pred[:6]):
+    height = bar.get_height()
+    color = 'green' if real == pred else 'black'
+    plt.text(bar.get_x() + bar.get_width()/2., height + 0.02,
+             f'{prob[0]:.3f}\n({"✅" if real == pred else "❌"})',
+             ha='center', va='bottom', color=color, fontweight='bold')
+
+plt.tight_layout()
+plt.show()
+```
+## Accuracy
+
+### Bootstrap
+Regresión logística = 0.8
+Árbol de desición = 0.85
+Bagging 30 árboles = 0.83

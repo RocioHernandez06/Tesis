@@ -1,0 +1,43 @@
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{ragged2e}
+\usepackage{hyperref}
+\hypersetup{pdfauthor={}, pdftitle={}}
+
+% Estilos del título
+\setbeamercolor{title}{fg=white,bg=blue!70!black}
+\setbeamerfont{title}{size=\Large,series=\bfseries}
+
+% Plantilla de portada personalizada
+\setbeamertemplate{title page}{
+  \begin{center}
+  % ----- Título -----
+  \vspace{1cm}
+  {\color{white}\textbf{\LARGE Modelo de Optimización para Localización de Almacenes Preposicionados e Inventario Humanitario}\par}
+
+  % ----- Autor y datos -----
+  \vspace{1cm}
+  {\color{white}\large \textbf{Yulissa del Rocío Hernández Vázquez}\par}
+  \vspace{0.4cm}
+  {\color{white}Licenciatura en Matemáticas Aplicadas -- FCFM UNACH\par}
+  \vspace{0.2cm}
+  {\color{white}Asesor: Yofre Hernán García Gómez\par}
+
+  % ----- Fecha -----
+  \vspace{0.8cm}
+  {\color{white}\large Octubre 2025\par}
+
+  % ----- Logos debajo de la fecha -----
+  \vspace{1cm}
+  \begin{minipage}{0.25\textwidth}
+    \centering
+    \includegraphics[width=2cm]{logo.png} % UNACH
+  \end{minipage}
+  \hspace{2cm}
+  \begin{minipage}{0.25\textwidth}
+    \centering
+    \includegraphics[width=2cm]{FCFM-logo.png} % FCFM
+  \end{minipage}
+  \vspace{0.5cm}
+  \end{center}
+}

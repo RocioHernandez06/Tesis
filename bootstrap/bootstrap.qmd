@@ -1,0 +1,423 @@
+---
+title: "Redes LSTM: Memoria a Largo y Corto Plazo"
+subtitle: "Arquitectura y Funcionamiento Detallado"
+author: "Presentación sobre Redes Neuronales Recurrentes"
+date: "Noviembre 2023"
+format:
+  beamer:
+    keep-tex: true
+    slide-level: 2
+    theme: "Madrid"
+    colortheme: "dolphin"
+  html:
+    theme: "cosmo"
+    toc: true
+    toc-depth: 2
+    css: styles.css
+---
+
+## ¿Qué son las LSTM?
+
+- **Extensión de las RNN** diseñadas para capturar dependencias temporales de secuencias largas
+- Las RNN básicas **luchan por capturar** dependencias largas en el tiempo
+- Introducen el concepto de **"celda de memoria"** que puede mantener, escribir o leer información
+- Controladas por **estructuras llamadas puertas** que gestionan el flujo de información
+
+## Problemas que Resuelven las LSTM
+
+### Limitaciones de las RNN Básicas
+- **Problema del gradiente de fuga**
+- Dificultad para considerar **secuencias de entrada largas**
+- **Pérdida de contexto** en dependencias temporales largas
+
+### Soluciones de las LSTM
+- Las alteraciones en los LSTM **abordan el problema del gradiente de fuga**
+- Permiten considerar **secuencias de entrada mucho más largas**
+- **Preservan el contexto** de manera más efectiva
+
+## Arquitectura LSTM: Las Tres Puertas
+
+### Componentes Fundamentales
+1. **Puerta de entrada** - Decide qué valores son importantes
+2. **Puerta de olvido** - Descarta información innecesaria  
+3. **Puerta de salida** - Decide qué información pasar al siguiente paso
+
+### Características Comunes
+- Consideran las **entradas del paso de tiempo anterior**
+- Modifican la **memoria del modelo** y los **pesos de entrada**
+- Utilizan **funciones de activación específicas** para cada puerta
+
+## Puerta de Olvido
+
+### Función Principal
+Descarta **información que el modelo considera innecesaria** para tomar decisiones.
+
+### Ecuación Matemática
+$$f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f)$$
+
+### Componentes
+- $W_f$: **peso de la puerta del olvido**
+- $b_f$: **sesgo de la puerta de olvido**
+- $\sigma$: **función sigmoidea** (valores 0-1)
+
+### Interpretación
+- **0**: Olvidar completamente
+- **1**: Retener completamente
+- Determina qué información del estado anterior conservar
+
+## Puerta de Entrada
+
+### Función Principal
+Decide **qué valores son importantes** y deben transmitirse por el modelo.
+
+### Ecuaciones
+**Decidir qué actualizar:**
+$$i_t = \sigma(W_i \cdot [h_{t-1}, x_t] + b_i)$$
+
+**Generar valores candidatos:**
+$$\tilde{C}_t = \tanh(W_C \cdot [h_{t-1}, x_t] + b_C)$$
+
+### Funciones de Activación
+- **Sigmoidea**: decide qué valores transmitir (0 = reducir, 1 = conservar)
+- **TanH**: decide importancia de valores (-1 a 1)
+
+## Célula de Memoria Candidata
+
+### Función
+Genera **nueva información potencial** para almacenar en el estado de la celda.
+
+### Ecuación
+$$\tilde{C}_t = \tanh(W_C \cdot [h_{t-1}, x_t] + b_C)$$
+
+### Características
+- Genera **valores candidatos** para agregar al estado
+- Función **tanh** asegura valores entre -1 y 1
+- Representa **información potencial** para almacenar
+
+## Actualización del Estado de la Celda
+
+### Proceso de Actualización
+$$C_t = f_t \cdot C_{t-1} + i_t \cdot \tilde{C}_t$$
+
+### Explicación del Proceso
+1. Estado anterior ($C_{t-1}$) × Puerta de olvido ($f_t$)
+2. Valores candidatos ($\tilde{C}_t$) × Puerta de entrada ($i_t$)
+3. **Suma** para formar nuevo estado ($C_t$)
+
+### Interpretación
+Combina información conservada con nueva información importante.
+
+## Puerta de Salida
+
+### Función Principal
+Decide **qué valores pasar al siguiente paso de tiempo**.
+
+### Ecuación
+$$o_t = \sigma(W_o \cdot [h_{t-1}, x_t] + b_o)$$
+
+### Proceso de Decisión
+- Analiza valores y asigna importancia (-1 a 1)
+- Regula datos antes del siguiente cálculo
+- Decide **salida final** del estado actual
+
+## Actualización del Estado Oculto
+
+### Ecuación Final
+$$h_t = o_t \cdot \tanh(C_t)$$
+
+### Funcionalidad
+- Estado oculto se actualiza según estado de celda y puerta de salida
+- Se usa como **salida para paso actual**
+- Sirve como **entrada para siguiente paso**
+
+## Flujo Completo LSTM
+
+### Proceso Secuencial
+1. **Puerta de Olvido**: Qué información conservar (sigmoidea 0-1)
+2. **Puerta de Entrada**: Qué nueva información incorporar (sigmoidea + tanh)
+3. **Actualización Estado**: $C_t = f_t \cdot C_{t-1} + i_t \cdot \tilde{C}_t$
+4. **Puerta de Salida**: Qué información emitir (sigmoidea)
+5. **Estado Oculto**: $h_t = o_t \cdot \tanh(C_t)$
+
+## Aplicaciones Prácticas
+
+### Campos de Uso
+- **Procesamiento de lenguaje natural**
+- **Reconocimiento de voz**
+- **Predicción de series temporales**
+- **Sistemas de recomendación**
+- **Análisis de datos secuenciales**
+
+### Beneficios Clave
+- **Manejan dependencias largas** eficientemente
+- **Resuelven problema del gradiente de fuga**
+- **Preservan contexto** en secuencias largas
+- **Flexibles** para diversos datos temporales
+
+## Resumen y Conclusiones
+
+### Puntos Clave
+- **Tres puertas especializadas** gestionan flujo de información
+- **Sistema de memoria** que preserva contexto relevante
+- **Combinación de funciones** de activación (sigmoidea y tanh)
+- **Actualización controlada** del estado interno
+
+### Impacto
+Las LSTM representan **evolución significativa** sobre RNN tradicionales, permitiendo manejo efectivo de **dependencias temporales largas**.
+
+🔹 2. ¿Qué es una capa LSTM en el contexto de inundaciones?
+Es una capa de red neuronal recurrente especializada en procesar datos secuenciales temporales (como series de tiempo de niveles de ríos, precipitación, humedad del suelo, etc.). Su diseño con "puertas" le permite recordar patrones importantes a lo largo del tiempo (ej.: picos de lluvia que anteceden a una inundación), olvidando información irrelevante (ej.: días sin lluvia). Esto es crucial para predecir eventos extremos con horas o días de anticipación.
+
+🔹 2.2. Parámetros principales (en contexto de inundaciones)
+
+units → Número de celdas LSTM. Más unidades capturan patrones complejos (ej.: 50 unidades para predecir crecidas en una cuenca grande).
+
+return_sequences → Si es True, devuelve salidas en cada paso temporal (útil para conectar otra LSTM después).
+
+return_state → Devuelve estados internos (para modelos avanzados de atención o inicialización).
+
+activation → Función de activación (por defecto tanh para estabilidad).
+
+input_shape → Forma de la entrada: (pasos_temporales, características) (ej.: (30, 5) para 30 días con 5 variables meteorológicas).
+
+🔹 2.3. Ejemplo conceptual con datos reales
+Imagina una secuencia de 7 días de datos hidrológicos para predecir inundaciones:
+
+Entrada (7 días × 4 características):
+
+Día 1: [Precipitación=5mm, Nivel_río=2m, Humedad_suelo=60%, Temperatura=20°C]
+
+Día 2: [10mm, 2.2m, 70%, 18°C]
+
+...
+
+Día 7: [50mm, 3.5m, 95%, 15°C]
+
+Una LSTM con units=3 procesará esta secuencia día a día, actualizando su "memoria" con la evolución de las variables.
+
+🔹 2.4. Ejemplo interpretativo para predicción de inundaciones
+Supón que usamos:
+
+python
+LSTM(units=10, return_sequences=False, input_shape=(30, 6))
+a) Entrada
+30 días históricos con 6 variables: precipitación, nivel del río, humedad del suelo, temperatura, velocidad del viento, presión atmosférica.
+
+b) Proceso
+
+units=10 → La capa tiene 10 celdas LSTM para capturar patrones complejos (ej.: correlaciones entre lluvia acumulada y subida del río).
+
+return_sequences=False → Solo devuelve la salida del último día (para predecir inundación al día siguiente).
+
+Las puertas de olvido descartan datos no relevantes (ej.: días secos antiguos).
+
+Las puertas de entrada guardan información crítica (ej.: lluvia intensa reciente).
+
+La salida genera un vector de 10 valores que resume el riesgo.
+
+c) Salida
+
+Forma: (batch_size, 10)
+
+Interpretación: Cada valor del vector representa un patrón aprendido (ej.: el valor 1 podría correlacionarse con "alta humedad acumulada", el valor 2 con "tendencia de subida rápida del río", etc.). Este vector se alimenta a una capa densa para predecir probabilidad de inundación.
+
+🔹 2.5. Analogía intuitiva
+Piensa en la LSTM como un experto en hidrología que analiza un informe diario:
+
+Forget gate: Como cuando decide que una lluvia leve de hace 20 días ya no es relevante para el riesgo actual.
+
+Input gate: Cuando subraya datos importantes: "¡Lluvia de 100mm en 3 días!".
+
+Output gate: Cuando emite un alerta gradual: "Río subiendo 0.5m/día → riesgo en 48h".
+Cuantas más capas LSTM, más sofisticado es el análisis (de variables individuales a interacciones complejas como "suelo saturado + lluvia intensa = inundación repentina").
+
+🔹 Mini-ejemplo numérico simplificado
+Entrada de 3 días para predecir crecida:
+
+Día 1: [Precip=10mm, Nivel_río=1.5m] → x1 = [0.1, 0.15] (valores normalizados)
+
+Día 2: [Precip=30mm, Nivel_río=1.7m] → x2 = [0.3, 0.17]
+
+Día 3: [Precip=60mm, Nivel_río=2.0m] → x3 = [0.6, 0.2]
+
+Estado inicial: h0 = [0, 0], c0 = [0, 0]
+
+Paso 1 (Día 1):
+
+La LSTM detecta lluvia moderada → actualiza ligeramente su estado.
+
+h1 = [0.02, 0.01], c1 = [0.03, 0.02]
+
+Paso 2 (Día 2):
+
+Lluvia alta → puerta de entrada guarda esta información.
+
+h2 = [0.15, 0.1], c2 = [0.2, 0.12]
+
+Paso 3 (Día 3):
+
+Lluvia extrema + nivel subiendo → puerta de olvido mantiene todo el historial reciente.
+
+Salida: h3 = [0.8, 0.6] (indica alto riesgo)
+
+Una capa densa traduce esto a: Probabilidad_inundación = 85%
+
+🔹 ¿Por qué es útil para inundaciones?
+
+Captura la no linealidad de las cuencas (ej.: el suelo se satura después de X días de lluvia).
+
+Modela retrasos temporales (ej.: la lluvia tarda horas en afectar el río aguas abajo).
+
+Puede integrar múltiples fuentes de datos (satélites, sensores, pronósticos meteorológicos).
+
+Usada en sistemas de alerta temprana como el EFAS (European Flood Awareness System).
+
+
+
+
+
+
+
+
+```{python}
+# =============================================================================
+# - ARQUITECTURA CON DROPOUT INTEGRADO
+# =============================================================================
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+import numpy as np
+
+def visualizar_arquitectura_corregida():
+    fig, ax = plt.subplots(1, 1, figsize=(16, 10))
+    
+    # Configuración
+    ax.set_xlim(0, 12)
+    ax.set_ylim(0, 15)
+    ax.set_aspect('equal')
+    ax.axis('off')
+    
+    # Título
+    ax.text(6, 14.5, 'ARQUITECTURA DE LA RED NEURONAL - MODELO DENSE', 
+            ha='center', va='center', fontsize=18, fontweight='bold')
+    
+    # Colores
+    colores = {
+        'entrada': 'lightblue',
+        'oculta': 'lightgreen', 
+        'dropout': 'orange',
+        'salida': 'red',
+        'prediccion': 'yellow'
+    }
+    
+    # ==================== CAPA DE ENTRADA ====================
+    ax.text(1, 12, 'CAPA DE ENTRADA\n(5 características)', 
+            ha='center', va='center', fontsize=12, fontweight='bold',
+            bbox=dict(boxstyle="round,pad=0.3", facecolor=colores['entrada']))
+    
+    # Neuronas de entrada (5 características)
+    for i in range(5):
+        y_pos = 11 - i * 0.8
+        ax.plot(1, y_pos, 'o', markersize=10, color='blue')
+        # Conexiones a capa oculta 1
+        for j in range(32):
+            target_y = 10 - (j * 0.25)  # 32 neuronas en capa 1
+            ax.plot([1.1, 2.9], [y_pos, target_y], 'gray', alpha=0.1, linewidth=0.5)
+    
+    # ==================== CAPA OCULTA 1 ====================
+    ax.text(4, 12, 'CAPA OCULTA 1\n(32 neuronas + Dropout 30%)', 
+            ha='center', va='center', fontsize=12, fontweight='bold',
+            bbox=dict(boxstyle="round,pad=0.3", facecolor=colores['oculta']))
+    
+    # 32 neuronas capa 1
+    neuronas_capa1 = []
+    for i in range(32):
+        y_pos = 11 - i * 0.25
+        neuronas_capa1.append(y_pos)
+        # Neurona activa (70%)
+        if i % 3 != 0:  # 70% de neuronas activas
+            ax.plot(4, y_pos, 'o', markersize=6, color='green')
+        else:  # 30% dropout (apagadas)
+            ax.plot(4, y_pos, 'x', markersize=8, color='red')
+    
+    # Conexiones a capa oculta 2
+    for i, y1 in enumerate(neuronas_capa1):
+        if i % 3 != 0:  # Solo neuronas activas se conectan
+            for j in range(16):
+                target_y = 9 - (j * 0.4)  # 16 neuronas en capa 2
+                ax.plot([4.1, 5.9], [y1, target_y], 'gray', alpha=0.1, linewidth=0.5)
+    
+    # ==================== CAPA OCULTA 2 ====================
+    ax.text(7, 10, 'CAPA OCULTA 2\n(16 neuronas + Dropout 30%)', 
+            ha='center', va='center', fontsize=12, fontweight='bold',
+            bbox=dict(boxstyle="round,pad=0.3", facecolor=colores['oculta']))
+    
+    # 16 neuronas capa 2
+    neuronas_capa2 = []
+    for i in range(16):
+        y_pos = 9 - i * 0.4
+        neuronas_capa2.append(y_pos)
+        # Neurona activa (70%)
+        if i % 3 != 0:  # 70% de neuronas activas
+            ax.plot(7, y_pos, 'o', markersize=7, color='green')
+        else:  # 30% dropout (apagadas)
+            ax.plot(7, y_pos, 'x', markersize=9, color='red')
+    
+    # Conexiones a capa salida
+    for i, y2 in enumerate(neuronas_capa2):
+        if i % 3 != 0:  # Solo neuronas activas se conectan
+            ax.plot([7.1, 8.9], [y2, 6], 'gray', alpha=0.3, linewidth=1)
+    
+    # ==================== CAPA DE SALIDA ====================
+    ax.text(10, 7, 'CAPA DE SALIDA\n(1 neurona)', 
+            ha='center', va='center', fontsize=12, fontweight='bold',
+            bbox=dict(boxstyle="round,pad=0.3", facecolor=colores['salida']))
+    
+    # Neurona de salida
+    ax.plot(10, 6, 'o', markersize=12, color='red')
+    
+    # ==================== PREDICCIÓN ====================
+    ax.text(10, 4, 'PREDICCIÓN FINAL\n0% - 100% probabilidad\nINUNDACIÓN / NO INUNDACIÓN', 
+            ha='center', va='center', fontsize=11, fontweight='bold',
+            bbox=dict(boxstyle="round,pad=0.3", facecolor=colores['prediccion']))
+    
+    # ==================== FLUJOS PRINCIPALES ====================
+    # Flechas entre capas
+    ax.arrow(1.5, 10, 1.8, 0, head_width=0.2, head_length=0.2, fc='black', ec='black')
+    ax.text(2.5, 10.3, '5 → 32 conexiones', ha='center', va='center', fontsize=9)
+    
+    ax.arrow(4.5, 8, 1.8, 0, head_width=0.2, head_length=0.2, fc='black', ec='black')
+    ax.text(5.5, 8.3, '32 → 16 conexiones', ha='center', va='center', fontsize=9)
+    
+    ax.arrow(7.5, 6, 1.8, 0, head_width=0.2, head_length=0.2, fc='black', ec='black')
+    ax.text(8.5, 6.3, '16 → 1 conexión', ha='center', va='center', fontsize=9)
+    
+    # ==================== DETALLES TÉCNICOS ====================
+    detalles = [
+        "• Cada neurona se conecta con TODAS las de la siguiente capa",
+        "• Dropout: 30% de neuronas se APAGAN aleatoriamente en entrenamiento",
+        "• Activación: ReLU en capas ocultas, Sigmoid en salida",
+        "• Entrada: 5 características → Salida: 1 probabilidad"
+    ]
+    
+    for i, detalle in enumerate(detalles):
+        ax.text(6, 2 - i*0.4, detalle, ha='center', va='center', fontsize=10)
+    
+    # ==================== LEYENDA ====================
+    leyenda_simple = [
+        "Blue: Input Neuron",
+        "Green: Active Neuron (ReLU)", 
+        "Red X: Dropout Neuron (Off)",
+        "Red: Output Neuron (Sigmoid)",
+        "Gray: Connections"
+    ]
+
+    for i, texto in enumerate(leyenda_simple):
+        ax.text(1, 1 - i*0.3, texto, ha='left', va='center', fontsize=9)
+
+    plt.tight_layout()
+    plt.show()
+
+# Ejecutar visualización 
+print("ARQUITECTURA CON DROPOUT INTEGRADO")
+visualizar_arquitectura_corregida()
+```

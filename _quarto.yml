@@ -1,0 +1,106 @@
+project:
+  type: book
+execute: 
+  freeze: auto
+
+website: 
+  favicon: FCFMLOGO.png
+  reader-mode: true
+  search:
+    location: sidebar
+    type: overlay
+  comments:
+    hypothesis: true
+
+book:
+  title: "Inundaciones"
+  reader-mode: true
+  language: es
+  date: today
+  image: FCFMLOGO.png
+  downloads: [pdf, epub]
+  favicon: FCFMLOGO.png
+  sidebar:
+    logo: LOGO-JUBILEO.png
+    style: floating
+    collapse-level: 2
+    border: true
+    search: true
+  repo-url: https://github.com/RocioHernandez06/thesis
+  page-navigation: true 
+  chapters:
+    - index.qmd
+    - chapters/Introduccion.qmd
+    - chapters/chiapas.qmd
+    #   chapters: 
+    #     - partial_diff_eq.qmd
+    #     - boundary_problems.qmd
+    #     - initial_values.qmd
+    #     - texto_crank_nick.qmd
+    # - part: "Redes neuronales"
+    #   chapters: 
+    #     - pinns.qmd
+    #     - deeponet.qmd
+    # - part: PBHE.qmd
+    #   chapters:
+    #     - ecuacion.qmd
+    #     - ejemplos.qmd
+    # - part: estudio_caso.qmd
+    #   chapters: 
+    #     - metodologia.qmd
+    #     - pred_crank_nick.qmd
+    #     - model_don.qmd
+    #     - comparaciones.qmd
+    # - conclusiones.qmd
+    # - futuros_trabajos.qmd
+    - references.qmd
+
+comments: 
+  hypothesis: true
+
+bibliography: references.bib
+
+format:
+  html:
+    theme:
+      light: flatly
+      dark: darkly
+    highlight-style: a11y
+    lang: es
+    html-math-method: mathjax
+    include-in-header: mathjax-config.html 
+    grid:
+      sidebar-width: 300px
+      body-width: 950px
+      margin-width: 250px
+      gutter-width: 1.5rem
+    code-fold: true
+    code-copy: true
+    toc: true
+    toc-location: right
+    toc-expand: true
+  pdf:
+    lang: es
+    include-in-header:
+      - packa.tex
+      - text: |
+          \usepackage{graphicx}
+          \usepackage{float}
+          \usepackage{upgreek}
+          \usepackage{amsmath}
+    template-partials:
+      - before-body.tex
+    documentclass: scrreprt
+    papersize: us-letter
+    titlegraphic: FCFMLOGO.png
+    institution: Universidad Autónoma de Chiapas
+    email: yulissa.hernndez42@unach.mx
+    keep-tex: true
+    pdf-engine: lualatex
+    toc: true
+    code-fold: true
+    fig-align: center
+    fig-cap-location: bottom
+
+  epub:
+    cover-image: FCFMLOGO.png
