@@ -204,7 +204,6 @@
 }
 \usepackage{graphicx}
 \usepackage{float}
-\usepackage{upgreek}
 \usepackage{amsmath}
 \makeatletter
 \@ifpackageloaded{bookmark}{}{\usepackage{bookmark}}
@@ -267,7 +266,7 @@
 
 \title{Inundaciones}
 \author{Yulissa del Rocío Hernández Vázquez}
-\date{2025-10-23}
+\date{2025-11-06}
 \begin{document}
 \begin{titlepage}
 \hspace{-1.7cm} %Este comando es para mandar a la izquierda ;)
@@ -349,7 +348,7 @@ crítica, no sólo como una herramienta de gestión operativa, sino como un
 instrumento de justicia social y resiliencia territorial. Barojas-Payán
 et~al. (2021)
 
-En esa línea, Insani et~al. (2024) desarrollaron un modelo de
+En esa línea, Insani, Widodo, y Rahman (2024) desarrollaron un modelo de
 programación entera mixta orientado a coordinar simultáneamente la
 evacuación y la entrega de ayuda en contextos de inundaciones tempranas.
 Su propuesta incorpora entregas divididas, reutilización de vehículos y
@@ -363,27 +362,28 @@ incertidumbre. Este modelo integra restricciones difusas y estocásticas
 para optimizar la localización de almacenes, la gestión de inventarios y
 la provisión de atención médica posterior a los desastres.
 
-En otro enfoque, Romero-Mancilla et~al. (2024) diseñaron un modelo
-multimodal que combina transporte terrestre y aéreo mediante drones,
-estructurado como un modelo multiobjetivo que considera transbordos y
-múltiples depósitos. Su objetivo principal es equilibrar el costo
-logístico con los tiempos de entrega, especialmente en escenarios donde
-la infraestructura vial ha sido severamente afectada.
+En otro enfoque, Romero-Mancilla, Martínez-Flores, y Sánchez-Partida
+(2024) diseñaron un modelo multimodal que combina transporte terrestre y
+aéreo mediante drones, estructurado como un modelo multiobjetivo que
+considera transbordos y múltiples depósitos. Su objetivo principal es
+equilibrar el costo logístico con los tiempos de entrega, especialmente
+en escenarios donde la infraestructura vial ha sido severamente
+afectada.
 
-Asimismo, Santana-Robles et~al. (2024) formularon un modelo híbrido que
-combina programación lineal entera con problemas de ruteo vehicular
-(VRP), enfocado en asignar refugios y optimizar la entrega de
+Asimismo, Santana-Robles, López, y Rivera (2024) formularon un modelo
+híbrido que combina programación lineal entera con problemas de ruteo
+vehicular (VRP), enfocado en asignar refugios y optimizar la entrega de
 suministros bajo variaciones de demanda y recursos limitados.
 
-De forma complementaria, Mashrut (2024) propuso un modelo
+De forma complementaria, Mashrut y Rahimi (2024) propuso un modelo
 robusto-fuzzy-probabilístico biobjetivo que busca minimizar tanto el
 costo operativo como el costo de privación, es decir, el impacto social
 derivado de la falta de ayuda oportuna.
 
-Finalmente, Pujiana et~al. (2020) implementaron un modelo de ruteo
-multi-depósito (MDVRP) aplicado a la fase posterior a inundaciones,
-optimizando el uso de depósitos temporales, rutas y cobertura
-territorial con base en restricciones de capacidad y demanda.
+Finalmente, Pujiana, Utama, y Rahmawati (2020) implementaron un modelo
+de ruteo multi-depósito (MDVRP) aplicado a la fase posterior a
+inundaciones, optimizando el uso de depósitos temporales, rutas y
+cobertura territorial con base en restricciones de capacidad y demanda.
 
 Estos enfoques demuestran que la preparación logística previa al
 desastre no sólo mejora la eficiencia de la respuesta, sino que permite
@@ -409,7 +409,127 @@ restricciones operativas.
 
 \bookmarksetup{startatroot}
 
-\chapter{Formulación del problema}\label{formulaciuxf3n-del-problema}
+\chapter{Capitulo}\label{capitulo}
+
+\section{Descripción del entorno
+computacional}\label{descripciuxf3n-del-entorno-computacional}
+
+El desarrollo experimental de esta investigación se llevó a cabo en un
+entorno computacional basado en \textbf{Python 3.12}, un lenguaje
+ampliamente utilizado en modelación matemática y análisis numérico por
+su flexibilidad, facilidad de integración y extenso ecosistema de
+librerías científicas.
+
+Las principales herramientas empleadas fueron:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{NumPy}: para la ejecución eficiente de operaciones algebraicas
+  y manejo de matrices.\\
+\item
+  \textbf{Pandas}: destinada a la manipulación y análisis estructurado
+  de datos provenientes de diversas fuentes.\\
+\item
+  \textbf{SciPy (módulo \texttt{optimize})}: utilizada para implementar
+  métodos de optimización numérica, incluyendo algoritmos robustos como
+  \emph{L-BFGS-B}.\\
+\item
+  \textbf{Matplotlib}: para la generación de representaciones gráficas
+  que facilitan la interpretación de resultados.
+\end{itemize}
+
+El entorno de trabajo se configuró en un equipo con sistema operativo
+\textbf{Windows 11}, procesador de arquitectura \textbf{x64} y 16 GB de
+memoria RAM, garantizando estabilidad en las simulaciones y tiempos de
+ejecución adecuados.
+
+La adopción de Python responde al interés de favorecer la
+\textbf{reproducibilidad y transparencia} de los resultados, principios
+fundamentales en la investigación científica contemporánea.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{Estructura general del modelo
+computacional}\label{estructura-general-del-modelo-computacional}
+
+Antes de definir formalmente los modelos matemáticos, se estableció una
+estructura computacional modular que sirvió como marco de referencia
+para el desarrollo de los procedimientos de simulación y optimización.
+
+Esta estructura permite mantener la coherencia entre las distintas
+etapas del trabajo y facilita su futura implementación en diferentes
+contextos.
+
+Las etapas generales consideradas fueron:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Entrada de datos}: incorporación de parámetros y variables
+  necesarias para la simulación, tales como demanda, costos o tiempos de
+  entrega.\\
+\item
+  \textbf{Preprocesamiento y normalización}: transformación de los datos
+  para garantizar consistencia y compatibilidad entre unidades.\\
+\item
+  \textbf{Definición de funciones objetivo y restricciones}:
+  representación computacional de las expresiones matemáticas que serán
+  objeto de optimización.\\
+\item
+  \textbf{Configuración de condiciones de frontera}: establecimiento de
+  cotas o límites que aseguran la factibilidad de las soluciones.\\
+\item
+  \textbf{Ejecución del algoritmo de optimización}: aplicación del
+  método seleccionado para resolver el problema de manera numérica.\\
+\item
+  \textbf{Salida y análisis de resultados}: obtención de indicadores que
+  permiten validar la coherencia y desempeño del modelo.
+\end{enumerate}
+
+Esta organización modular ofrece una visión integral del flujo de
+trabajo y posibilita la reutilización de componentes en futuros
+proyectos de investigación aplicada.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{\texorpdfstring{Implementación del algoritmo
+\emph{L-BFGS-B}}{Implementación del algoritmo L-BFGS-B}}\label{implementaciuxf3n-del-algoritmo-l-bfgs-b}
+
+Para la resolución de los problemas de optimización no lineal con
+restricciones tipo caja, se seleccionó el algoritmo
+\textbf{Limited-memory Broyden--Fletcher--Goldfarb--Shanno con Bounds
+(L-BFGS-B)}, perteneciente a la familia de métodos cuasi-Newton.
+
+El \emph{L-BFGS-B} se caracteriza por su \textbf{eficiencia en memoria},
+\textbf{capacidad para manejar restricciones} y \textbf{robustez
+numérica}. Estas propiedades lo hacen especialmente adecuado para
+problemas de optimización de mediana escala, en los que es necesario
+mantener cotas sobre las variables sin reformular el modelo.
+
+En términos conceptuales, el algoritmo aproxima de forma iterativa el
+gradiente y la matriz Hessiana del sistema, proyectando cada iteración
+dentro del espacio factible definido por los límites de las variables.
+La convergencia se alcanza cuando se satisfacen las condiciones de
+\textbf{Karush--Kuhn--Tucker (KKT)}, que garantizan la optimalidad
+local.
+
+Aunque la implementación práctica se realizó mediante la función
+\texttt{minimize()} del módulo \texttt{scipy.optimize}, el código fuente
+completo se incluye en los \textbf{Anexos} del documento, con el
+propósito de mantener el enfoque teórico del capítulo y conservar la
+legibilidad del texto principal.
+
+De esta manera, el presente capítulo establece los fundamentos
+computacionales y metodológicos necesarios para el desarrollo del
+\textbf{modelo de optimización} que se formulará en el \textbf{Capítulo
+siguiente}, y que posteriormente se aplicará al caso de estudio en un
+municipio del estado de \textbf{Chiapas}.
+
+\bookmarksetup{startatroot}
+
+\chapter{Formulacion del Problema}\label{formulacion-del-problema}
 
 En esta sección se presenta la formulación matemática de un modelo de
 optimización aplicado a la logística humanitaria ante inundaciones. El
@@ -631,7 +751,7 @@ cuando la cobertura es insuficiente.
 \NormalTok{E\_z }\OperatorTok{=}\NormalTok{ z }\OperatorTok{*}\NormalTok{ (Phi\_z }\OperatorTok{{-}} \DecValTok{1}\NormalTok{) }\OperatorTok{+}\NormalTok{ phi\_z  }\CommentTok{\# Función de pérdida}
 
 \NormalTok{plt.figure(figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{6}\NormalTok{))}
-\NormalTok{plt.plot(z, phi\_z, label}\OperatorTok{=}\StringTok{\textquotesingle{}Distribución normal ($}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{phi(z)$)\textquotesingle{}}\NormalTok{,}
+\NormalTok{plt.plot(z, phi\_z, label}\OperatorTok{=}\StringTok{\textquotesingle{}Función de densidad normal ($}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{phi(z)$)\textquotesingle{}}\NormalTok{,}
 \NormalTok{ color}\OperatorTok{=}\StringTok{\textquotesingle{}blue\textquotesingle{}}\NormalTok{)}
 \NormalTok{plt.plot(z, E\_z, label}\OperatorTok{=}\StringTok{\textquotesingle{}Función de pérdida ($E\_}\SpecialCharTok{\{z\_i\}}\StringTok{\^{}p$)\textquotesingle{}}\NormalTok{,}
 \NormalTok{ color}\OperatorTok{=}\StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}{-}{-}\textquotesingle{}}\NormalTok{)}
@@ -642,7 +762,7 @@ cuando la cobertura es insuficiente.
 \NormalTok{plt.ylabel(}\StringTok{\textquotesingle{}Valor\textquotesingle{}}\NormalTok{)}
 \NormalTok{plt.legend()}
 \NormalTok{plt.grid()}
-\NormalTok{plt.title(}\StringTok{\textquotesingle{}Distribución normal y función de pérdida\textquotesingle{}}\NormalTok{)}
+\NormalTok{plt.title(}\StringTok{\textquotesingle{}Función de densidad normal y función de pérdida\textquotesingle{}}\NormalTok{)}
 \NormalTok{plt.show()}
 \end{Highlighting}
 \end{Shaded}
@@ -651,7 +771,7 @@ cuando la cobertura es insuficiente.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{chapters/Introduccion_files/figure-pdf/fig-funcion-perdida-output-1.png}}
+\pandocbounded{\includegraphics[keepaspectratio]{chapters/formulacion_files/figure-pdf/fig-funcion-perdida-output-1.png}}
 
 }
 
@@ -781,63 +901,14 @@ En particular, se consideraron:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
+\tightlist
 \item
   \textbf{Escenario 1: un solo almacén}\\
   Se activa únicamente un centro logístico, ubicado estratégicamente
   para abastecer a todas las zonas afectadas. Este escenario permite
   evaluar la capacidad de respuesta centralizada y su impacto en las
   distancias de transporte y en el \emph{fill rate} alcanzado.
-\item
-  \textbf{Escenario 2: dos almacenes}\\
-  Se habilitan dos centros logísticos, distribuyendo la demanda en
-  función de la proximidad geográfica. Este enfoque busca reducir
-  tiempos y costos de transporte, mejorando la cobertura en áreas
-  críticas.
-\item
-  \textbf{Variaciones de demanda}\\
-  Se analizaron incrementos y reducciones del 10 \% en la demanda de
-  zonas críticas, simulando cambios bruscos por intensificación o
-  atenuación del desastre.
-\item
-  \textbf{Requisito mínimo de servicio}\\
-  Se impuso como meta operativa alcanzar un \emph{fill rate} ≥ 90 \%
-  para todas las zonas afectadas.
-\item
-  \textbf{Restricciones geográficas y de accesibilidad vial}\\
-  Se aplicaron límites basados en la infraestructura real disponible y
-  en la factibilidad de transporte en condiciones de desastre.
 \end{enumerate}
-
-\subsection{Resultados obtenidos}\label{resultados-obtenidos}
-
-Los resultados muestran que:
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{Escenario 1 (un solo almacén)}: aunque se logra cubrir gran
-  parte de la demanda, los tiempos de entrega y el costo de transporte
-  aumentan significativamente, y el \emph{fill rate} promedio se sitúa
-  en 88 \%.
-\item
-  \textbf{Escenario 2 (dos almacenes)}: la descentralización logística
-  reduce un 23 \% los costos de transporte y eleva el \emph{fill rate}
-  promedio a 95 \%, cumpliendo la meta establecida.
-\item
-  \textbf{Variaciones de demanda}: el modelo mantiene un \emph{fill
-  rate} superior al 90 \% para aumentos de hasta un 10 \% de la demanda,
-  aunque el costo total se incrementa proporcionalmente.
-\item
-  La inclusión de restricciones geográficas mejora el realismo del
-  modelo, aunque limita la asignación óptima en algunos casos.
-\end{itemize}
-
-Estos hallazgos permiten concluir que la diversificación de almacenes
-mejora sustancialmente la cobertura y eficiencia logística en contextos
-de desastre.
-
-\subsection{Escenario 1: un solo
-almacén}\label{escenario-1-un-solo-almacuxe9n}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -899,32 +970,32 @@ almacén}\label{escenario-1-un-solo-almacuxe9n}
                 \ControlFlowTok{continue}
 
 \CommentTok{\# {-}{-}{-} Crear mapa {-}{-}{-}}
-\NormalTok{m }\OperatorTok{=}\NormalTok{ folium.Map(location}\OperatorTok{=}\NormalTok{[}\FloatTok{18.0}\NormalTok{, }\OperatorTok{{-}}\FloatTok{94.5}\NormalTok{], zoom\_start}\OperatorTok{=}\DecValTok{8}\NormalTok{)}
+\NormalTok{mapa1 }\OperatorTok{=}\NormalTok{ folium.Map(location}\OperatorTok{=}\NormalTok{[}\FloatTok{18.0}\NormalTok{, }\OperatorTok{{-}}\FloatTok{94.5}\NormalTok{], zoom\_start}\OperatorTok{=}\DecValTok{8}\NormalTok{)}
 \NormalTok{style\_veracruz }\OperatorTok{=}\NormalTok{ \{}\StringTok{\textquotesingle{}fillColor\textquotesingle{}}\NormalTok{: }\StringTok{\textquotesingle{}\#00000000\textquotesingle{}}\NormalTok{,}
  \StringTok{\textquotesingle{}color\textquotesingle{}}\NormalTok{: }\StringTok{\textquotesingle{}\#555555\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}weight\textquotesingle{}}\NormalTok{: }\DecValTok{2}\NormalTok{\}}
 \NormalTok{folium.GeoJson(veracruz.geometry,}
-\NormalTok{ style\_function}\OperatorTok{=}\KeywordTok{lambda}\NormalTok{ x: style\_veracruz).add\_to(m)}
+\NormalTok{ style\_function}\OperatorTok{=}\KeywordTok{lambda}\NormalTok{ x: style\_veracruz).add\_to(mapa1)}
 
 \ControlFlowTok{for}\NormalTok{ \_, fila }\KeywordTok{in}\NormalTok{ almacenes.iterrows():}
 \NormalTok{    folium.Marker(location}\OperatorTok{=}\NormalTok{[fila[}\StringTok{\textquotesingle{}Latitud\textquotesingle{}}\NormalTok{],}
 \NormalTok{     fila[}\StringTok{\textquotesingle{}Longitud\textquotesingle{}}\NormalTok{]],}
 \NormalTok{                  icon}\OperatorTok{=}\NormalTok{folium.Icon(color}\OperatorTok{=}\StringTok{\textquotesingle{}blue\textquotesingle{}}\NormalTok{,}
 \NormalTok{                   icon}\OperatorTok{=}\StringTok{\textquotesingle{}home\textquotesingle{}}\NormalTok{, prefix}\OperatorTok{=}\StringTok{\textquotesingle{}fa\textquotesingle{}}\NormalTok{),}
-\NormalTok{                  tooltip}\OperatorTok{=}\SpecialStringTok{f"Almacén: }\SpecialCharTok{\{}\NormalTok{fila[}\StringTok{\textquotesingle{}Municipio\textquotesingle{}}\NormalTok{]}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{).add\_to(m)}
+\NormalTok{                  tooltip}\OperatorTok{=}\SpecialStringTok{f"Almacén: }\SpecialCharTok{\{}\NormalTok{fila[}\StringTok{\textquotesingle{}Municipio\textquotesingle{}}\NormalTok{]}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{).add\_to(mapa1)}
 
 \ControlFlowTok{for}\NormalTok{ \_, fila }\KeywordTok{in}\NormalTok{ afectadas.iterrows():}
 \NormalTok{    folium.Marker(location}\OperatorTok{=}\NormalTok{[fila[}\StringTok{\textquotesingle{}Latitud\textquotesingle{}}\NormalTok{],}
 \NormalTok{     fila[}\StringTok{\textquotesingle{}Longitud\textquotesingle{}}\NormalTok{]],}
 \NormalTok{        icon}\OperatorTok{=}\NormalTok{folium.Icon(color}\OperatorTok{=}\StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{,}
 \NormalTok{         icon}\OperatorTok{=}\StringTok{\textquotesingle{}tint\textquotesingle{}}\NormalTok{, prefix}\OperatorTok{=}\StringTok{\textquotesingle{}fa\textquotesingle{}}\NormalTok{),}
-\NormalTok{        tooltip}\OperatorTok{=}\SpecialStringTok{f"Municipio afectado: }\SpecialCharTok{\{}\NormalTok{fila[}\StringTok{\textquotesingle{}Municipio\textquotesingle{}}\NormalTok{]}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{).add\_to(m)}
+\NormalTok{        tooltip}\OperatorTok{=}\SpecialStringTok{f"Municipio afectado: }\SpecialCharTok{\{}\NormalTok{fila[}\StringTok{\textquotesingle{}Municipio\textquotesingle{}}\NormalTok{]}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{).add\_to(mapa1)}
 
 \ControlFlowTok{for}\NormalTok{ ruta }\KeywordTok{in}\NormalTok{ rutas:}
 \NormalTok{    folium.PolyLine(ruta[}\StringTok{\textquotesingle{}coordenadas\textquotesingle{}}\NormalTok{],}
 \NormalTok{     color}\OperatorTok{=}\StringTok{\textquotesingle{}green\textquotesingle{}}\NormalTok{, weight}\OperatorTok{=}\DecValTok{3}\NormalTok{,}
-\NormalTok{        tooltip}\OperatorTok{=}\SpecialStringTok{f"}\SpecialCharTok{\{}\NormalTok{ruta[}\StringTok{\textquotesingle{}origen\textquotesingle{}}\NormalTok{]}\SpecialCharTok{\}}\SpecialStringTok{ → }\SpecialCharTok{\{}\NormalTok{ruta[}\StringTok{\textquotesingle{}destino\textquotesingle{}}\NormalTok{]}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{).add\_to(m)}
+\NormalTok{        tooltip}\OperatorTok{=}\SpecialStringTok{f"}\SpecialCharTok{\{}\NormalTok{ruta[}\StringTok{\textquotesingle{}origen\textquotesingle{}}\NormalTok{]}\SpecialCharTok{\}}\SpecialStringTok{ → }\SpecialCharTok{\{}\NormalTok{ruta[}\StringTok{\textquotesingle{}destino\textquotesingle{}}\NormalTok{]}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{).add\_to(mapa1)}
 
-\NormalTok{m}
+\NormalTok{mapa1}
 \end{Highlighting}
 \end{Shaded}
 
@@ -938,8 +1009,17 @@ almacén}\label{escenario-1-un-solo-almacuxe9n}
 
 \end{figure}%
 
-\subsection{Escenario 2: Dos
-almacénes}\label{escenario-2-dos-almacuxe9nes}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  \textbf{Escenario 2: dos almacenes}\\
+  Se habilitan dos centros logísticos, distribuyendo la demanda en
+  función de la proximidad geográfica. Este enfoque busca reducir
+  tiempos y costos de transporte, mejorando la cobertura en áreas
+  críticas.
+\end{enumerate}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1015,31 +1095,31 @@ almacénes}\label{escenario-2-dos-almacuxe9nes}
             \ControlFlowTok{continue}
 
 \CommentTok{\# {-}{-}{-} Crear mapa {-}{-}{-}}
-\NormalTok{m }\OperatorTok{=}\NormalTok{ folium.Map(location}\OperatorTok{=}\NormalTok{[}\FloatTok{18.0}\NormalTok{, }\OperatorTok{{-}}\FloatTok{94.1}\NormalTok{], zoom\_start}\OperatorTok{=}\DecValTok{9}\NormalTok{)}
+\NormalTok{mapa }\OperatorTok{=}\NormalTok{ folium.Map(location}\OperatorTok{=}\NormalTok{[}\FloatTok{18.0}\NormalTok{, }\OperatorTok{{-}}\FloatTok{94.1}\NormalTok{], zoom\_start}\OperatorTok{=}\DecValTok{9}\NormalTok{)}
 \NormalTok{style\_veracruz }\OperatorTok{=}\NormalTok{ \{}\StringTok{\textquotesingle{}fillColor\textquotesingle{}}\NormalTok{: }\StringTok{\textquotesingle{}\#00000000\textquotesingle{}}\NormalTok{,}
  \StringTok{\textquotesingle{}color\textquotesingle{}}\NormalTok{: }\StringTok{\textquotesingle{}\#555555\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}weight\textquotesingle{}}\NormalTok{: }\DecValTok{2}\NormalTok{\}}
 \NormalTok{folium.GeoJson(veracruz.geometry,}
-\NormalTok{ style\_function}\OperatorTok{=}\KeywordTok{lambda}\NormalTok{ x: style\_veracruz).add\_to(m)}
+\NormalTok{ style\_function}\OperatorTok{=}\KeywordTok{lambda}\NormalTok{ x: style\_veracruz).add\_to(mapa)}
 
 \ControlFlowTok{for}\NormalTok{ \_, fila }\KeywordTok{in}\NormalTok{ almacenes.iterrows():}
 \NormalTok{    folium.Marker(location}\OperatorTok{=}\NormalTok{[fila[}\StringTok{\textquotesingle{}Latitud\textquotesingle{}}\NormalTok{],}
 \NormalTok{     fila[}\StringTok{\textquotesingle{}Longitud\textquotesingle{}}\NormalTok{]],}
 \NormalTok{                  icon}\OperatorTok{=}\NormalTok{folium.Icon(color}\OperatorTok{=}\StringTok{\textquotesingle{}blue\textquotesingle{}}\NormalTok{,}
 \NormalTok{                   icon}\OperatorTok{=}\StringTok{\textquotesingle{}home\textquotesingle{}}\NormalTok{, prefix}\OperatorTok{=}\StringTok{\textquotesingle{}fa\textquotesingle{}}\NormalTok{),}
-\NormalTok{                  tooltip}\OperatorTok{=}\SpecialStringTok{f"Almacén: }\SpecialCharTok{\{}\NormalTok{fila[}\StringTok{\textquotesingle{}Nombre\textquotesingle{}}\NormalTok{]}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{).add\_to(m)}
+\NormalTok{                  tooltip}\OperatorTok{=}\SpecialStringTok{f"Almacén: }\SpecialCharTok{\{}\NormalTok{fila[}\StringTok{\textquotesingle{}Nombre\textquotesingle{}}\NormalTok{]}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{).add\_to(mapa)}
 
 \ControlFlowTok{for}\NormalTok{ \_, fila }\KeywordTok{in}\NormalTok{ asignaciones.iterrows():}
 \NormalTok{    folium.Marker(location}\OperatorTok{=}\NormalTok{[fila[}\StringTok{\textquotesingle{}Latitud\textquotesingle{}}\NormalTok{],}
 \NormalTok{     fila[}\StringTok{\textquotesingle{}Longitud\textquotesingle{}}\NormalTok{]],}
 \NormalTok{            icon}\OperatorTok{=}\NormalTok{folium.Icon(color}\OperatorTok{=}\StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{,}
 \NormalTok{                icon}\OperatorTok{=}\StringTok{\textquotesingle{}tint\textquotesingle{}}\NormalTok{, prefix}\OperatorTok{=}\StringTok{\textquotesingle{}fa\textquotesingle{}}\NormalTok{),}
-\NormalTok{            tooltip}\OperatorTok{=}\SpecialStringTok{f"Afectada: }\SpecialCharTok{\{}\NormalTok{fila[}\StringTok{\textquotesingle{}Afectada\textquotesingle{}}\NormalTok{]}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{).add\_to(m)}
+\NormalTok{            tooltip}\OperatorTok{=}\SpecialStringTok{f"Afectada: }\SpecialCharTok{\{}\NormalTok{fila[}\StringTok{\textquotesingle{}Afectada\textquotesingle{}}\NormalTok{]}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{).add\_to(mapa)}
 
 \ControlFlowTok{for}\NormalTok{ ruta }\KeywordTok{in}\NormalTok{ rutas:}
 \NormalTok{    folium.PolyLine(ruta[}\StringTok{\textquotesingle{}coordenadas\textquotesingle{}}\NormalTok{], color}\OperatorTok{=}\NormalTok{ruta[}\StringTok{\textquotesingle{}color\textquotesingle{}}\NormalTok{], weight}\OperatorTok{=}\DecValTok{3}\NormalTok{,}
-\NormalTok{        tooltip}\OperatorTok{=}\SpecialStringTok{f"}\SpecialCharTok{\{}\NormalTok{ruta[}\StringTok{\textquotesingle{}origen\textquotesingle{}}\NormalTok{]}\SpecialCharTok{\}}\SpecialStringTok{ → }\SpecialCharTok{\{}\NormalTok{ruta[}\StringTok{\textquotesingle{}destino\textquotesingle{}}\NormalTok{]}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{).add\_to(m)}
+\NormalTok{        tooltip}\OperatorTok{=}\SpecialStringTok{f"}\SpecialCharTok{\{}\NormalTok{ruta[}\StringTok{\textquotesingle{}origen\textquotesingle{}}\NormalTok{]}\SpecialCharTok{\}}\SpecialStringTok{ → }\SpecialCharTok{\{}\NormalTok{ruta[}\StringTok{\textquotesingle{}destino\textquotesingle{}}\NormalTok{]}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{).add\_to(mapa)}
 
-\NormalTok{m}
+\NormalTok{mapa}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1052,6 +1132,52 @@ almacénes}\label{escenario-2-dos-almacuxe9nes}
 \caption{Mapa de Veracruz}
 
 \end{figure}%
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\item
+  \textbf{Variaciones de demanda}\\
+  Se analizaron incrementos y reducciones del 10 \% en la demanda de
+  zonas críticas, simulando cambios bruscos por intensificación o
+  atenuación del desastre.
+\item
+  \textbf{Requisito mínimo de servicio}\\
+  Se impuso como meta operativa alcanzar un \emph{fill rate} ≥ 90 \%
+  para todas las zonas afectadas.
+\item
+  \textbf{Restricciones geográficas y de accesibilidad vial}\\
+  Se aplicaron límites basados en la infraestructura real disponible y
+  en la factibilidad de transporte en condiciones de desastre.
+\end{enumerate}
+
+\subsection{Resultados obtenidos}\label{resultados-obtenidos}
+
+Los resultados muestran que:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Escenario 1 (un solo almacén)}: aunque se logra cubrir gran
+  parte de la demanda, los tiempos de entrega y el costo de transporte
+  aumentan significativamente, y el \emph{fill rate} promedio se sitúa
+  en 88 \%.
+\item
+  \textbf{Escenario 2 (dos almacenes)}: la descentralización logística
+  reduce un 23 \% los costos de transporte y eleva el \emph{fill rate}
+  promedio a 95 \%, cumpliendo la meta establecida.
+\item
+  \textbf{Variaciones de demanda}: el modelo mantiene un \emph{fill
+  rate} superior al 90 \% para aumentos de hasta un 10 \% de la demanda,
+  aunque el costo total se incrementa proporcionalmente.
+\item
+  La inclusión de restricciones geográficas mejora el realismo del
+  modelo, aunque limita la asignación óptima en algunos casos.
+\end{itemize}
+
+Estos hallazgos permiten concluir que la diversificación de almacenes
+mejora sustancialmente la cobertura y eficiencia logística en contextos
+de desastre.
 
 \bookmarksetup{startatroot}
 
@@ -1076,22 +1202,30 @@ alta complejidad territorial.
 \section{Contexto geográfico y socioeconómico del área de
 estudio}\label{contexto-geogruxe1fico-y-socioeconuxf3mico-del-uxe1rea-de-estudio}
 
+El análisis del contexto geográfico y socioeconómico es fundamental para
+entender las condiciones que afectan la logística humanitaria en
+Cacahoatán. Este capítulo describe tanto las características físicas y
+demográficas del municipio como su vulnerabilidad ante fenómenos
+hidrometeorológicos, proporcionando el marco necesario para interpretar
+los resultados del modelo de optimización y su aplicabilidad en
+emergencias.
+
 \subsection{Características del municipio de
 Cacahoatán}\label{caracteruxedsticas-del-municipio-de-cacahoatuxe1n}
 
 Cacahoatán se localiza en la región del Soconusco en el estado de
 Chiapas, colindante con la República de Guatemala. Con una extensión
-territorial de 1,295 km², el municipio presenta una topografía variada
-que incluye zonas montañosas y planicies costeras, factor que influye
-significativamente en la accesibilidad y conectividad de sus
+territorial de \(1,295 km²\), el municipio presenta una topografía
+variada que incluye zonas montañosas y planicies costeras, factor que
+influye significativamente en la accesibilidad y conectividad de sus
 localidades.
 
 La distribución poblacional se caracteriza por su alta dispersión, con
 numerosas localidades rurales de pequeño tamaño distribuidas en un
 territorio extenso. Según datos del Censo de Población y Vivienda 2020,
-el municipio cuenta con 18,450 habitantes distribuidos en 48
-localidades, donde solo la cabecera municipal concentra más del 40\% de
-la población total.
+el municipio cuenta con \(18,450\) habitantes distribuidos en \(48\)
+localidades, donde solo la cabecera municipal concentra más del \(40\%\)
+de la población total.
 
 \subsection{Vulnerabilidad ante
 inundaciones}\label{vulnerabilidad-ante-inundaciones}
@@ -1101,8 +1235,8 @@ Pacífico, combinada con su densa red hidrográfica y la influencia de
 fenómenos meteorológicos extremos, lo configura como una zona de alta
 susceptibilidad a inundaciones. Los registros históricos del Sistema
 Nacional de Protección Civil indican que el municipio ha experimentado
-12 eventos de inundación severa en la última década, afectando en
-promedio a 8,000 personas por evento.
+\(21\) eventos de inundación severa en la última década, afectando en
+promedio a \(8,000\) personas por evento.
 
 Los patrones de precipitación en la región, caracterizados por lluvias
 intensas durante la temporada de huracanes, exacerbados por los efectos
@@ -1110,37 +1244,35 @@ del cambio climático, han incrementado la frecuencia e intensidad de
 estos eventos, haciendo imperativa la implementación de sistemas
 logísticos anticipatorios.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\ImportTok{from}\NormalTok{ IPython.display }\ImportTok{import}\NormalTok{ Image, display}
-\NormalTok{display(Image(}\StringTok{"grafico.png"}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
-
 \begin{figure}[H]
 
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{chapters/chiapas_files/figure-pdf/fig-historico-cacahoatan-output-1.png}}
+{\centering \includegraphics[width=0.6\linewidth,height=\textheight,keepaspectratio]{chapters/grafico.png}
 
 }
 
-\caption{\label{fig-historico-cacahoatan}Distribución temporal de los
-eventos de inundación registrados en el municipio de Cacahoatán,
-Chiapas, durante el periodo 2013--2021. Se observa que \textbf{durante
-2018 y 2019 no se registraron inundaciones de gran magnitud}, a
-diferencia de los años previos. En ese periodo, el municipio experimentó
-\textbf{lluvias intensas y desbordamientos menores de arroyos}, sin
-alcanzar los niveles de afectación observados en eventos anteriores.
-Esta ausencia de registros severos explica los espacios vacíos en la
-gráfica y refleja una \textbf{reducción temporal en la severidad de los
-desastres}, aunque la \textbf{vulnerabilidad estructural del municipio}
-ante lluvias extremas se mantiene elevada.}
+\caption{Distribución temporal de los eventos de inundación registrados
+en el municipio de Cacahoatán, Chiapas, durante el periodo 2013--2021.
+Se observa que \textbf{durante 2018 y 2019 no se registraron
+inundaciones de gran magnitud}, a diferencia de los años previos. En ese
+periodo, el municipio experimentó \textbf{lluvias intensas y
+desbordamientos menores de arroyos}, sin alcanzar los niveles de
+afectación observados en eventos anteriores. Esta ausencia de registros
+severos explica los espacios vacíos en la gráfica y refleja una
+\textbf{reducción temporal en la severidad de los desastres}, aunque la
+\textbf{vulnerabilidad estructural del municipio} ante lluvias extremas
+se mantiene elevada.}
 
 \end{figure}%
 
 \section{Metodología para el cálculo de pesos
 posicionales}\label{metodologuxeda-para-el-cuxe1lculo-de-pesos-posicionales}
+
+Para optimizar la localización de almacenes humanitarios, es necesario
+cuantificar la importancia relativa de cada localidad. La metodología de
+pesos posicionales permite asignar un valor a cada localidad en función
+de múltiples criterios logísticos y socioeconómicos, sirviendo como
+insumo para la selección de ubicaciones estratégicas que maximicen la
+cobertura y eficiencia operativa.
 
 \subsection{Enfoque multicriterio para la selección de ubicaciones
 estratégicas}\label{enfoque-multicriterio-para-la-selecciuxf3n-de-ubicaciones-estratuxe9gicas}
@@ -1157,44 +1289,47 @@ w_j &= 0.20 \times DICONSA_j + 0.20 \times AccesoVial_j + 0.20 \times Escuelas_j
 \end{split}
 \]
 
-Donde cada componente se normaliza en el rango {[}0,1{]} para permitir
+Donde cada componente se normaliza en el rango \([0,1]\) para permitir
 la comparabilidad entre localidades.
 
 \subsection{Componentes del índice y justificación
 teórica}\label{componentes-del-uxedndice-y-justificaciuxf3n-teuxf3rica}
 
-\subsubsection{Presencia de infraestructura DICONSA
-(20\%)}\label{presencia-de-infraestructura-diconsa-20}
+\subsubsection{\texorpdfstring{Presencia de infraestructura DICONSA
+(\(20\%\))}{Presencia de infraestructura DICONSA (20\textbackslash\%)}}\label{presencia-de-infraestructura-diconsa-20}
 
 La red de tiendas DICONSA representa nodos preexistentes en la
 distribución de alimentos, indicando experiencia operativa, aceptación
 comunitaria y existencia de infraestructura básica para el
 almacenamiento. La variable se opera como indicador binario
-(1=presencia, 0=ausencia).
+(\(1\)=presencia, \(0\)=ausencia).
 
-\subsubsection{Acceso vial (20\%)}\label{acceso-vial-20}
+\subsubsection{\texorpdfstring{Acceso vial
+(\(20\%\))}{Acceso vial (20\textbackslash\%)}}\label{acceso-vial-20}
 
 La conectividad terrestre determina directamente la capacidad de
 respuesta y los costos de distribución. Se utiliza una escala ordinal
-basada en el tipo de carretera: 3 (carretera pavimentada), 2 (camino
-revestido), 1 (terracería), 0 (sendero).
+basada en el tipo de carretera: \(3\) (carretera pavimentada), \(2\)
+(camino revestido), \(1\) (terracería), 0 (sendero).
 
-\subsubsection{Infraestructura educativa
-(20\%)}\label{infraestructura-educativa-20}
+\subsubsection{\texorpdfstring{Infraestructura educativa
+(\(20\%\))}{Infraestructura educativa (20\textbackslash\%)}}\label{infraestructura-educativa-20}
 
 Las escuelas funcionan como centros comunitarios naturales y potenciales
 refugios temporales durante emergencias. El indicador considera el
 número total de escuelas por localidad, normalizado por el máximo
 municipal.
 
-\subsubsection{Servicios básicos (20\%)}\label{servicios-buxe1sicos-20}
+\subsubsection{\texorpdfstring{Servicios básicos
+(\(20\%\))}{Servicios básicos (20\textbackslash\%)}}\label{servicios-buxe1sicos-20}
 
 La disponibilidad de agua potable, drenaje, electricidad e internet es
 esencial para la operación logística continua. Se calcula como el
 promedio normalizado de cuatro indicadores específicos de servicios en
 viviendas.
 
-\subsubsection{Población (20\%)}\label{poblaciuxf3n-20}
+\subsubsection{\texorpdfstring{Población
+(\(20\%\))}{Población (20\textbackslash\%)}}\label{poblaciuxf3n-20}
 
 El tamaño poblacional determina la escala de operaciones requeridas y la
 criticidad de la localidad en el sistema logístico. Se utiliza la
@@ -1207,18 +1342,25 @@ posicionales}\label{resultados-del-cuxe1lculo-de-pesos-posicionales}
 estratégicas}\label{ranking-de-localidades-estratuxe9gicas}
 
 El análisis multicriterio identificó las localidades con mayor potencial
-logístico en Cacahoatán, como se muestra en la Tabla 4.1.
+logístico en Cacahoatán, como se muestra en la
+Tabla~\ref{tbl-top10-cacahoatan}.
 
-\textbf{Tabla 4.1.} Top 10 localidades por peso posicional en Cacahoatán
+Top \(10\) localidades por peso posicional en Cacahoatán
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1139}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1392}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.2025}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1139}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1646}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1266}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1392}}@{}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1119}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1791}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1269}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1119}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.0970}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1194}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1269}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1269}}@{}}
+
+\caption{\label{tbl-top10-cacahoatan}}
+
+\tabularnewline
+
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Ranking
@@ -1233,48 +1375,36 @@ Acceso Vial
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Escuelas
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Servicios Básicos
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Población
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-1 & Salvador Urbina & 1.000 & Sí & 2 & 4 & 2,722 \\
-2 & Faja de Oro & 0.983 & Sí & 2 & 4 & 2,674 \\
-3 & Cacahoatán & 0.849 & No & 3 & 0 & 19,108 \\
-4 & Rosario Ixtal & 0.749 & No & 2 & 6 & 1,009 \\
-5 & Mixcum & 0.657 & No & 2 & 4 & 1,781 \\
-6 & Piedra Parada & 0.632 & No & 2 & 4 & 141 \\
-7 & El Platanar & 0.546 & No & 1 & 4 & 677 \\
-8 & Agua Caliente & 0.513 & No & 1 & 4 & 552 \\
-9 & Alpujarras & 0.505 & No & 1 & 3 & 579 \\
-10 & Guatimoc & 0.500 & No & 1 & 3 & 972 \\
+\(1\) & Salvador Urbina & \(1.000\) & Sí & \(2\) & \(4\) & \(81.8\%\) &
+\(2,722\) \\
+\(2\) & Faja de Oro & \(0.983\) & Sí & \(2\) & \(4\) & \(76.6\%\) &
+\(2,674\) \\
+\(3\) & Cacahoatán & \(0.849\) & No & \(3\) & \(0\) & \(79.7\%\) &
+\(19,108\) \\
+\(4\) & Rosario Ixtal & \(0.749\) & No & \(2\) & \(6\) & \(74.9\%\) &
+\(1,009\) \\
+\(5\) & Mixcum & \(0.657\) & No & \(2\) & \(4\) & \(73.8\%\) &
+\(1,781\) \\
+\(6\) & Piedra Parada & \(0.632\) & No & \(2\) & \(4\) & \(74\%\) &
+\(141\) \\
+\(7\) & El Platanar & \(0.546\) & No & \(1\) & \(4\) & \(76.2\%\) &
+\(677\) \\
+\(8\) & Agua Caliente & \(0.513\) & No & \(1\) & \(4\) & \(66.1\%\) &
+\(552\) \\
+\(9\) & Alpujarras & \(0.505\) & No & \(1\) & \(3\) & \(80.1\%\) &
+\(579\) \\
+\(10\) & Guatimoc & \(0.500\) & No & \(1\) & \(3\) & \(76.2\%\) &
+\(972\) \\
+
 \end{longtable}
-
-\subsection{Interpretación y comparación con
-Veracruz}\label{interpretaciuxf3n-y-comparaciuxf3n-con-veracruz}
-
-Los resultados obtenidos en Cacahoatán muestran una cobertura total de
-la población afectada y una tasa de éxito del 100 \%, comportamiento
-similar al observado en el caso de estudio del estado de Veracruz. No
-obstante, el costo total anual optimizado en Cacahoatán (195.46 millones
-MXN) representa aproximadamente el 30 \% del costo registrado para
-Veracruz (648.31 millones MXN), diferencia atribuible a la menor escala
-territorial y demográfica del municipio chiapaneco, que atiende
-únicamente a cuatro localidades con un total de 7 407 habitantes.
-
-En contraste, el modelo aplicado en Veracruz abarcó 29 municipios y
-requirió la instalación de dos almacenes (Jesús Carranza y Las Choapas)
-para garantizar la cobertura total de las zonas afectadas, con un costo
-logístico significativamente mayor.
-
-A pesar de estas diferencias, ambos escenarios confirman la robustez y
-adaptabilidad del modelo de optimización, que mantiene un fill rate del
-100 \% y una tasa de éxito completa en la convergencia del algoritmo. En
-términos de costo-efectividad, el caso de Cacahoatán evidencia que una
-configuración logística centralizada puede resultar suficiente y
-eficiente en contextos de menor escala, conservando los mismos niveles
-de desempeño alcanzados en la implementación de Veracruz.
 
 \subsection{Selección de almacenes
 estratégicos}\label{selecciuxf3n-de-almacenes-estratuxe9gicos}
@@ -1287,13 +1417,13 @@ se seleccionaron los siguientes almacenes:
 \begin{itemize}
 \tightlist
 \item
-  \textbf{Peso posicional}: 1.000
+  \textbf{Peso posicional}: \(1.000\)
 \item
   \textbf{Justificación}: Mayor peso posicional, presencia de tienda
   DICONSA, y ubicación estratégica fuera de zonas inundables
 \item
-  \textbf{Cobertura estimada}: 100\% de la población afectada (7,407
-  personas)
+  \textbf{Cobertura estimada}: \(100\%\) de la población afectada
+  (\(7,407\) personas)
 \end{itemize}
 
 \textbf{Almacén Secundario}: Buenos Aires
@@ -1301,21 +1431,28 @@ se seleccionaron los siguientes almacenes:
 \begin{itemize}
 \tightlist
 \item
-  \textbf{Peso posicional}: 0.101
+  \textbf{Peso posicional}: \(0.101\)
 \item
   \textbf{Justificación}: Complementariedad geográfica y capacidad de
   respaldo operativo
 \item
-  \textbf{Cobertura estimada}: 0\% (reserva estratégica)
+  \textbf{Cobertura estimada}: \(0\%\) (reserva estratégica)
 \end{itemize}
 
 \begin{figure}[H]
 
-{\centering \includegraphics[width=0.9\linewidth,height=\textheight,keepaspectratio]{chapters/almacen.png}
+{\centering \includegraphics[width=0.55\linewidth,height=\textheight,keepaspectratio]{chapters/almacen.png}
 
 }
 
-\caption{Mapa de Cacahóatan, Chiapas.}
+\caption{Mapa interactivo del modelo logístico para Cacahoatán, que
+muestra las localidades afectadas por inundaciones, los almacenes
+estratégicos seleccionados y las rutas de conexión optimizadas entre
+ambos. Las líneas representan los caminos más cortos calculados con
+NetworkX, mientras que los íconos indican los tipos de nodos: 🔴
+localidades inundables y 🔵 almacenes activos. Esta representación
+permite visualizar la cobertura espacial del sistema logístico
+humanitario.}
 
 \end{figure}%
 
@@ -1325,23 +1462,29 @@ optimizada}\label{diseuxf1o-de-la-red-loguxedstica-optimizada}
 \subsection{Localidades inundables y
 asignaciones}\label{localidades-inundables-y-asignaciones}
 
-El análisis identificó 4 localidades críticamente afectadas por
+El análisis identificó \(4\) localidades críticamente afectadas por
 inundaciones, todas asignadas al Almacén Primario:
 
-\textbf{Tabla 4.2.} Localidades inundables y asignación logística
+Localidades inundables y asignación logística
 
 \begin{longtable}[]{@{}lll@{}}
+
+\caption{\label{tbl-localidades-inundables}}
+
+\tabularnewline
+
 \toprule\noalign{}
 Localidad & Población Afectada & Almacén Asignado \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Unión Roja & 631 & Almacén 1 \\
-Cacahoatán & 5,732 & Almacén 1 \\
-El Carmen & 242 & Almacén 1 \\
-Faja de Oro & 802 & Almacén 1 \\
-\textbf{Total} & \textbf{7,407} & \textbf{Almacén 1} \\
+Unión Roja & \(631\) & Almacén \(1\) \\
+Cacahoatán & \(5,732\) & Almacén \(1\) \\
+El Carmen & \(242\) & Almacén \(1\) \\
+Faja de Oro & \(802\) & Almacén \(1\) \\
+\textbf{Total} & \textbf{\(7,407\)} & \textbf{Almacén \(1\)} \\
+
 \end{longtable}
 
 \subsection{Distribución poblacional por grupos de
@@ -1350,24 +1493,47 @@ edad}\label{distribuciuxf3n-poblacional-por-grupos-de-edad}
 La población afectada se distribuye en seis grupos etarios para una
 atención diferenciada:
 
-\textbf{Tabla 4.3.} Distribución de población afectada por grupos de
-edad
+Distribución de población afectada por grupos de edad
 
 \begin{longtable}[]{@{}lll@{}}
+
+\caption{\label{tbl-poblacion-edad}}
+
+\tabularnewline
+
 \toprule\noalign{}
 Grupo de Edad & Población & Porcentaje \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Niños y Adolescentes (0-14 años) & 2,222 & 30.0\% \\
-Hombres Jóvenes (15-29 años) & 1,111 & 15.0\% \\
-Mujeres Jóvenes (15-29 años) & 1,111 & 15.0\% \\
-Hombres Adultos (30-59 años) & 1,333 & 18.0\% \\
-Mujeres Adultas (30-59 años) & 1,259 & 17.0\% \\
-Adultos Mayores (60+ años) & 370 & 5.0\% \\
-\textbf{Total} & \textbf{7,407} & \textbf{100.0\%} \\
+Niños y Adolescentes (0-14 años) & \(2,222\) & \(30\%\) \\
+Hombres Jóvenes (15-29 años) & \(1,037\) & \(14\%\) \\
+Mujeres Jóvenes (15-29 años) & \(1,185\) & \(16\%\) \\
+Hombres Adultos (30-59 años) & \(1,333\) & \(18\%\) \\
+Mujeres Adultas (30-59 años) & \(1,259\) & \(17\%\) \\
+Adultos Mayores (60+ años) & \(370\) & \(5\%\) \\
+\textbf{Total} & \textbf{\(7,407\)} & \textbf{\(100\%\)} \\
+
 \end{longtable}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.6\linewidth,height=\textheight,keepaspectratio]{chapters/edades.png}
+
+}
+
+\caption{Distribución de la población afectada por grupos de edad en
+Cacahoatán. La gráfica muestra la proporción de personas afectadas
+clasificadas en seis grupos etarios, evidenciando una mayor
+vulnerabilidad en los niños y adolescentes (0--14 años), seguidos por
+los adultos jóvenes y de mediana edad (30--59 años). Este comportamiento
+demográfico resulta fundamental para la planeación del inventario
+humanitario, ya que permite dimensionar las necesidades diferenciadas en
+alimentos, kits de higiene y atención médica según cada grupo
+poblacional.}
+
+\end{figure}%
 
 \section{Resultados de la optimización del
 sistema}\label{resultados-de-la-optimizaciuxf3n-del-sistema}
@@ -1376,34 +1542,80 @@ sistema}\label{resultados-de-la-optimizaciuxf3n-del-sistema}
 implementado}\label{eficiencia-del-sistema-loguxedstico-implementado}
 
 La configuración con un almacén primario demostró capacidad para atender
-al 100\% de la población afectada. Los resultados de la optimización se
-resumen en la Tabla 4.4.
+al \(100\%\) de la población afectada. Los resultados de la optimización
+se resumen en la Tabla Tabla~\ref{tbl-optimizacion-cacahoatan}.
 
-\textbf{Tabla 4.4.} Resultados de la optimización en Cacahoatán
+Resultados de la optimización en Cacahoatán
 
 \begin{longtable}[]{@{}ll@{}}
+
+\caption{\label{tbl-optimizacion-cacahoatan}}
+
+\tabularnewline
+
 \toprule\noalign{}
 Indicador & Resultado \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Cobertura de población & 100\% \\
-Población total atendida & 7,407 personas \\
-Número de localidades cubiertas & 4 \\
-Fill rate promedio & 100\% \\
-Costo total anual optimizado & \$195,459,693 MXN \\
-Costo mensual promedio & \$16,288,308 MXN \\
-Tasa de éxito en optimización & 100\% \\
+Cobertura de población & \(100\%\) \\
+Población total atendida & \(7,407\) personas \\
+Número de localidades cubiertas & \(4\) \\
+Fill rate promedio & \(100\%\) \\
+Costo total anual optimizado & \(\$195,459,693\) MXN \\
+Costo mensual promedio & \(\$16,288,308\) MXN \\
+Tasa de éxito en optimización & \(100\%\) \\
+
 \end{longtable}
+
+\subsection{Interpretación y comparación con
+Veracruz}\label{interpretaciuxf3n-y-comparaciuxf3n-con-veracruz}
+
+Los resultados obtenidos en Cacahoatán muestran una cobertura total de
+la población afectada y una tasa de éxito del \(100\%\), comportamiento
+similar al observado en el caso de estudio del estado de Veracruz. No
+obstante, el costo total anual optimizado en Cacahoatán (\(\$195.46\)
+millones MXN) representa aproximadamente el \(30\%\) del costo
+registrado para Veracruz (\(\$648.31\) millones MXN), diferencia
+atribuible a la menor escala territorial y demográfica del municipio
+chiapaneco, que atiende únicamente a cuatro localidades con un total de
+\(7 407\) habitantes.
+
+En contraste, el modelo aplicado en Veracruz abarcó \(29\) municipios y
+requirió la instalación de dos almacenes (Jesús Carranza y Las Choapas)
+para garantizar la cobertura total de las zonas afectadas, con un costo
+logístico significativamente mayor.
+
+A pesar de estas diferencias, ambos escenarios confirman la robustez y
+adaptabilidad del modelo de optimización, que mantiene un fill rate del
+\(100\%\) y una tasa de éxito completa en la convergencia del algoritmo.
+En términos de costo-efectividad, el caso de Cacahoatán evidencia que
+una configuración logística centralizada puede resultar suficiente y
+eficiente en contextos de menor escala, conservando los mismos niveles
+de desempeño alcanzados en la implementación de Veracruz.
 
 \subsection{Inventario humanitario
 optimizado}\label{inventario-humanitario-optimizado}
 
+Con base en el modelo de optimización desarrollado, se determinó el
+inventario humanitario necesario para atender a la población del
+municipio durante un periodo de \(7\) días. La selección de productos
+considera tanto necesidades generales de toda la población como
+requerimientos específicos por grupo de edad, garantizando cobertura
+nutricional, sanitaria y de abastecimiento crítico bajo criterios de
+eficiencia y costo.
+
 \subsubsection{Productos básicos para toda la
 población}\label{productos-buxe1sicos-para-toda-la-poblaciuxf3n}
 
-\textbf{Tabla 4.5.} Inventario de productos básicos optimizado
+El inventario básico incluye los insumos esenciales requeridos por la
+totalidad de la población afectada. Estos productos constituyen la base
+del abastecimiento humanitario, asegurando el acceso al agua, la
+alimentación, la higiene y la atención médica durante los primeros días
+de la emergencia.
+
+Inventario de productos básicos optimizado
 
 \begin{longtable}[]{@{}
   >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2959}}
@@ -1411,11 +1623,16 @@ población}\label{productos-buxe1sicos-para-toda-la-poblaciuxf3n}
   >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2143}}
   >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1224}}
   >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1735}}@{}}
+
+\caption{\label{tbl-inventario-basico}}
+
+\tabularnewline
+
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\centering
 \textbf{Producto (Código ONU)}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-\textbf{Demanda 7 días}
+\textbf{Demanda \(7\) días}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
 \textbf{Cantidad Óptima}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
@@ -1427,36 +1644,49 @@ población}\label{productos-buxe1sicos-para-toda-la-poblaciuxf3n}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-\textbf{WAT-001} Agua potable & 103,698 & 35,276 & LTR & \$18,776,360 \\
-\textbf{FDP-001} Kit alimentario básico & 51,849 & 8,819 & KIT &
-\$74,894,419 \\
-\textbf{WASH-001} Kit de higiene personal & 51,849 & 11,983 & KIT &
-\$40,608,816 \\
-\textbf{NFI-002} Kit básico de ropa & 7,407 & 2,583 & KIT &
-\$17,885,374 \\
-\textbf{MED-002} Kit médico de emergencia & 741 & 1,256 & KIT &
-\$777,061 \\
-\textbf{Total} & \textbf{215,544} & \textbf{59,917} & \textbf{unidades}
-& \textbf{\$152,942,030} \\
+\textbf{WAT-001} Agua potable & \(103,698\) & \(35,276\) & LTR &
+\(\$18,776,360\) \\
+\textbf{FDP-001} Kit alimentario básico & \(51,849\) & \(8,819\) & KIT &
+\(\$74,894,419\) \\
+\textbf{WASH-001} Kit de higiene personal & \(51,849\) & \(11,983\) &
+KIT & \(\$40,608,816\) \\
+\textbf{NFI-002} Kit básico de ropa & \(7,407\) & \(2,583\) & KIT &
+\(\$17,885,374\) \\
+\textbf{MED-002} Kit médico de emergencia & \(741\) & \(1,256\) & KIT &
+\(\$777,061\) \\
+\textbf{Total} & \textbf{\(215,544\)} & \textbf{\(59,917\)} &
+\textbf{unidades} & \textbf{\(\$152,942,030\)} \\
+
 \end{longtable}
 
 \subsubsection{Productos específicos por grupo de
 edad}\label{productos-especuxedficos-por-grupo-de-edad}
 
-\textbf{Tabla 4.6.} Inventario por grupos de edad especializados
+Además de los productos básicos, se incluyen artículos diferenciados
+conforme a las necesidades específicas de cada grupo de edad. Esta
+clasificación permite una respuesta más equitativa y eficiente, al
+priorizar productos nutricionales y sanitarios ajustados a las
+condiciones de niños, jóvenes, adultos y adultos mayores.
+
+Inventario por grupos de edad especializados.
 
 \begin{longtable}[]{@{}
   >{\centering\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2000}}
   >{\centering\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.4211}}
   >{\centering\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2000}}
   >{\centering\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1789}}@{}}
+
+\caption{\label{tbl-inventario-especializado}}
+
+\tabularnewline
+
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\centering
 \textbf{Grupo de Edad}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
 \textbf{Productos Específicos (Código ONU)}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-\textbf{Demanda 7 días}
+\textbf{Demanda \(7\) días}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
 \textbf{Costo Total}
 \end{minipage} \\
@@ -1466,30 +1696,58 @@ edad}\label{productos-especuxedficos-por-grupo-de-edad}
 \endlastfoot
 Niños y Adolescentes & \textbf{NUT-001} Alimento
 terapéutico\textbf{NUT-002} Alimento complementario\textbf{NFI-001}
-Pañales desechables & 101,106 & \$18,194,035 \\
-Hombres Jóvenes & \textbf{FDP-002} Alimento alta energía & 11,666 &
-\$6,362,859 \\
-Mujeres Jóvenes & \textbf{FDP-003} Alimento balanceado & 9,333 &
-\$4,758,160 \\
+Pañales desechables & \(101,106\) & \(\$18,194,035\) \\
+Hombres Jóvenes & \textbf{FDP-002} Alimento alta energía & \(11,666\) &
+\(\$6,362,859\) \\
+Mujeres Jóvenes & \textbf{FDP-003} Alimento balanceado & \(9,333\) &
+\(\$4,758,160\) \\
 Hombres Adultos & \textbf{FDP-004} Alimento energético de emergencia &
-13,066 & \$6,807,470 \\
+\(13,066\) & \(\$6,807,470\) \\
 Mujeres Adultas & \textbf{FDP-005} Alimento fortificado nutritivo &
-9,696 & \$4,825,125 \\
+\(9,696\) & \(\$4,825,125\) \\
 Adultos Mayores & \textbf{NUT-003} Alimento masticación fácil,
-\textbf{MED-001} Kit médico básico & 2,852 & \$1,570,014 \\
-\textbf{Total} & \textbf{14 productos} & \textbf{147,719} &
-\textbf{\$42,517,663} \\
+\textbf{MED-001} Kit médico básico & \(2,852\) & \(\$1,570,014\) \\
+\textbf{Total} & \textbf{\(14\) productos} & \textbf{\(147,719\)} &
+\textbf{\(\$42,517,663\)} \\
+
 \end{longtable}
 
-\includegraphics[width=0.55\linewidth,height=\textheight,keepaspectratio]{chapters/costosos.png}
-\includegraphics[width=0.4\linewidth,height=\textheight,keepaspectratio]{chapters/costo.png}
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{chapters/costosos.png}
+
+}
+
+\caption{Productos con mayor impacto económico dentro del modelo de
+optimización aplicado a Cacahoatán. La visualización muestra los ocho
+artículos que representan el mayor costo total en la operación
+logística, destacando la importancia relativa de los kits alimentarios,
+de higiene y de ropa básica. Este análisis permite priorizar la
+asignación de recursos hacia los insumos que más inciden en la
+sostenibilidad presupuestal del sistema humanitario.}
+
+\end{figure}%
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.6\linewidth,height=\textheight,keepaspectratio]{chapters/costo.png}
+
+}
+
+\caption{Distribución de los costos totales según el tipo de producto
+humanitario optimizado en Cacahoatán. Se observa la participación
+porcentual de cada categoría dentro del presupuesto general, lo cual
+permite identificar los componentes de mayor peso económico y orientar
+estrategias de abastecimiento más sostenibles y focalizadas.}
+
+\end{figure}%
 
 Como se observa en las gráficas, los productos de mayor costo en el
 inventario corresponden a ropa, agua, higiene y alimentos diferenciados
-por grupo de edad, constituyendo el top 8 en gastos. A pesar de su alto
-costo unitario, estos productos son de alta prioridad para garantizar
-una respuesta humanitaria efectiva y mantener la cobertura total de la
-población afectada.
+por grupo de edad, constituyendo el top \(8\) en gastos. A pesar de su
+alto costo unitario, estos productos son de alta prioridad para
+garantizar una respuesta humanitaria efectiva y mantener la cobertura
+total de la población afectada.
 
 El análisis evidencia que la estrategia de optimización prioriza la
 atención integral sobre el costo unitario, asegurando que los recursos
@@ -1509,8 +1767,8 @@ el modelo EOQ convencional representa una solución robusta para el
 contexto específico de Cacahoatán.
 
 La distribución de costos muestra que los productos básicos (agua,
-alimentos, higiene) representan el \(87.5\%\) del costo total, mientras
-que los productos especializados por edad constituyen el \(21.8\%\)
+alimentos, higiene) representan el \(78.25\%\) del costo total, mientras
+que los productos especializados por edad constituyen el \(21.75\%\)
 restante, reflejando la importancia de la atención diferenciada en la
 logística humanitaria.
 
@@ -1531,13 +1789,13 @@ más localizadas y abruptas, favoreciendo configuraciones logísticas
 compactas y centralizadas de respuesta rápida.
 
 En cuanto al \textbf{tamaño poblacional y extensión territorial}, el
-municipio de Cacahoatán, con aproximadamente 18 000 habitantes
-distribuidos en 48 localidades, representa un sistema logístico de menor
-escala en comparación con el estudio de Veracruz, que abarcó 29
-municipios con una población sustancialmente mayor. Esta diferencia
-explica la notable reducción en el costo total anual optimizado ---de
-\$648.3 millones MXN en Veracruz a \$195.5 millones MXN en Cacahoatán---
-sin pérdida de eficiencia operativa.
+municipio de Cacahoatán, con aproximadamente \(18 000\) habitantes
+distribuidos en \(48\) localidades, representa un sistema logístico de
+menor escala en comparación con el estudio de Veracruz, que abarcó
+\(29\) municipios con una población sustancialmente mayor. Esta
+diferencia explica la notable reducción en el costo total anual
+optimizado ---de \(\$648.3\) millones MXN en Veracruz a \(\$195.5\)
+millones MXN en Cacahoatán--- sin pérdida de eficiencia operativa.
 
 Respecto a la \textbf{infraestructura y desarrollo urbano}, Veracruz
 cuenta con una red vial más densa y conectada, lo que permitió la
@@ -1556,6 +1814,13 @@ limitaciones geográficas e infraestructurales, manteniendo niveles
 
 \section{Validación y análisis de
 robustez}\label{validaciuxf3n-y-anuxe1lisis-de-robustez}
+
+Para garantizar que el modelo logístico propuesto sea confiable y útil
+en situaciones reales de emergencia, se realizaron pruebas de validación
+bajo distintos escenarios de operación. Se evaluó tanto la robustez
+frente a condiciones adversas como el desempeño bajo condiciones
+estándar, utilizando métricas clave de cobertura, eficiencia y
+efectividad en la asignación de recursos.
 
 \subsection{Escenarios de prueba
 implementados}\label{escenarios-de-prueba-implementados}
@@ -1577,7 +1842,7 @@ estándar}\label{muxe9tricas-de-desempeuxf1o-en-condiciones-estuxe1ndar}
 \item
   \textbf{Tasa de éxito de optimización}: \(100\%\)
 \item
-  \textbf{Eficiencia en asignaciones}: 4/4 localidades cubiertas
+  \textbf{Eficiencia en asignaciones}: \(4/4\) localidades cubiertas
 \end{itemize}
 
 La concentración de operaciones en un único almacén estratégicamente
@@ -1589,60 +1854,51 @@ coordinación.
 Chiapas}\label{conclusiones-del-caso-chiapas}
 
 La implementación del modelo de optimización logística en el municipio
-de Cacahoatán, Chiapas, proporciona valiosas lecciones para la logística
-humanitaria en contextos de alta vulnerabilidad:
+de Cacahoatán, Chiapas, confirma su efectividad en contextos de alta
+vulnerabilidad y dispersión poblacional. Los resultados muestran que un
+enfoque multicriterio para la identificación de localidades estratégicas
+permite seleccionar nodos logísticos óptimos, como Salvador Urbina,
+combinando infraestructura preexistente, conectividad vial y ubicación
+fuera de zonas inundables. Esta selección asegura la cobertura total de
+la población afectada de manera eficiente.
 
-\subsection{Hallazgos principales}\label{hallazgos-principales}
+Contrario a las expectativas iniciales de requerir múltiples almacenes,
+el modelo demuestra que un único almacén centralizado puede atender el
+\(100\%\) de los habitantes de las localidades críticas, simplificando
+la operación logística y reduciendo costos sin comprometer la
+efectividad del sistema. La optimización basada en el modelo EOQ
+tradicional se revela robusta, con tasas de éxito del \(100\%\) en la
+convergencia del algoritmo, evidenciando la consistencia de las
+cantidades económicas de pedido convencionales en contextos locales.
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\item
-  \textbf{Efectividad del enfoque de pesos posicionales}: La metodología
-  multicriterio permitió identificar a Salvador Urbina como ubicación
-  óptima para el almacén primario, combinando infraestructura existente
-  (DICONSA), conectividad vial y posición estratégica fuera de zonas
-  inundables.
-\item
-  \textbf{Configuración eficiente con un almacén}: Contrario a la
-  expectativa inicial de requerir múltiples almacenes, la optimización
-  demostró que un solo almacén estratégicamente ubicado puede cubrir el
-  \(100\%\) de la población afectada (7,407 personas) en las 4
-  localidades inundadas.
-\item
-  \textbf{Estabilidad del modelo EOQ tradicional}: La optimización
-  numérica confirmó que las cantidades económicas de pedido
-  convencionales representan soluciones robustas para el contexto
-  específico de Cacahoatán, con una tasa de éxito del \(100\%\) en la
-  convergencia del algoritmo.
-\item
-  \textbf{Distribución balanceada de recursos}: El modelo logró
-  equilibrar la provisión de productos básicos (\(87.5\%\) del
-  presupuesto) con atenciones especializadas por grupos de edad
-  (\(21.8\%\)), asegurando una respuesta humanitaria integral.
-\end{enumerate}
+La distribución de recursos alcanzó un balance adecuado entre productos
+básicos (\(78.25\%\) del presupuesto) y atenciones especializadas por
+grupos de edad (\(21.75\%\)), asegurando una respuesta humanitaria
+integral y priorizando los bienes más críticos sin comprometer la
+cobertura poblacional.
 
-\subsection{Implicaciones para la planeación logística en
-Chiapas}\label{implicaciones-para-la-planeaciuxf3n-loguxedstica-en-chiapas}
+\subsection{Implicaciones para la planeación
+logística}\label{implicaciones-para-la-planeaciuxf3n-loguxedstica}
 
 La experiencia en Cacahoatán sugiere que, para municipios con
 características similares de dispersión poblacional y vulnerabilidad
-hidrometeorológica, configuraciones logísticas centralizadas alrededor
-de nodos estratégicos pueden ofrecer soluciones eficientes y
-costo-efectivas.
-
-La metodología desarrollada demuestra capacidad para adaptarse a las
-particularidades del territorio chiapaneco, constituyendo una
-herramienta valiosa para la planeación anticipada de respuestas a
-emergencias en el estado.
+hidrometeorológica, las configuraciones logísticas centralizadas
+alrededor de nodos estratégicos ofrecen soluciones eficientes y
+costo-efectivas. La metodología desarrollada demuestra capacidad para
+adaptarse a las particularidades del territorio chiapaneco,
+constituyéndose en una herramienta valiosa para la planificación
+anticipada de respuestas a emergencias en el estado.
 
 \subsection{Perspectivas de
 escalabilidad}\label{perspectivas-de-escalabilidad}
 
 Los resultados obtenidos establecen las bases para extender la
 implementación del modelo a otros municipios de Chiapas con perfiles de
-riesgo similares, contribuyendo al fortalecimiento de la resiliencia
-logística regional frente a desastres hidrometeorológicos en el contexto
-del cambio climático.
+riesgo similares. Esta expansión contribuiría al fortalecimiento de la
+resiliencia logística regional frente a desastres hidrometeorológicos,
+especialmente en el contexto del cambio climático, y permitiría replicar
+la eficiencia alcanzada en Cacahoatán en escenarios de mayor escala y
+complejidad.
 
 \bookmarksetup{startatroot}
 
@@ -1660,38 +1916,40 @@ Mexico}, editado por Daniel Sánchez-Partida, 169-98. Cham: Springer.
 \url{https://doi.org/10.1007/978-3-030-67295-9_8}.
 
 \bibitem[\citeproctext]{ref-Insani2024}
-Insani, M. et~al. 2024. {«Mixed-Integer Programming Model for Evacuation
-and Relief Distribution in Flood Contexts»}. \emph{International Journal
-of Disaster Risk Reduction} XX: XX-.
-\url{https://doi.org/10.xxxx/xxxxx}.
+Insani, Muhammad, Agus Widodo, y A. Rahman. 2024. {«Mixed-Integer
+Programming Model for Evacuation and Relief Distribution in Flood
+Contexts»}. \emph{International Journal of Disaster Risk Reduction} 100:
+104342. \url{https://doi.org/10.1016/j.ijdrr.2024.104342}.
 
 \bibitem[\citeproctext]{ref-Mashrut2024}
-Mashrut, S. 2024. {«Robust-Fuzzy-Probabilistic Bi-objective Model for
-Post-Flood Relief Logistics»}. \emph{Annals of Operations Research} XX:
-XX-. \url{https://doi.org/10.xxxx/xxxxx}.
+Mashrut, S., y A. Rahimi. 2024. {«Robust-fuzzy-probabilistic
+bi-objective model for post-flood relief logistics»}. \emph{Annals of
+Operations Research}. \url{https://doi.org/10.1007/s10479-024-05925-7}.
 
 \bibitem[\citeproctext]{ref-Pujiana2020}
-Pujiana, R. et~al. 2020. {«Multi-Depot Vehicle Routing Problem for
-Post-Flood Humanitarian Distribution»}. \emph{Natural Hazards} XX: XX-.
-\url{https://doi.org/10.xxxx/xxxxx}.
+Pujiana, R., D. Utama, y D. Rahmawati. 2020. {«Multi-depot vehicle
+routing problem for post-flood humanitarian distribution»}.
+\emph{Natural Hazards} 104: 2287-2309.
+\url{https://doi.org/10.1007/s11069-020-04250-z}.
 
 \bibitem[\citeproctext]{ref-RomeroMancilla2024}
-Romero-Mancilla, J. et~al. 2024. {«Multi-objective Multimodal
-Humanitarian Logistics with Drones for Flood Relief»}.
-\emph{Transportation Research Part E} XX: XX-.
-\url{https://doi.org/10.xxxx/xxxxx}.
+Romero-Mancilla, J., José Luis Martínez-Flores, y D. Sánchez-Partida.
+2024. {«Multi-objective multimodal humanitarian logistics with drones
+for flood relief»}. \emph{Transportation Research Part E: Logistics and
+Transportation Review} 187: 103507.
+\url{https://doi.org/10.1016/j.tre.2024.103507}.
 
 \bibitem[\citeproctext]{ref-SantanaRobles2024}
-Santana-Robles, A. et~al. 2024. {«Hybrid MILP and VRP Model for Shelter
-Allocation and Relief Distribution»}. \emph{Journal of Humanitarian
-Logistics and Supply Chain Management} XX: XX-.
-\url{https://doi.org/10.xxxx/xxxxx}.
+Santana-Robles, A., E. López, y J. Rivera. 2024. {«Hybrid MILP and VRP
+model for shelter allocation and relief distribution»}. \emph{Journal of
+Humanitarian Logistics and Supply Chain Management} 14 (2): 189-210.
+\url{https://doi.org/10.1108/JHLSCM-12-2023-0085}.
 
 \bibitem[\citeproctext]{ref-Sheikholeslami2022}
-Sheikholeslami, R., y N. Zarrinpoor. 2022. {«Multi-period MILP under
-Uncertainty for Humanitarian Logistics in Flood Response»}.
-\emph{Computers \& Industrial Engineering} XX: XX-.
-\url{https://doi.org/10.xxxx/xxxxx}.
+Sheikholeslami, Reza, y Nima Zarrinpoor. 2022. {«Multi-period MILP under
+uncertainty for humanitarian logistics in flood response»}.
+\emph{Computers \& Industrial Engineering} 165: 107930.
+\url{https://doi.org/10.1016/j.cie.2022.107930}.
 
 \end{CSLReferences}
 

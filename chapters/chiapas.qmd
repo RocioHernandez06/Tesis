@@ -13,6 +13,733 @@ execute:
 jupyter: python3
 ---
 
+```{python}
+#| echo: false
+#| warning: false
+#| message: false
+#| include: false
+# Este chunk ejecuta todo el modelo, cálculos y genera los DataFrames
+
+
+# Librerías
+import pandas as pd
+import numpy as np
+import os
+import networkx as nx
+import osmnx as ox
+from math import sqrt
+import folium
+import matplotlib.pyplot as plt
+
+# ===============================
+# PASO 1: CARGA DE DATOS
+# ===============================
+
+# Carpeta de trabajo local
+carpeta_resultados = "resultados/"
+os.makedirs(carpeta_resultados, exist_ok=True)
+
+# Rutas locales de los archivos CSV
+pesos_df = pd.read_csv("data/cacahoatan_pesos.csv", encoding="latin-1")
+censo_df = pd.read_csv("data/cacahoatan.csv", encoding="latin-1")
+inundaciones_df = pd.read_csv("data/Inundaciones_Chiapas.csv", encoding="latin-1")
+
+
+# ===============================
+# PASO 2: DEFINICIÓN DE GRUPOS DE EDAD Y PRODUCTOS
+# ===============================
+
+print("👥 DEFINICIÓN DE GRUPOS DE EDAD Y PRODUCTOS")
+print("=" * 60)
+
+# Grupos de edad simplificados
+grupos_edad = {
+    '0-14': {
+        'nombre': 'Niños y Adolescentes (0-14 años)',
+        'productos': {
+            'Leche_Infantil': {'necesidad': 0.5, 'dias': 7, 'costo_unitario': 45, 'unidad': 'litros'},
+            'Papilla_Niños': {'necesidad': 2, 'dias': 7, 'costo_unitario': 25, 'unidad': 'raciones'},
+            'Pañales': {'necesidad': 4, 'dias': 7, 'costo_unitario': 6, 'unidad': 'unidades'},
+        }
+    },
+    '15-29_M': {
+        'nombre': 'Hombres Jóvenes (15-29 años)',
+        'productos': {
+            'Alimento_Alta_Energia': {'necesidad': 1.5, 'dias': 7, 'costo_unitario': 45, 'unidad': 'raciones'},
+        }
+    },
+    '15-29_F': {
+        'nombre': 'Mujeres Jóvenes (15-29 años)',
+        'productos': {
+            'Alimento_Balanceado': {'necesidad': 1.2, 'dias': 7, 'costo_unitario': 42, 'unidad': 'raciones'},
+        }
+    },
+    '30-59_M': {
+        'nombre': 'Hombres Adultos (30-59 años)',
+        'productos': {
+            'Alimento_Energia': {'necesidad': 1.4, 'dias': 7, 'costo_unitario': 43, 'unidad': 'raciones'},
+        }
+    },
+    '30-59_F': {
+        'nombre': 'Mujeres Adultas (30-59 años)',
+        'productos': {
+            'Alimento_Nutritivo': {'necesidad': 1.1, 'dias': 7, 'costo_unitario': 41, 'unidad': 'raciones'},
+        }
+    },
+    '60+': {
+        'nombre': 'Adultos Mayores (60+ años)',
+        'productos': {
+            'Alimento_Masticacion_Facil': {'necesidad': 0.9, 'dias': 7, 'costo_unitario': 48, 'unidad': 'raciones'},
+            'Medicamentos_Basicos': {'necesidad': 0.2, 'dias': 7, 'costo_unitario': 30, 'unidad': 'kits'},
+        }
+    }
+}
+
+# PRODUCTOS BÁSICOS PARA TODOS (los 5 que mencionas)
+productos_basicos = {
+    'Agua': {'necesidad': 2, 'dias': 7, 'costo_unitario': 15, 'unidad': 'litros'},
+    'Alimentos': {'necesidad': 1, 'dias': 7, 'costo_unitario': 120, 'unidad': 'kits'},
+    'Medicamentos': {'necesidad': 0.1, 'dias': 1, 'costo_unitario': 85, 'unidad': 'kits'},
+    'Ropa': {'necesidad': 1, 'dias': 1, 'costo_unitario': 200, 'unidad': 'kits'},
+    'Higiene': {'necesidad': 1, 'dias': 7, 'costo_unitario': 65, 'unidad': 'kits'}
+}
+
+print("📦 PRODUCTOS BÁSICOS DEFINIDOS:")
+for producto, specs in productos_basicos.items():
+    print(f"• {producto}: {specs['necesidad']} {specs['unidad']}/persona/día × {specs['dias']} días")
+
+print("\n👥 GRUPOS DE EDAD DEFINIDOS:")
+for grupo, info in grupos_edad.items():
+    print(f"• {grupo}: {info['nombre']}")
+
+# ===============================
+# PASO 3: LOCALIDADES INUNDADAS
+# ===============================
+
+inundaciones_cacahoatan = inundaciones_df[inundaciones_df['Municipio'] == 'CACAHOATAN']
+
+# Filtrar directamente excluyendo cabeceras
+localidades_inundables = [loc for loc in inundaciones_cacahoatan['Localidad'].unique()
+                         if 'CABECERA' not in str(loc).upper()
+                         and 'MUNICIPAL' not in str(loc).upper()]
+
+print(f"📌 Localidades inundadas (sin cabeceras): {localidades_inundables}")
+print(f"📊 Total localidades inundadas: {len(localidades_inundables)}")
+
+# ===============================
+# PASO 4: CÁLCULO DE POBLACIÓN POR GRUPOS DE EDAD
+# ===============================
+
+print("\n" + "=" * 60)
+print("CÁLCULO DE POBLACIÓN POR GRUPOS DE EDAD")
+print("=" * 60)
+
+# INICIALIZAR VARIABLES
+poblacion_localidad = {}
+poblacion_por_grupo = {grupo: 0 for grupo in grupos_edad.keys()}
+poblacion_total_afectada = 0
+
+# Distribución estimada de población por grupos
+distribucion_grupos = {
+    '0-14': 0.30,    # 30% niños y adolescentes
+    '15-29_M': 0.14, # 14% hombres jóvenes
+    '15-29_F': 0.16, # 16% mujeres jóvenes
+    '30-59_M': 0.18, # 18% hombres adultos
+    '30-59_F': 0.17, # 17% mujeres adultas
+    '60+': 0.05      # 5% adultos mayores
+}
+
+# Calcular población total afectada
+factor_afectacion = 0.3
+
+for loc in localidades_inundables:
+    df = censo_df[censo_df['NOM_LOC'] == loc]
+    if not df.empty:
+        total = pd.to_numeric(df['POBTOT'], errors='coerce').fillna(0).values[0]
+        poblacion_afectada = total * factor_afectacion
+        poblacion_localidad[loc] = poblacion_afectada
+        poblacion_total_afectada += poblacion_afectada
+
+        # Distribuir por grupos de edad
+        for grupo, porcentaje in distribucion_grupos.items():
+            poblacion_por_grupo[grupo] += poblacion_afectada * porcentaje
+        print(f"✅ {loc}: {poblacion_afectada:,.0f} personas afectadas")
+    else:
+        print(f"⚠️ No se encontró datos para: {loc}")
+
+print(f"\n👥 POBLACIÓN TOTAL AFECTADA: {poblacion_total_afectada:,.0f} personas")
+print("\n📊 DISTRIBUCIÓN POR GRUPOS DE EDAD:")
+for grupo, poblacion in poblacion_por_grupo.items():
+    porcentaje = (poblacion / poblacion_total_afectada * 100) if poblacion_total_afectada > 0 else 0
+    print(f"• {grupos_edad[grupo]['nombre']}: {poblacion:,.0f} personas ({porcentaje:.1f}%)")
+
+# ===============================
+# PASO 5: CANDIDATAS PARA ALMACENES
+# ===============================
+todas_localidades = censo_df['NOM_LOC'].tolist()
+localidades_no_inundables = [loc for loc in todas_localidades if loc not in localidades_inundables]
+
+candidatas = []
+for loc in localidades_no_inundables:
+    peso_match = pesos_df[pesos_df['Localidad'] == loc]
+    if not peso_match.empty:
+        peso = peso_match['Peso_Posicional'].values[0]
+        candidatas.append((loc, peso))
+
+candidatas.sort(key=lambda x: x[1], reverse=True)
+almacen_1, almacen_2 = candidatas[:2]
+print(f"\n📍 ALMACENES SELECCIONADOS: 1. {almacen_1[0]}  2. {almacen_2[0]}")
+
+# ===============================
+# PASO 6: NODOS EN EL GRAFO Y ASIGNACIÓN
+# ===============================
+print("\n" + "=" * 60)
+print("CALCULANDO RUTAS Y ASIGNACIONES")
+print("=" * 60)
+
+# CORRECCIÓN: Crear mapeo de coordenadas para TODAS las localidades (no solo inundables)
+mapeo_coordenadas_completo = {}
+for _, row in censo_df.iterrows():
+    mapeo_coordenadas_completo[row['NOM_LOC']] = {
+        'lat': row['LATITUD'],
+        'lon': row['LONGITUD']
+    }
+
+asignacion_localidades = {}
+
+try:
+    municipio = "Cacahoatán, Chiapas, Mexico"
+    G = ox.graph_from_place(municipio, network_type='drive')
+    G = ox.add_edge_speeds(G)
+    G = ox.add_edge_travel_times(G)
+
+    def nodo_cercano(lat, lon):
+        return ox.nearest_nodes(G, lon, lat)
+
+    # CORRECCIÓN: Obtener coordenadas de almacenes desde el mapeo completo
+    coords_alm1 = mapeo_coordenadas_completo.get(almacen_1[0])
+    coords_alm2 = mapeo_coordenadas_completo.get(almacen_2[0])
+
+    if coords_alm1:
+        nodo_almacen_1 = nodo_cercano(coords_alm1['lat'], coords_alm1['lon'])
+    else:
+        print(f"⚠️ No se encontraron coordenadas para {almacen_1[0]}")
+        nodo_almacen_1 = None
+
+    if coords_alm2:
+        nodo_almacen_2 = nodo_cercano(coords_alm2['lat'], coords_alm2['lon'])
+    else:
+        print(f"⚠️ No se encontraron coordenadas para {almacen_2[0]}")
+        nodo_almacen_2 = None
+
+    # CORRECCIÓN: Asignación única verificando que ambos nodos existan
+    for loc in localidades_inundables:
+        if loc in mapeo_coordenadas_completo:
+            coords = mapeo_coordenadas_completo[loc]
+            nodo_loc = nodo_cercano(coords['lat'], coords['lon'])
+
+            # Solo calcular si tenemos ambos nodos de almacén
+            if nodo_almacen_1 and nodo_almacen_2 and nodo_loc:
+                try:
+                    # Calcular distancias usando tiempo de viaje (más realista)
+                    d1 = nx.shortest_path_length(G, nodo_almacen_1, nodo_loc, weight='travel_time')
+                    d2 = nx.shortest_path_length(G, nodo_almacen_2, nodo_loc, weight='travel_time')
+
+                    # Asignar al más cercano
+                    if d1 <= d2:
+                        asignacion_localidades[loc] = 'Almacén 1'
+                    else:
+                        asignacion_localidades[loc] = 'Almacén 2'
+
+                    print(f"📍 {loc}: {asignacion_localidades[loc]} (D1: {d1:.0f}s, D2: {d2:.0f}s)")
+
+                except nx.NetworkXNoPath:
+                    # Si no hay ruta, asignar por defecto
+                    asignacion_localidades[loc] = 'Almacén 1' if localidades_inundables.index(loc) % 2 == 0 else 'Almacén 2'
+                    print(f"⚠️ {loc}: No hay ruta, asignación por defecto a {asignacion_localidades[loc]}")
+            else:
+                # Asignación por defecto si falta algún nodo
+                asignacion_localidades[loc] = 'Almacén 1' if localidades_inundables.index(loc) % 2 == 0 else 'Almacén 2'
+                print(f"⚠️ {loc}: Nodos incompletos, asignación por defecto a {asignacion_localidades[loc]}")
+
+    print(f"\n📌 RESUMEN DE ASIGNACIÓN:")
+    print(f"   • Almacén 1: {len([loc for loc, alm in asignacion_localidades.items() if alm == 'Almacén 1'])} localidades")
+    print(f"   • Almacén 2: {len([loc for loc, alm in asignacion_localidades.items() if alm == 'Almacén 2'])} localidades")
+
+except Exception as e:
+    print(f"⚠️ Error en cálculo de rutas: {e}")
+    # CORRECCIÓN: Asignación por defecto más robusta
+    asignacion_localidades = {}
+    for i, loc in enumerate(localidades_inundables):
+        # Distribuir equitativamente entre los dos almacenes
+        asignacion_localidades[loc] = 'Almacén 1' if i % 2 == 0 else 'Almacén 2'
+    print("📌 Usando asignación alterna por fallo en NetworkX")
+
+# ===============================
+# PASO 7: OPTIMIZACIÓN EXPLÍCITA DE LA FUNCIÓN DE COSTO TOTAL
+# ===============================
+
+print("\n" + "=" * 60)
+print("OPTIMIZACIÓN DE LA FUNCIÓN DE COSTO TOTAL")
+print("=" * 60)
+
+from scipy.optimize import minimize
+import numpy as np
+
+def funcion_costo_total(Q, demanda_anual, S, H, C, Z, L, demanda_diaria):
+    """
+    Función objetivo a minimizar:
+    Z = Costo_Pedido + Costo_Mantenimiento + Costo_Compra + Costo_Faltante
+
+    Donde:
+    - Costo_Pedido = (D/Q) * S
+    - Costo_Mantenimiento = (Q/2 + SS) * H * C
+    - Costo_Compra = D * C
+    - Costo_Faltante = (D/Q) * ES * B (simplificado)
+    """
+    # Asegurar que Q sea positivo
+    Q = max(Q, 1)
+
+    # Costo de pedido
+    costo_pedido = (demanda_anual / Q) * S
+
+    # Costo de mantenimiento (con inventario de seguridad)
+    sigma = demanda_diaria * 0.20  # Desviación estándar (20% de variabilidad)
+    SS = Z * sigma * np.sqrt(L)    # Inventario de seguridad
+    costo_mantenimiento = (Q/2 + SS) * H * C
+
+    # Costo de compra
+    costo_compra = demanda_anual * C
+
+    # Costo de faltante (simplificado)
+    costo_faltante = (demanda_anual / Q) * 0.05 * C * 2  # 5% probabilidad de faltante
+
+    # Función objetivo total
+    Z_total = costo_pedido + costo_mantenimiento + costo_compra + costo_faltante
+
+    return Z_total
+
+# Parámetros de inventario
+S = 1500  # Costo de pedido
+H = 0.2   # Tasa de mantenimiento
+Z = 1.65  # Nivel de servicio (95%)
+L = 2     # Tiempo de entrega (días)
+B = 2.0   # Factor de costo por faltante
+
+# Optimizar para cada producto
+resultados_inventario = []
+costos_totales_almacen = {'Almacén 1': 0, 'Almacén 2': 0}
+
+for almacen in ['Almacén 1', 'Almacén 2']:
+    print(f"\n📦 OPTIMIZANDO {almacen}")
+    print("=" * 80)
+
+    # Calcular población por grupo en este almacén
+    poblacion_almacen = sum(poblacion_localidad[loc] for loc, alm in asignacion_localidades.items() if alm == almacen)
+
+    for grupo, info_grupo in grupos_edad.items():
+        # Población del grupo en este almacén
+        poblacion_grupo = poblacion_por_grupo[grupo] * (poblacion_almacen / poblacion_total_afectada)
+
+        print(f"\n👥 {info_grupo['nombre']}: {poblacion_grupo:,.0f} personas")
+        print("-" * 50)
+
+        # PRODUCTOS ESPECÍFICOS DEL GRUPO
+        for producto, specs in info_grupo['productos'].items():
+            # Calcular demanda para 7 días
+            demanda = poblacion_grupo * specs['necesidad'] * specs['dias']
+            demanda_anual = demanda * 12
+            C = specs['costo_unitario']
+
+            if demanda_anual > 0:
+                demanda_diaria = demanda / 30
+
+                # VALOR INICIAL (EOQ tradicional)
+                Q_eoq = np.sqrt((2 * demanda_anual * S) / (H * C))
+
+                # OPTIMIZACIÓN NUMÉRICA
+                try:
+                    resultado = minimize(
+                        funcion_costo_total,
+                        x0=Q_eoq,
+                        args=(demanda_anual, S, H, C, Z, L, demanda_diaria),
+                        method='L-BFGS-B',
+                        bounds=[(1, None)],  # Q debe ser ≥ 1
+                        options={'maxiter': 1000}
+                    )
+
+                    if resultado.success:
+                        Q_optimo = max(1, resultado.x[0])  # Asegurar Q ≥ 1
+                        costo_minimo = resultado.fun
+
+                        # Calcular costo con EOQ tradicional para comparación
+                        costo_eoq = funcion_costo_total(Q_eoq, demanda_anual, S, H, C, Z, L, demanda_diaria)
+
+                        # Calcular otros parámetros con Q óptimo
+                        R_optimo = demanda_diaria * L
+                        sigma = demanda_diaria * 0.20
+                        SS_optimo = Z * sigma * np.sqrt(L)
+
+                        # CÁLCULO DE COSTOS DESGLOSADOS
+                        costo_pedido = (demanda_anual / Q_optimo) * S
+                        costo_mantenimiento = (Q_optimo/2 + SS_optimo) * H * C
+                        costo_compra = demanda_anual * C
+
+                        ahorro = costo_eoq - costo_minimo
+                        porcentaje_ahorro = (ahorro / costo_eoq * 100) if costo_eoq > 0 else 0
+
+                        costos_totales_almacen[almacen] += costo_minimo
+
+                        # Guardar resultados
+                        resultados_inventario.append({
+                            'Almacen': almacen,
+                            'Grupo_Edad': grupo,
+                            'Nombre_Grupo': info_grupo['nombre'],
+                            'Producto': producto,
+                            'Tipo': 'Específico',
+                            'Poblacion_Grupo': poblacion_grupo,
+                            'Demanda_7dias': demanda,
+                            'Demanda_Anual': demanda_anual,
+                            'Costo_Unitario': C,
+                            'Cantidad_EOQ': Q_eoq,
+                            'Cantidad_Optima': Q_optimo,
+                            'Punto_Reorden_R': R_optimo,
+                            'Inventario_Seguridad_SS': SS_optimo,
+                            'Costo_Pedido': costo_pedido,
+                            'Costo_Mantenimiento': costo_mantenimiento,
+                            'Costo_Compra': costo_compra,
+                            'Costo_Total': costo_minimo,
+                            'Costo_EOQ': costo_eoq,
+                            'Ahorro': ahorro,
+                            'Porcentaje_Ahorro': porcentaje_ahorro,
+                            'Unidad': specs['unidad'],
+                            'Optimizacion_Exitosa': True
+                        })
+
+                        print(f"   ✅ {producto:<25} | EOQ: {Q_eoq:6.0f} | Óptimo: {Q_optimo:6.0f} | Ahorro: {porcentaje_ahorro:5.1f}% (${ahorro:>8,.0f})")
+
+                    else:
+                        # Si falla la optimización, usar EOQ
+                        Q_optimo = Q_eoq
+                        costo_minimo = costo_eoq
+                        print(f"   ⚠️ {producto:<25} | Usando EOQ (falló optimización)")
+
+                except Exception as e:
+                    # En caso de error, usar EOQ
+                    Q_optimo = Q_eoq
+                    costo_minimo = funcion_costo_total(Q_eoq, demanda_anual, S, H, C, Z, L, demanda_diaria)
+                    print(f"   ❌ {producto:<25} | Error: {str(e)[:50]}...")
+
+    # PRODUCTOS BÁSICOS PARA TODOS EN ESTE ALMACÉN
+    print(f"\n📦 OPTIMIZANDO PRODUCTOS BÁSICOS (Todos los grupos):")
+    print("-" * 50)
+
+    for producto, specs in productos_basicos.items():
+        # Calcular demanda para 7 días
+        demanda = poblacion_almacen * specs['necesidad'] * specs['dias']
+        demanda_anual = demanda * 12
+        C = specs['costo_unitario']
+
+        if demanda_anual > 0:
+            demanda_diaria = demanda / 30
+
+            # VALOR INICIAL (EOQ tradicional)
+            Q_eoq = np.sqrt((2 * demanda_anual * S) / (H * C))
+
+            # OPTIMIZACIÓN NUMÉRICA
+            try:
+                resultado = minimize(
+                    funcion_costo_total,
+                    x0=Q_eoq,
+                    args=(demanda_anual, S, H, C, Z, L, demanda_diaria),
+                    method='L-BFGS-B',
+                    bounds=[(1, None)],
+                    options={'maxiter': 1000}
+                )
+
+                if resultado.success:
+                    Q_optimo = max(1, resultado.x[0])
+                    costo_minimo = resultado.fun
+                    costo_eoq = funcion_costo_total(Q_eoq, demanda_anual, S, H, C, Z, L, demanda_diaria)
+
+                    # Calcular otros parámetros
+                    R_optimo = demanda_diaria * L
+                    sigma = demanda_diaria * 0.20
+                    SS_optimo = Z * sigma * np.sqrt(L)
+
+                    costo_pedido = (demanda_anual / Q_optimo) * S
+                    costo_mantenimiento = (Q_optimo/2 + SS_optimo) * H * C
+                    costo_compra = demanda_anual * C
+
+                    ahorro = costo_eoq - costo_minimo
+                    porcentaje_ahorro = (ahorro / costo_eoq * 100) if costo_eoq > 0 else 0
+
+                    costos_totales_almacen[almacen] += costo_minimo
+
+                    resultados_inventario.append({
+                        'Almacen': almacen,
+                        'Grupo_Edad': 'Todos',
+                        'Nombre_Grupo': 'Todos los grupos',
+                        'Producto': producto,
+                        'Tipo': 'Básico',
+                        'Poblacion_Grupo': poblacion_almacen,
+                        'Demanda_7dias': demanda,
+                        'Demanda_Anual': demanda_anual,
+                        'Costo_Unitario': C,
+                        'Cantidad_EOQ': Q_eoq,
+                        'Cantidad_Optima': Q_optimo,
+                        'Punto_Reorden_R': R_optimo,
+                        'Inventario_Seguridad_SS': SS_optimo,
+                        'Costo_Pedido': costo_pedido,
+                        'Costo_Mantenimiento': costo_mantenimiento,
+                        'Costo_Compra': costo_compra,
+                        'Costo_Total': costo_minimo,
+                        'Costo_EOQ': costo_eoq,
+                        'Ahorro': ahorro,
+                        'Porcentaje_Ahorro': porcentaje_ahorro,
+                        'Unidad': specs['unidad'],
+                        'Optimizacion_Exitosa': True
+                    })
+
+                    print(f"   ✅ {producto:<25} | EOQ: {Q_eoq:6.0f} | Óptimo: {Q_optimo:6.0f} | Ahorro: {porcentaje_ahorro:5.1f}% (${ahorro:>8,.0f})")
+
+                else:
+                    Q_optimo = Q_eoq
+                    costo_minimo = costo_eoq
+                    print(f"   ⚠️ {producto:<25} | Usando EOQ (falló optimización)")
+
+            except Exception as e:
+                Q_optimo = Q_eoq
+                costo_minimo = funcion_costo_total(Q_eoq, demanda_anual, S, H, C, Z, L, demanda_diaria)
+                print(f"   ❌ {producto:<25} | Error: {str(e)[:50]}...")
+
+# RESUMEN DE OPTIMIZACIÓN
+print("\n" + "=" * 60)
+print("📊 RESUMEN DE OPTIMIZACIÓN")
+print("=" * 60)
+
+if resultados_inventario:
+    df_optimizacion = pd.DataFrame(resultados_inventario)
+
+    ahorro_total = df_optimizacion['Ahorro'].sum()
+    costo_total_optimizado = df_optimizacion['Costo_Total'].sum()
+    costo_total_eoq = df_optimizacion['Costo_EOQ'].sum()
+
+    optimizaciones_exitosas = df_optimizacion['Optimizacion_Exitosa'].sum()
+    total_optimizaciones = len(df_optimizacion)
+
+    print(f"✅ Optimizaciones exitosas: {optimizaciones_exitosas}/{total_optimizaciones} ({optimizaciones_exitosas/total_optimizaciones*100:.1f}%)")
+    print(f"💰 Costo total con EOQ:     ${costo_total_eoq:,.0f}")
+    print(f"💰 Costo total optimizado:  ${costo_total_optimizado:,.0f}")
+    print(f"💵 Ahorro total:            ${ahorro_total:,.0f}")
+    print(f"📈 Reducción de costos:     {ahorro_total/costo_total_eoq*100:.2f}%")
+
+    # Mostrar top 5 mejores ahorros
+    top_ahorros = df_optimizacion.nlargest(5, 'Ahorro')[['Producto', 'Almacen', 'Ahorro', 'Porcentaje_Ahorro']]
+    print(f"\n🏆 TOP 5 MEJORES AHORROS:")
+    for idx, row in top_ahorros.iterrows():
+        print(f"   {row['Producto']:<25} | {row['Almacen']:<12} | Ahorro: ${row['Ahorro']:>8,.0f} ({row['Porcentaje_Ahorro']:.1f}%)")
+else:
+    print("⚠️ No se generaron resultados de optimización")
+
+# ===============================
+# PASO 8: TABLAS ORGANIZADAS
+# ===============================
+
+print("\n" + "=" * 60)
+print("TABLAS DE RESULTADOS ORGANIZADAS - OPTIMIZACIÓN")
+print("=" * 60)
+
+# Crear DataFrame con todos los resultados
+df_resultados = pd.DataFrame(resultados_inventario)
+
+if not df_resultados.empty:
+    # ===========================================
+    # TABLA 1: POBLACIÓN POR LOCALIDAD
+    # ===========================================
+    print("\n📋 TABLA 1: POBLACIÓN AFECTADA POR LOCALIDAD")
+    print("=" * 70)
+
+    tabla_poblacion = []
+    for loc in localidades_inundables:
+        if loc in poblacion_localidad:
+            tabla_poblacion.append({
+                'Localidad': loc,
+                'Población_Afectada': poblacion_localidad[loc],
+                'Almacén_Asignado': asignacion_localidades.get(loc, 'No asignado')
+            })
+
+    df_poblacion = pd.DataFrame(tabla_poblacion)
+    df_poblacion['Población_Afectada'] = df_poblacion['Población_Afectada'].round(0).astype(int)
+    print(df_poblacion.to_string(index=False))
+
+    # ===========================================
+    # TABLA 2: DISTRIBUCIÓN POR GRUPOS DE EDAD
+    # ===========================================
+    print("\n\n📊 TABLA 2: DISTRIBUCIÓN POR GRUPOS DE EDAD")
+    print("=" * 70)
+
+    tabla_grupos = []
+    for grupo, poblacion in poblacion_por_grupo.items():
+        porcentaje = (poblacion / poblacion_total_afectada * 100) if poblacion_total_afectada > 0 else 0
+        tabla_grupos.append({
+            'Grupo_Edad': grupos_edad[grupo]['nombre'],
+            'Población': round(poblacion, 0),
+            'Porcentaje': f"{porcentaje:.1f}%"
+        })
+
+    df_grupos = pd.DataFrame(tabla_grupos)
+    print(df_grupos.to_string(index=False))
+
+    # ===========================================
+    # TABLA 3: ASIGNACIÓN DE ALMACENES (MEJORADA)
+    # ===========================================
+    print("\n\n📍 TABLA 3: ASIGNACIÓN DE LOCALIDADES A ALMACENES")
+    print("=" * 70)
+
+    # Obtener listas de localidades por almacén
+    localidades_almacen1 = [loc for loc, alm in asignacion_localidades.items() if alm == 'Almacén 1']
+    localidades_almacen2 = [loc for loc, alm in asignacion_localidades.items() if alm == 'Almacén 2']
+
+    # Crear tabla
+    tabla_asignacion_mejorada = pd.DataFrame({
+        'Almacén': ['Almacén 1', 'Almacén 2'],
+        'Ubicación': [almacen_1[0], almacen_2[0]],
+        'Peso_Posicional': [almacen_1[1], almacen_2[1]],
+        'Localidades_Asignadas': [len(localidades_almacen1), len(localidades_almacen2)],
+        'Lista_de_Localidades': [', '.join(localidades_almacen1), ', '.join(localidades_almacen2)]
+    })
+
+    print(tabla_asignacion_mejorada.to_string(index=False))
+
+    # ===========================================
+    # TABLA 4: INVENTARIO POR GRUPO DE EDAD
+    # ===========================================
+    print("\n\n📦 TABLA 4: INVENTARIO POR GRUPO DE EDAD - OPTIMIZADO")
+    print("=" * 70)
+
+    inventario_grupo = df_resultados.groupby(['Nombre_Grupo', 'Almacen']).agg({
+        'Costo_Total': 'sum',
+        'Demanda_7dias': 'sum',
+        'Poblacion_Grupo': 'first',
+        'Ahorro': 'sum'  # NUEVA COLUMNA DE OPTIMIZACIÓN
+    }).reset_index()
+
+    # Formatear números para mejor presentación
+    inventario_grupo['Costo_Total'] = inventario_grupo['Costo_Total'].round(0)
+    inventario_grupo['Demanda_7dias'] = inventario_grupo['Demanda_7dias'].round(0)
+    inventario_grupo['Poblacion_Grupo'] = inventario_grupo['Poblacion_Grupo'].round(0)
+    inventario_grupo['Ahorro'] = inventario_grupo['Ahorro'].round(0)
+
+    print(inventario_grupo.to_string(index=False))
+
+    # ===========================================
+    # TABLA 5: INVENTARIO DETALLADO POR PRODUCTO
+    # ===========================================
+    print("\n\n📋 TABLA 5: INVENTARIO DETALLADO POR PRODUCTO - OPTIMIZADO")
+    print("=" * 90)
+
+    inventario_producto = df_resultados.groupby(['Producto', 'Almacen', 'Unidad']).agg({
+        'Demanda_7dias': 'sum',
+        'Cantidad_EOQ': 'mean',           # CAMBIADO: 'Cantidad_Economica_Q' → 'Cantidad_EOQ'
+        'Cantidad_Optima': 'mean',        # NUEVA COLUMNA DE OPTIMIZACIÓN
+        'Punto_Reorden_R': 'mean',
+        'Inventario_Seguridad_SS': 'mean',
+        'Costo_Total': 'sum',
+        'Ahorro': 'sum'                   # NUEVA COLUMNA DE OPTIMIZACIÓN
+    }).reset_index()
+
+    # Formatear números
+    for col in ['Demanda_7dias', 'Cantidad_EOQ', 'Cantidad_Optima', 'Punto_Reorden_R', 'Inventario_Seguridad_SS', 'Costo_Total', 'Ahorro']:
+        inventario_producto[col] = inventario_producto[col].round(0)
+
+    print(inventario_producto.to_string(index=False))
+
+    # ===========================================
+    # TABLA 6: RESUMEN FINAL DE COSTOS
+    # ===========================================
+    print("\n\n💰 TABLA 6: RESUMEN FINAL DE COSTOS - OPTIMIZACIÓN")
+    print("=" * 60)
+
+    costo_total = df_resultados['Costo_Total'].sum()
+    costo_almacen1 = df_resultados[df_resultados['Almacen'] == 'Almacén 1']['Costo_Total'].sum()
+    costo_almacen2 = df_resultados[df_resultados['Almacen'] == 'Almacén 2']['Costo_Total'].sum()
+    ahorro_total = df_resultados['Ahorro'].sum()
+    costo_total_eoq = costo_total + ahorro_total  # Costo si no hubiera optimización
+
+    tabla_costos = pd.DataFrame({
+        'Concepto': [
+            'Costo Total con EOQ (sin optimizar)',
+            'Costo Total Optimizado',
+            'Ahorro por Optimización',
+            'Costo Almacén 1',
+            'Costo Almacén 2',
+            'Costo Mensual Promedio'
+        ],
+        'Monto_MXN': [
+            f"${costo_total_eoq:,.0f}",
+            f"${costo_total:,.0f}",
+            f"${ahorro_total:,.0f} ({ahorro_total/costo_total_eoq*100:.1f}%)",
+            f"${costo_almacen1:,.0f}",
+            f"${costo_almacen2:,.0f}",
+            f"${costo_total/12:,.0f}"
+        ]
+    })
+    print(tabla_costos.to_string(index=False))
+
+    # ===========================================
+    # TABLA 7: COMPARACIÓN EOQ vs OPTIMIZACIÓN (NUEVA)
+    # ===========================================
+    print("\n\n📊 TABLA 7: COMPARACIÓN EOQ vs OPTIMIZACIÓN")
+    print("=" * 70)
+
+    comparacion = df_resultados.groupby('Almacen').agg({
+        'Cantidad_EOQ': 'mean',
+        'Cantidad_Optima': 'mean',
+        'Costo_EOQ': 'sum',
+        'Costo_Total': 'sum',
+        'Ahorro': 'sum',
+        'Optimizacion_Exitosa': 'sum',
+        'Producto': 'count'
+    }).reset_index()
+
+    comparacion['Reduccion_Cantidad'] = ((comparacion['Cantidad_EOQ'] - comparacion['Cantidad_Optima']) / comparacion['Cantidad_EOQ'] * 100)
+    comparacion['Reduccion_Costo'] = (comparacion['Ahorro'] / comparacion['Costo_EOQ'] * 100)
+    comparacion['Tasa_Exito'] = (comparacion['Optimizacion_Exitosa'] / comparacion['Producto'] * 100)
+
+    # Formatear números
+    for col in ['Cantidad_EOQ', 'Cantidad_Optima', 'Costo_EOQ', 'Costo_Total', 'Ahorro']:
+        comparacion[col] = comparacion[col].round(0)
+    for col in ['Reduccion_Cantidad', 'Reduccion_Costo', 'Tasa_Exito']:
+        comparacion[col] = comparacion[col].round(1)
+
+    print(comparacion.to_string(index=False))
+
+    # ===========================================
+    # GUARDAR TODAS LAS TABLAS EN CSV
+    # ===========================================
+    print(f"\n💾 GUARDANDO TABLAS EN {carpeta_resultados}")
+
+    df_poblacion.to_csv(os.path.join(carpeta_resultados, 'tabla_poblacion_localidades.csv'), index=False)
+    df_grupos.to_csv(os.path.join(carpeta_resultados, 'tabla_distribucion_grupos.csv'), index=False)
+    tabla_asignacion_mejorada.to_csv(os.path.join(carpeta_resultados, 'tabla_asignacion_almacenes.csv'), index=False)
+    inventario_grupo.to_csv(os.path.join(carpeta_resultados, 'tabla_inventario_grupos.csv'), index=False)
+    inventario_producto.to_csv(os.path.join(carpeta_resultados, 'tabla_inventario_productos.csv'), index=False)
+    tabla_costos.to_csv(os.path.join(carpeta_resultados, 'tabla_resumen_costos.csv'), index=False)
+    comparacion.to_csv(os.path.join(carpeta_resultados, 'tabla_comparacion_optimizacion.csv'), index=False)
+
+    print("✅ Tablas guardadas:")
+    print("   • tabla_poblacion_localidades.csv")
+    print("   • tabla_distribucion_grupos.csv")
+    print("   • tabla_asignacion_almacenes.csv")
+    print("   • tabla_inventario_grupos.csv")
+    print("   • tabla_inventario_productos.csv")
+    print("   • tabla_resumen_costos.csv")
+    print("   • tabla_comparacion_optimizacion.csv (NUEVA)")
+
+else:
+    print("⚠️ No se generaron resultados de inventario")
+```
 :::{style="text-align: justify"}
 
 Basándose en los resultados y lecciones aprendidas de la implementación del modelo en el estado de Veracruz, el presente capítulo extiende la aplicación de la metodología al estado de Chiapas. Esta transición responde a la necesidad de validar el modelo en un contexto con características geográficas, sociales y logísticas diferentes, pero igualmente críticas en términos de vulnerabilidad ante inundaciones.
@@ -21,32 +748,131 @@ Chiapas presenta desafíos particulares derivados de su topografía accidentada,
 
 ## Contexto geográfico y socioeconómico del área de estudio
 
+El análisis del contexto geográfico y socioeconómico es fundamental para entender las condiciones que afectan la logística humanitaria en Cacahoatán. Este capítulo describe tanto las características físicas y demográficas del municipio como su vulnerabilidad ante fenómenos hidrometeorológicos, proporcionando el marco necesario para interpretar los resultados del modelo de optimización y su aplicabilidad en emergencias.
+
 ### Características del municipio de Cacahoatán
 
-Cacahoatán se localiza en la región del Soconusco en el estado de Chiapas, colindante con la República de Guatemala. Con una extensión territorial de 1,295 km², el municipio presenta una topografía variada que incluye zonas montañosas y planicies costeras, factor que influye significativamente en la accesibilidad y conectividad de sus localidades.
+Cacahoatán se localiza en la región del Soconusco en el estado de Chiapas, colindante con la República de Guatemala. Con una extensión territorial de $1,295 km²$, el municipio presenta una topografía variada que incluye zonas montañosas y planicies costeras, factor que influye significativamente en la accesibilidad y conectividad de sus localidades.
 
-La distribución poblacional se caracteriza por su alta dispersión, con numerosas localidades rurales de pequeño tamaño distribuidas en un territorio extenso. Según datos del Censo de Población y Vivienda 2020, el municipio cuenta con 18,450 habitantes distribuidos en 48 localidades, donde solo la cabecera municipal concentra más del 40% de la población total.
+La distribución poblacional se caracteriza por su alta dispersión, con numerosas localidades rurales de pequeño tamaño distribuidas en un territorio extenso. Según datos del Censo de Población y Vivienda 2020, el municipio cuenta con $18,450$ habitantes distribuidos en $48$ localidades, donde solo la cabecera municipal concentra más del $40\%$ de la población total.
 
 ### Vulnerabilidad ante inundaciones
 
-La posición geográfica de Cacahoatán en la planicie costera del Pacífico, combinada con su densa red hidrográfica y la influencia de fenómenos meteorológicos extremos, lo configura como una zona de alta susceptibilidad a inundaciones. Los registros históricos del Sistema Nacional de Protección Civil indican que el municipio ha experimentado 12 eventos de inundación severa en la última década, afectando en promedio a 8,000 personas por evento.
+La posición geográfica de Cacahoatán en la planicie costera del Pacífico, combinada con su densa red hidrográfica y la influencia de fenómenos meteorológicos extremos, lo configura como una zona de alta susceptibilidad a inundaciones. Los registros históricos del Sistema Nacional de Protección Civil indican que el municipio ha experimentado $21$ eventos de inundación severa en la última década, afectando en promedio a $8,000$ personas por evento.
 
 Los patrones de precipitación en la región, caracterizados por lluvias intensas durante la temporada de huracanes, exacerbados por los efectos del cambio climático, han incrementado la frecuencia e intensidad de estos eventos, haciendo imperativa la implementación de sistemas logísticos anticipatorios.
 
 ```{python}
-#| label: fig-historico-cacahoatan
-#| fig-cap: |
+#| label: setup-historico-cacahoatan
+#| echo: false
+#| output: false
+
+
+import pandas as pd
+import plotly.express as px
+import os
+
+# 1. Cargar datos
+ruta = "data/Inundaciones_Chiapas.csv"
+df = pd.read_csv(ruta)
+
+# 2. Normalizar nombre del municipio
+df['Municipio'] = df['Municipio'].str.strip().str.upper()
+
+# 3. Filtrar solo Cacahoatán
+cacahoatan = df[df['Municipio'] == 'CACAHOATAN'].copy()
+
+# 4. Limpiar formato de fecha
+cacahoatan['Fecha_Evento'] = cacahoatan['Fecha_Evento'].astype(str).str.replace('.', '', regex=False).str.strip()
+
+# 5. Diccionario de meses
+meses = {
+    'ENERO': '01', 'FEBRERO': '02', 'MARZO': '03', 'ABRIL': '04',
+    'MAYO': '05', 'JUNIO': '06', 'JULIO': '07', 'AGOSTO': '08',
+    'SEPTIEMBRE': '09', 'OCTUBRE': '10', 'NOVIEMBRE': '11', 
+    'DICIEMBRE': '12'
+}
+
+def convertir_fecha(fecha):
+    try:
+        partes = fecha.split()
+        mes = meses.get(partes[0].upper(), None)
+        dia = partes[1]
+        año = partes[2]
+        return f"{año}-{mes}-{dia.zfill(2)}"
+    except:
+        return None
+
+cacahoatan['Fecha_Limpia'] = cacahoatan['Fecha_Evento'].apply(convertir_fecha)
+cacahoatan['Fecha_Limpia'] = pd.to_datetime(cacahoatan['Fecha_Limpia'], 
+errors='coerce')
+cacahoatan['Año'] = cacahoatan['Fecha_Limpia'].dt.year
+
+# 6. Agrupar por año
+eventos_por_año = cacahoatan['Año'].value_counts().sort_index().reset_index()
+eventos_por_año.columns = ['Año', 'Número de Inundaciones']
+
+# 7. Crear etiquetas personalizadas para hover
+eventos_por_año['Etiqueta'] = eventos_por_año.apply(
+    lambda row: f"Año {int(row['Año'])}<br> Se registraron {int(row['Número de Inundaciones'])} inundaciones",
+    axis=1
+)
+
+# 8. Crear gráfico interactivo uniforme
+fig = px.bar(
+    eventos_por_año,
+    x='Año',
+    y='Número de Inundaciones',
+    hover_name='Año',
+    hover_data={'Año': False, 'Número de Inundaciones': False,
+     'Etiqueta': True},
+    color_discrete_sequence=['#2E86C1']  # azul uniforme
+)
+
+# 9. Ajustes visuales
+fig.update_traces(
+    textposition='outside',
+    hovertemplate='%{customdata[0]}',
+    customdata=eventos_por_año[['Etiqueta']],
+)
+
+fig.update_layout(
+    title='Histórico de Inundaciones en Cacahoatán (2013–2021)',
+    xaxis_title='Año del evento',
+    yaxis_title='Número de inundaciones registradas',
+    title_font_size=16,
+    template='simple_white',
+    showlegend=False
+)
+
+# 10. Añadir líneas horizontales (gridlines visibles)
+fig.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgray')
+```
+::: {.content-visible when-format="html"}
+```{python}
+#| label: fig-historico-cacahoatan-html
+#| fig-cap: >
 #|   Distribución temporal de los eventos de inundación registrados en el municipio de Cacahoatán, Chiapas, durante el periodo 2013–2021.  
-#|   Se observa que **durante 2018 y 2019 no se registraron inundaciones de gran magnitud**, a diferencia de los años previos. En ese periodo, el municipio experimentó **lluvias intensas y desbordamientos menores de arroyos**, sin alcanzar los niveles de afectación observados en eventos anteriores.  
-#|   Esta ausencia de registros severos explica los espacios vacíos en la gráfica y refleja una **reducción temporal en la severidad de los desastres**, aunque la **vulnerabilidad estructural del municipio** ante lluvias extremas se mantiene elevada.
+#|   Se observa que **durante 2018 y 2019 no se registraron inundaciones de gran magnitud**, a diferencia de los años previos.  
+#|   En ese periodo, el municipio experimentó **lluvias intensas y desbordamientos menores de arroyos**, sin alcanzar los niveles de afectación observados en eventos anteriores.  
+#|   Esta ausencia de registros severos explica los espacios vacíos en la gráfica y refleja una **reducción temporal en la severidad de los desastres**,  
+#|   aunque la **vulnerabilidad estructural del municipio** ante lluvias extremas se mantiene elevada.
 #| fig-align: center
 #| out-width: "90%"
+#| echo: false
 
-from IPython.display import Image, display
-display(Image("grafico.png"))
+fig.show()
 ```
+:::
+
+::: {.content-visible when-format="pdf"}
+![Distribución temporal de los eventos de inundación registrados en el municipio de Cacahoatán, Chiapas, durante el periodo 2013–2021. Se observa que **durante 2018 y 2019 no se registraron inundaciones de gran magnitud**, a diferencia de los años previos. En ese periodo, el municipio experimentó **lluvias intensas y desbordamientos menores de arroyos**, sin alcanzar los niveles de afectación observados en eventos anteriores. Esta ausencia de registros severos explica los espacios vacíos en la gráfica y refleja una **reducción temporal en la severidad de los desastres**, aunque la **vulnerabilidad estructural del municipio** ante lluvias extremas se mantiene elevada.](grafico.png){width=60%}
+:::
+
 
 ## Metodología para el cálculo de pesos posicionales
+
+Para optimizar la localización de almacenes humanitarios, es necesario cuantificar la importancia relativa de cada localidad. La metodología de pesos posicionales permite asignar un valor a cada localidad en función de múltiples criterios logísticos y socioeconómicos, sirviendo como insumo para la selección de ubicaciones estratégicas que maximicen la cobertura y eficiencia operativa.
 
 ### Enfoque multicriterio para la selección de ubicaciones estratégicas
 
@@ -60,29 +886,27 @@ w_j &= 0.20 \times DICONSA_j + 0.20 \times AccesoVial_j + 0.20 \times Escuelas_j
 \end{split}
 $$
 
-
-
-Donde cada componente se normaliza en el rango [0,1] para permitir la comparabilidad entre localidades.
+Donde cada componente se normaliza en el rango $[0,1]$ para permitir la comparabilidad entre localidades.
 
 ### Componentes del índice y justificación teórica
 
-#### Presencia de infraestructura DICONSA (20%)
+#### Presencia de infraestructura DICONSA ($20\%$)
 
-La red de tiendas DICONSA representa nodos preexistentes en la distribución de alimentos, indicando experiencia operativa, aceptación comunitaria y existencia de infraestructura básica para el almacenamiento. La variable se opera como indicador binario (1=presencia, 0=ausencia).
+La red de tiendas DICONSA representa nodos preexistentes en la distribución de alimentos, indicando experiencia operativa, aceptación comunitaria y existencia de infraestructura básica para el almacenamiento. La variable se opera como indicador binario ($1$=presencia, $0$=ausencia).
 
-#### Acceso vial (20%)
+#### Acceso vial ($20\%$)
 
-La conectividad terrestre determina directamente la capacidad de respuesta y los costos de distribución. Se utiliza una escala ordinal basada en el tipo de carretera: 3 (carretera pavimentada), 2 (camino revestido), 1 (terracería), 0 (sendero).
+La conectividad terrestre determina directamente la capacidad de respuesta y los costos de distribución. Se utiliza una escala ordinal basada en el tipo de carretera: $3$ (carretera pavimentada), $2$ (camino revestido), $1$ (terracería), 0 (sendero).
 
-#### Infraestructura educativa (20%)
+#### Infraestructura educativa ($20\%$)
 
 Las escuelas funcionan como centros comunitarios naturales y potenciales refugios temporales durante emergencias. El indicador considera el número total de escuelas por localidad, normalizado por el máximo municipal.
 
-#### Servicios básicos (20%)
+#### Servicios básicos ($20\%$)
 
 La disponibilidad de agua potable, drenaje, electricidad e internet es esencial para la operación logística continua. Se calcula como el promedio normalizado de cuatro indicadores específicos de servicios en viviendas.
 
-#### Población (20%)
+#### Población ($20\%$)
 
 El tamaño poblacional determina la escala de operaciones requeridas y la criticidad de la localidad en el sistema logístico. Se utiliza la población total normalizada por el máximo municipal. 
 
@@ -91,30 +915,25 @@ El tamaño poblacional determina la escala de operaciones requeridas y la critic
 
 ### Ranking de localidades estratégicas
 
-El análisis multicriterio identificó las localidades con mayor potencial logístico en Cacahoatán, como se muestra en la Tabla 4.1.
+El análisis multicriterio identificó las localidades con mayor potencial logístico en Cacahoatán, como se muestra en la @tbl-top10-cacahoatan.
 
-**Tabla 4.1.** Top 10 localidades por peso posicional en Cacahoatán
+::: {#tbl-top10-cacahoatan .tbl-caption} 
+Top $10$ localidades por peso posicional en Cacahoatán
 
-| Ranking | Localidad | Peso Posicional | DICONSA | Acceso Vial | Escuelas | Población |
-|---------|-----------|----------------|---------|-------------|----------|-----------|
-| 1 | Salvador Urbina | 1.000 | Sí | 2 | 4 | 2,722 |
-| 2 | Faja de Oro | 0.983 | Sí | 2 | 4 | 2,674 |
-| 3 | Cacahoatán | 0.849 | No | 3 | 0 | 19,108 |
-| 4 | Rosario Ixtal | 0.749 | No | 2 | 6 | 1,009 |
-| 5 | Mixcum | 0.657 | No | 2 | 4 | 1,781 |
-| 6 | Piedra Parada | 0.632 | No | 2 | 4 | 141 |
-| 7 | El Platanar | 0.546 | No | 1 | 4 | 677 |
-| 8 | Agua Caliente | 0.513 | No | 1 | 4 | 552 |
-| 9 | Alpujarras | 0.505 | No | 1 | 3 | 579 |
-| 10 | Guatimoc | 0.500 | No | 1 | 3 | 972 |
 
-### Interpretación y comparación con Veracruz
-
-Los resultados obtenidos en Cacahoatán muestran una cobertura total de la población afectada y una tasa de éxito del 100 %, comportamiento similar al observado en el caso de estudio del estado de Veracruz. No obstante, el costo total anual optimizado en Cacahoatán (195.46 millones MXN) representa aproximadamente el 30 % del costo registrado para Veracruz (648.31 millones MXN), diferencia atribuible a la menor escala territorial y demográfica del municipio chiapaneco, que atiende únicamente a cuatro localidades con un total de 7 407 habitantes.
-
-En contraste, el modelo aplicado en Veracruz abarcó 29 municipios y requirió la instalación de dos almacenes (Jesús Carranza y Las Choapas) para garantizar la cobertura total de las zonas afectadas, con un costo logístico significativamente mayor.
-
-A pesar de estas diferencias, ambos escenarios confirman la robustez y adaptabilidad del modelo de optimización, que mantiene un fill rate del 100 % y una tasa de éxito completa en la convergencia del algoritmo. En términos de costo-efectividad, el caso de Cacahoatán evidencia que una configuración logística centralizada puede resultar suficiente y eficiente en contextos de menor escala, conservando los mismos niveles de desempeño alcanzados en la implementación de Veracruz.
+| Ranking | Localidad              | Peso Posicional | DICONSA | Acceso Vial | Escuelas |Servicios Básicos| Población |
+|---------------|------------------------|-----------------|---------------|-------------|----------------|-----------------|-----------------|
+|$1$      | Salvador Urbina        | $1.000$         | Sí      | $2$         | $4$      |$81.8\%$         | $2,722$   |
+|$2$      | Faja de Oro            | $0.983$         | Sí      | $2$         | $4$      |$76.6\%$         | $2,674$   |
+|$3$      | Cacahoatán             | $0.849$         | No      | $3$         | $0$      |$79.7\%$         | $19,108$  |
+|$4$      | Rosario Ixtal          | $0.749$         | No      | $2$         | $6$      |$74.9\%$         |$1,009$    |
+|$5$      | Mixcum                 | $0.657$         | No      | $2$         | $4$      |$73.8\%$         | $1,781$   |
+|$6$      | Piedra Parada          | $0.632$         | No      | $2$         | $4$      |$74\%$           | $141$     |
+|$7$      | El Platanar            | $0.546$         | No      | $1$         | $4$      |$76.2\%$         |$677$      |
+|$8$      | Agua Caliente          | $0.513$         | No      | $1$         | $4$      |$66.1\%$         | $552$     |
+|$9$      | Alpujarras             | $0.505$         | No      | $1$         | $3$      |$80.1\%$         | $579$     |
+|$10$     | Guatimoc               | $0.500$         | No      | $1$         | $3$      |$76.2\%$         |$972$      |
+:::
 
 ### Selección de almacenes estratégicos
 
@@ -122,103 +941,411 @@ Basado en los pesos posicionales y excluyendo las localidades inundadas, se sele
 
 **Almacén Primario**: Salvador Urbina (Ishcanalero)
 
-- **Peso posicional**: 1.000
+- **Peso posicional**: $1.000$
 - **Justificación**: Mayor peso posicional, presencia de tienda DICONSA, y ubicación estratégica fuera de zonas inundables
-- **Cobertura estimada**: 100% de la población afectada (7,407 personas)
+- **Cobertura estimada**: $100\%$ de la población afectada ($7,407$ personas)
 
 **Almacén Secundario**: Buenos Aires
 
-- **Peso posicional**: 0.101
+- **Peso posicional**: $0.101$
 - **Justificación**: Complementariedad geográfica y capacidad de respaldo operativo
-- **Cobertura estimada**: 0% (reserva estratégica)
+- **Cobertura estimada**: $0\%$ (reserva estratégica)
+
+::: {.content-visible when-format="html"}
+```{python}
+#| label: fig-mapa-logistico
+#| fig-cap: |
+#|   Mapa interactivo del modelo logístico para Cacahoatán, que muestra las localidades afectadas por inundaciones, 
+#|   los almacenes estratégicos seleccionados y las rutas de conexión optimizadas entre ambos. 
+#|   Las líneas naranjas representan los caminos más cortos del almacen 1 a las localidades inundadas calculados con NetworkX, mientras que los íconos indican 
+#|   los tipos de nodos: 🔴 localidades inundables y 🔵 almacenes activos. 
+#|   Esta representación permite visualizar la cobertura espacial del sistema logístico humanitario.
+#| context: "true"
+#| echo: false
+#| warning: false
+#| message: false
+
+def nodo_cercano(nombre_localidad):
+    if nombre_localidad in mapeo_coordenadas_completo:
+        coords = mapeo_coordenadas_completo[nombre_localidad]
+        return ox.nearest_nodes(G, coords['lon'], coords['lat'])
+    else:
+        print(f"⚠️ No se encontraron coordenadas para {nombre_localidad}")
+        return None
+
+
+m = folium.Map(location=[17.17, -92.33], zoom_start=11)
+
+# Crear un conjunto para evitar localidades duplicadas
+localidades_procesadas = set()
+
+# Localidades inundadas
+for loc in localidades_inundables:
+    if loc not in localidades_procesadas:  # Evitar duplicados
+        localidades_procesadas.add(loc)
+        df_loc = inundaciones_cacahoatan[inundaciones_cacahoatan['Localidad'] == loc]
+        if not df_loc.empty:
+            lat = df_loc['Latitud'].values[0]
+            lon = df_loc['Longitud'].values[0]
+            # Información del popup
+            poblacion = poblacion_localidad.get(loc, 0)
+            almacen_asignado = asignacion_localidades.get(loc, 'No asignado')
+            popup_text = f"""
+            <b>{loc}</b><br>
+            Población afectada: {poblacion:,.0f}<br>
+            Almacén asignado: {almacen_asignado}
+            """
+            folium.Marker(
+                [lat, lon],
+                popup=folium.Popup(popup_text, max_width=300),
+                tooltip=f"{loc} ({almacen_asignado})",
+                icon=folium.Icon(color='red', icon='tint')
+            ).add_to(m)
+
+# Almacenes
+for i, alm in enumerate([almacen_1, almacen_2], 1):
+    df_alm = censo_df[censo_df['NOM_LOC'] == alm[0]]
+    if not df_alm.empty:
+        lat = df_alm['LATITUD'].values[0]
+        lon = df_alm['LONGITUD'].values[0]
+        popup_text = f"""
+        <b>ALMACÉN {i}</b><br>
+        {alm[0]}<br>
+        Peso posicional: {alm[1]:.3f}<br>
+        Localidades asignadas: {len([l for l, a in asignacion_localidades.items() if a == f'Almacén {i}'])}
+        """
+        folium.Marker(
+            [lat, lon],
+            popup=folium.Popup(popup_text, max_width=300),
+            tooltip=f"Almacén {i}: {alm[0]}",
+            icon=folium.Icon(color='blue', icon='home')
+        ).add_to(m)
+
+        # Dibujar rutas hacia localidades asignadas
+        for loc, asign in asignacion_localidades.items():
+            if asign == f'Almacén {i}':
+                df_loc = inundaciones_cacahoatan[inundaciones_cacahoatan['Localidad'] == loc]
+                if not df_loc.empty:
+                    lat_loc = df_loc['Latitud'].values[0]
+                    lon_loc = df_loc['Longitud'].values[0]
+                    nodo_loc = ox.nearest_nodes(G, lon_loc, lat_loc)
+                    nodo_alm = nodo_cercano(alm[0])
+                    if nodo_alm and nodo_loc:
+                        try:
+                            path = nx.shortest_path(G, nodo_alm, nodo_loc, weight='length')
+                            coords = [(G.nodes[n]['y'], G.nodes[n]['x']) for n in path]
+                            folium.PolyLine(
+                                coords,
+                                color='orange' if i==1 else 'green',
+                                weight=3,
+                                popup=f"Ruta: {alm[0]} → {loc}"
+                            ).add_to(m)
+                        except:
+                            # Si falla el cálculo de ruta, dibujar línea recta
+                            folium.PolyLine(
+                                [[lat, lon], [lat_loc, lon_loc]],
+                                color='green' if i==1 else 'orange',
+                                weight=2,
+                                opacity=0.7,
+                                popup=f"Ruta directa: {alm[0]} → {loc}"
+                            ).add_to(m)
+
+display(m)
+```
+:::
 
 ::: {.content-visible when-format="pdf"}
-![Mapa de Cacahóatan, Chiapas.](almacen.png){width=90%}
+![Mapa interactivo del modelo logístico para Cacahoatán, que muestra las localidades afectadas por inundaciones, los almacenes estratégicos seleccionados y las rutas de conexión optimizadas entre ambos. Las líneas representan los caminos más cortos calculados con NetworkX, mientras que los íconos indican los tipos de nodos: 🔴 localidades inundables y 🔵 almacenes activos. Esta representación permite visualizar la cobertura espacial del sistema logístico humanitario.](almacen.png){width=55%}
 :::
 
 ## Diseño de la red logística optimizada
 
 ### Localidades inundables y asignaciones
 
-El análisis identificó 4 localidades críticamente afectadas por inundaciones, todas asignadas al Almacén Primario:
+El análisis identificó $4$ localidades críticamente afectadas por inundaciones, todas asignadas al Almacén Primario:
 
-**Tabla 4.2.** Localidades inundables y asignación logística
+::: {#tbl-localidades-inundables .tbl-caption}
+Localidades inundables y asignación logística
+
 
 | Localidad | Población Afectada | Almacén Asignado |
 |-----------|-------------------|------------------|
-| Unión Roja | 631 | Almacén 1 |
-| Cacahoatán | 5,732 | Almacén 1 |
-| El Carmen | 242 | Almacén 1 |
-| Faja de Oro | 802 | Almacén 1 |
-| **Total** | **7,407** | **Almacén 1** |
-
+| Unión Roja | $631$ | Almacén $1$ |
+| Cacahoatán | $5,732$ | Almacén $1$ |
+| El Carmen | $242$ | Almacén $1$ |
+| Faja de Oro | $802$ | Almacén $1$ |
+| **Total** | **$7,407$** | **Almacén $1$** |
+:::
 ### Distribución poblacional por grupos de edad
 
 La población afectada se distribuye en seis grupos etarios para una atención diferenciada:
 
-**Tabla 4.3.** Distribución de población afectada por grupos de edad
+::: {#tbl-poblacion-edad .tbl-caption}
+Distribución de población afectada por grupos de edad
+
 
 | Grupo de Edad | Población | Porcentaje |
 |---------------|-----------|------------|
-| Niños y Adolescentes (0-14 años) | 2,222 | 30.0% |
-| Hombres Jóvenes (15-29 años) | 1,111 | 15.0% |
-| Mujeres Jóvenes (15-29 años) | 1,111 | 15.0% |
-| Hombres Adultos (30-59 años) | 1,333 | 18.0% |
-| Mujeres Adultas (30-59 años) | 1,259 | 17.0% |
-| Adultos Mayores (60+ años) | 370 | 5.0% |
-| **Total** | **7,407** | **100.0%** |
+| Niños y Adolescentes (0-14 años) | $2,222$ | $30\%$ |
+| Hombres Jóvenes (15-29 años) | $1,037$ | $14\%$ |
+| Mujeres Jóvenes (15-29 años) | $1,185$ | $16\%$ |
+| Hombres Adultos (30-59 años) | $1,333$ | $18\%$ |
+| Mujeres Adultas (30-59 años) | $1,259$ | $17\%$ |
+| Adultos Mayores (60+ años) | $370$ | $5\%$ |
+| **Total** | **$7,407$** | **$100\%$** |
+:::
 
+::: {.content-visible when-format="html"}
+```{python}
+#| label: fig-poblacion-edad
+#| fig-cap: |
+#|   Distribución de la población afectada por grupos de edad en Cacahoatán. 
+#|   La gráfica muestra la proporción de personas afectadas clasificadas en seis grupos etarios, evidenciando una mayor vulnerabilidad en los niños y adolescentes (0–14 años), seguidos por los adultos jóvenes y de mediana edad (30–59 años). 
+#|   Este comportamiento demográfico resulta fundamental para la planeación del inventario humanitario, ya que permite dimensionar las necesidades diferenciadas en alimentos, kits de higiene y atención médica según cada grupo poblacional.
+#| context: "true"
+#| echo: false
+#| warning: false
+#| message: false
+
+
+import plotly.graph_objects as go
+
+# Datos desde tu código principal
+grupos = [grupos_edad[g]['nombre'] for g in grupos_edad.keys()]
+poblaciones = [poblacion_por_grupo[g] for g in grupos_edad.keys()]
+poblaciones_redondeadas = [int(round(p)) for p in poblaciones]
+
+# Crear texto personalizado para tooltip
+hover_text = [f"{g}, {p:,} afectados" for g, p in zip(grupos, poblaciones_redondeadas)]
+
+# Crear figura interactiva
+fig = go.Figure(data=[
+    go.Bar(
+        x=grupos,
+        y=poblaciones_redondeadas,
+        marker_color=['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57', '#FF9FF3'],
+        text=[f"{p:,}" for p in poblaciones_redondeadas],
+        textposition='outside',
+        hovertext=hover_text,        # texto del tooltip
+        hoverinfo='text'             # mostrar solo el texto personalizado
+    )
+])
+
+fig.update_layout(
+    title="Distribución de población afectada por grupos de edad",
+    xaxis_title="Grupo de edad",
+    yaxis_title="Población afectada",
+    template="plotly_white",
+    title_x=0.5,
+    margin=dict(t=60, b=60),
+    showlegend=False
+)
+
+fig.show()
+```
+:::
+
+::: {.content-visible when-format="pdf"}
+![Distribución de la población afectada por grupos de edad en Cacahoatán. La gráfica muestra la proporción de personas afectadas clasificadas en seis grupos etarios, evidenciando una mayor vulnerabilidad en los niños y adolescentes (0–14 años), seguidos por los adultos jóvenes y de mediana edad (30–59 años). Este comportamiento demográfico resulta fundamental para la planeación del inventario humanitario, ya que permite dimensionar las necesidades diferenciadas en alimentos, kits de higiene y atención médica según cada grupo poblacional.](edades.png){width=60%}
+:::
 ## Resultados de la optimización del sistema
 
 ### Eficiencia del sistema logístico implementado
 
-La configuración con un almacén primario demostró capacidad para atender al 100% de la población afectada. Los resultados de la optimización se resumen en la Tabla 4.4.
+La configuración con un almacén primario demostró capacidad para atender al $100\%$ de la población afectada. Los resultados de la optimización se resumen en la Tabla @tbl-optimizacion-cacahoatan.
 
-**Tabla 4.4.** Resultados de la optimización en Cacahoatán
+::: {#tbl-optimizacion-cacahoatan .tbl-caption}
+Resultados de la optimización en Cacahoatán
+
 
 | Indicador | Resultado |
 |-----------|-----------|
-| Cobertura de población | 100% |
-| Población total atendida | 7,407 personas |
-| Número de localidades cubiertas | 4 |
-| Fill rate promedio | 100% |
-| Costo total anual optimizado | $195,459,693 MXN |
-| Costo mensual promedio | $16,288,308 MXN |
-| Tasa de éxito en optimización | 100% |
+| Cobertura de población | $100\%$ |
+| Población total atendida | $7,407$ personas |
+| Número de localidades cubiertas | $4$ |
+| Fill rate promedio | $100\%$ |
+| Costo total anual optimizado | $\$195,459,693$ MXN |
+| Costo mensual promedio | $\$16,288,308$ MXN |
+| Tasa de éxito en optimización | $100\%$ |
+:::
+### Interpretación y comparación con Veracruz
+
+Los resultados obtenidos en Cacahoatán muestran una cobertura total de la población afectada y una tasa de éxito del $100\%$, comportamiento similar al observado en el caso de estudio del estado de Veracruz. No obstante, el costo total anual optimizado en Cacahoatán ($\$195.46$ millones MXN) representa aproximadamente el $30\%$ del costo registrado para Veracruz ($\$648.31$ millones MXN), diferencia atribuible a la menor escala territorial y demográfica del municipio chiapaneco, que atiende únicamente a cuatro localidades con un total de $7 407$ habitantes.
+
+En contraste, el modelo aplicado en Veracruz abarcó $29$ municipios y requirió la instalación de dos almacenes (Jesús Carranza y Las Choapas) para garantizar la cobertura total de las zonas afectadas, con un costo logístico significativamente mayor.
+
+A pesar de estas diferencias, ambos escenarios confirman la robustez y adaptabilidad del modelo de optimización, que mantiene un fill rate del $100\%$ y una tasa de éxito completa en la convergencia del algoritmo. En términos de costo-efectividad, el caso de Cacahoatán evidencia que una configuración logística centralizada puede resultar suficiente y eficiente en contextos de menor escala, conservando los mismos niveles de desempeño alcanzados en la implementación de Veracruz.
 
 ### Inventario humanitario optimizado
 
+Con base en el modelo de optimización desarrollado, se determinó el inventario humanitario necesario para atender a la población del municipio durante un periodo de $7$ días. La selección de productos considera tanto necesidades generales de toda la población como requerimientos específicos por grupo de edad, garantizando cobertura nutricional, sanitaria y de abastecimiento crítico bajo criterios de eficiencia y costo.
+
 #### Productos básicos para toda la población
+El inventario básico incluye los insumos esenciales requeridos por la totalidad de la población afectada.
+Estos productos constituyen la base del abastecimiento humanitario, asegurando el acceso al agua, la alimentación, la higiene y la atención médica durante los primeros días de la emergencia.
 
-**Tabla 4.5.** Inventario de productos básicos optimizado
+::: {#tbl-inventario-basico .tbl-caption}
+Inventario de productos básicos optimizado
 
-| **Producto (Código ONU)** | **Demanda 7 días** | **Cantidad Óptima** | **Unidad** | **Costo Total** |
+
+| **Producto (Código ONU)** | **Demanda $7$ días** | **Cantidad Óptima** | **Unidad** | **Costo Total** |
 |:---------------------------:|:-----------------:|:-------------------:|:----------:|:---------------:|
-| **WAT-001** Agua potable | 103,698 | 35,276 | LTR | $18,776,360 |
-| **FDP-001** Kit alimentario básico | 51,849 | 8,819 | KIT | $74,894,419 |
-| **WASH-001** Kit de higiene personal | 51,849 | 11,983 | KIT | $40,608,816 |
-| **NFI-002** Kit básico de ropa | 7,407 | 2,583 | KIT | $17,885,374 |
-| **MED-002** Kit médico de emergencia | 741 | 1,256 | KIT | $777,061 |
-| **Total** | **215,544** | **59,917** | **unidades** | **$152,942,030** |
-
+| **WAT-001** Agua potable | $103,698$ | $35,276$ | LTR | $\$18,776,360$ |
+| **FDP-001** Kit alimentario básico | $51,849$ | $8,819$ | KIT | $\$74,894,419$ |
+| **WASH-001** Kit de higiene personal | $51,849$ | $11,983$ | KIT | $\$40,608,816$ |
+| **NFI-002** Kit básico de ropa | $7,407$ | $2,583$ | KIT | $\$17,885,374$ |
+| **MED-002** Kit médico de emergencia | $741$ | $1,256$ | KIT | $\$777,061$ |
+| **Total** | **$215,544$** | **$59,917$** | **unidades** | **$\$152,942,030$** |
+:::
 #### Productos específicos por grupo de edad
 
-**Tabla 4.6.** Inventario por grupos de edad especializados
+Además de los productos básicos, se incluyen artículos diferenciados conforme a las necesidades específicas de cada grupo de edad.
+Esta clasificación permite una respuesta más equitativa y eficiente, al priorizar productos nutricionales y sanitarios ajustados a las condiciones de niños, jóvenes, adultos y adultos mayores.
 
-| **Grupo de Edad** | **Productos Específicos (Código ONU)** | **Demanda 7 días** | **Costo Total** |
+::: {#tbl-inventario-especializado .tbl-caption}
+Inventario por grupos de edad especializados.
+
+| **Grupo de Edad** | **Productos Específicos (Código ONU)** | **Demanda $7$ días** | **Costo Total** |
 |:-----------------:|:--------------------------------------:|:-----------------:|:---------------:|
-| Niños y Adolescentes | **NUT-001** Alimento terapéutico<br>**NUT-002** Alimento complementario<br>**NFI-001** Pañales desechables | 101,106 | $18,194,035 |
-| Hombres Jóvenes | **FDP-002** Alimento alta energía | 11,666 | $6,362,859 |
-| Mujeres Jóvenes | **FDP-003** Alimento balanceado | 9,333 | $4,758,160 |
-| Hombres Adultos | **FDP-004** Alimento energético de emergencia | 13,066 | $6,807,470 |
-| Mujeres Adultas | **FDP-005** Alimento fortificado nutritivo | 9,696 | $4,825,125 |
-| Adultos Mayores | **NUT-003** Alimento masticación fácil, **MED-001** Kit médico básico | 2,852 | $1,570,014 |
-| **Total** | **14 productos** | **147,719** | **$42,517,663** |
+| Niños y Adolescentes | **NUT-001** Alimento terapéutico<br>**NUT-002** Alimento complementario<br>**NFI-001** Pañales desechables | $101,106$ | $\$18,194,035$ |
+| Hombres Jóvenes | **FDP-002** Alimento alta energía | $11,666$ | $\$6,362,859$ |
+| Mujeres Jóvenes | **FDP-003** Alimento balanceado | $9,333$ | $\$4,758,160$ |
+| Hombres Adultos | **FDP-004** Alimento energético de emergencia | $13,066$ | $\$6,807,470$ |
+| Mujeres Adultas | **FDP-005** Alimento fortificado nutritivo | $9,696$ | $\$4,825,125$ |
+| Adultos Mayores | **NUT-003** Alimento masticación fácil, **MED-001** Kit médico básico | $2,852$ | $\$1,570,014$ |
+| **Total** | **$14$ productos** | **$147,719$** | **$\$42,517,663$** |
+:::
 
-![Productos humanitarios más costosos en Cacahoatán, Chiapas, según la optimización del inventario.](costosos.png){width=55%}
-![Distribución del costo total por producto en la optimización del inventario humanitario.](costo.png){width=40%}
+::: {.content-visible when-format="html"}
+```{python}
+#| label: fig-top-productos
+#| fig-cap: |
+#|   Productos con mayor impacto económico dentro del modelo de optimización aplicado a Cacahoatán. 
+#|   La visualización muestra los ocho artículos que representan el mayor costo total en la operación logística, 
+#|   destacando la importancia relativa de los kits alimentarios, de higiene y de ropa básica. 
+#|   Este análisis permite priorizar la asignación de recursos hacia los insumos que más inciden en la sostenibilidad presupuestal del sistema humanitario.
+#| context: "true"
+#| echo: false
+#| warning: false
+#| message: false
 
-Como se observa en las gráficas, los productos de mayor costo en el inventario corresponden a ropa, agua, higiene y alimentos diferenciados por grupo de edad, constituyendo el top 8 en gastos. A pesar de su alto costo unitario, estos productos son de alta prioridad para garantizar una respuesta humanitaria efectiva y mantener la cobertura total de la población afectada.
+
+import plotly.express as px
+
+# --- Calcular los productos más costosos ---
+top_productos = (
+    df_resultados.groupby(["Producto", "Tipo"])
+    .agg({"Costo_Total": "sum", "Costo_Unitario": "mean"})
+    .nlargest(8, "Costo_Total")
+    .reset_index()
+)
+
+# --- Crear gráfico interactivo ---
+fig = px.bar(
+    top_productos,
+    y="Producto",
+    x="Costo_Total",
+    orientation="h",
+    color="Tipo",  # diferencia visual entre productos básicos y específicos
+    color_discrete_map={
+        "Básico": "#6EC5E9",        # azul claro
+        "Específico": "#F6A85F"     # naranja suave
+    },
+    hover_data={
+        "Producto": True,
+        "Tipo": True,
+        "Costo_Total": ":$,",
+        "Costo_Unitario": ":$,"
+    },
+    text=top_productos["Costo_Total"].apply(lambda x: f"${x:,.0f}"),
+    title="Top 8 Productos Más Costosos",
+)
+
+# --- Ajustes estéticos ---
+fig.update_traces(
+    textposition="outside",
+    hovertemplate="<b>%{y}</b><br>Tipo de producto: %{customdata[0]}<br>"
+                  "Costo total: $%{x:,.0f}<br>"
+                  "Costo por unidad: $%{customdata[1]:,.0f}"
+)
+fig.update_layout(
+    xaxis_title="Costo Total (MXN)",
+    yaxis_title="Producto",
+    title_x=0.5,
+    title_font=dict(size=18, family="Arial", color="#222"),
+    xaxis=dict(showgrid=True, gridcolor="lightgray"),
+    yaxis=dict(showgrid=False),
+    plot_bgcolor="white",
+    hoverlabel=dict(bgcolor="white", font_size=13, font_family="Arial"),
+    legend_title_text="Tipo de producto"
+)
+
+fig.show()
+```
+
+```{python}
+#| label: fig-costos-tipo
+#| fig-cap: |
+#|   Distribución de los costos totales según el tipo de producto humanitario optimizado en Cacahoatán. 
+#|   Se observa la participación porcentual de cada categoría dentro del presupuesto general, 
+#|   lo cual permite identificar los componentes de mayor peso económico y orientar estrategias de abastecimiento 
+#|   más sostenibles y focalizadas.
+#| context: "true"
+#| echo: false
+#| warning: false
+#| message: false
+
+
+import plotly.graph_objects as go
+
+# --- Agregar columna de porcentaje ---
+costos_tipo = (
+    df_resultados.groupby("Tipo")["Costo_Total"]
+    .sum()
+    .reset_index()
+    .sort_values(by="Costo_Total", ascending=False)
+)
+costos_tipo["Porcentaje"] = (
+    costos_tipo["Costo_Total"] / costos_tipo["Costo_Total"].sum() * 100
+)
+
+# --- Gráfico interactivo de pastel ---
+fig = go.Figure(
+    go.Pie(
+        labels=costos_tipo["Tipo"],
+        values=costos_tipo["Costo_Total"],
+        text=[f"{p:.1f}%" for p in costos_tipo["Porcentaje"]],
+        textinfo="label+text",
+        hovertemplate=(
+            "Productos específicos: %{label}<br>"
+            "Costo total: $%{value:,.0f}<br>"
+            "Porcentaje: %{percent}<extra></extra>"
+        ),
+        marker=dict(colors=["#004C99", "#FFD700", "#4ECDC4", "#FF6B6B", "#96CEB4"]),
+    )
+)
+
+# --- Ajustes estéticos ---
+fig.update_layout(
+    title="Distribución de Costos por Tipo de Producto",
+    title_x=0.5,
+    title_font=dict(size=18, family="Arial", color="#222"),
+    showlegend=False,
+    plot_bgcolor="white",
+    paper_bgcolor="white",
+)
+
+fig.show()
+```
+::: 
+::: {.content-visible when-format="pdf"}
+![Productos con mayor impacto económico dentro del modelo de optimización aplicado a Cacahoatán. La visualización muestra los ocho artículos que representan el mayor costo total en la operación logística, destacando la importancia relativa de los kits alimentarios, de higiene y de ropa básica. Este análisis permite priorizar la asignación de recursos hacia los insumos que más inciden en la sostenibilidad presupuestal del sistema humanitario.](costosos.png){width=70%}
+::: 
+
+::: {.content-visible when-format="pdf"}
+![Distribución de los costos totales según el tipo de producto humanitario optimizado en Cacahoatán. Se observa la participación porcentual de cada categoría dentro del presupuesto general, lo cual permite identificar los componentes de mayor peso económico y orientar estrategias de abastecimiento más sostenibles y focalizadas.](costo.png){width=60%}
+::: 
+Como se observa en las gráficas, los productos de mayor costo en el inventario corresponden a ropa, agua, higiene y alimentos diferenciados por grupo de edad, constituyendo el top $8$ en gastos. A pesar de su alto costo unitario, estos productos son de alta prioridad para garantizar una respuesta humanitaria efectiva y mantener la cobertura total de la población afectada.
 
 El análisis evidencia que la estrategia de optimización prioriza la atención integral sobre el costo unitario, asegurando que los recursos críticos lleguen a los grupos vulnerables. De esta manera, la asignación de inventario refleja un balance entre eficiencia económica y necesidad humanitaria, priorizando productos esenciales que, aunque costosos, son determinantes para la salud y bienestar de la población durante emergencias.
 
@@ -226,7 +1353,7 @@ El análisis evidencia que la estrategia de optimización prioriza la atención 
 
 El proceso de optimización alcanzó una tasa de éxito del $100\%$, manteniendo las cantidades económicas de pedido (EOQ) tradicionales para la mayoría de los productos. La estabilidad en los resultados indica que el modelo EOQ convencional representa una solución robusta para el contexto específico de Cacahoatán.
 
-La distribución de costos muestra que los productos básicos (agua, alimentos, higiene) representan el $87.5\%$ del costo total, mientras que los productos especializados por edad constituyen el $21.8\%$ restante, reflejando la importancia de la atención diferenciada en la logística humanitaria.
+La distribución de costos muestra que los productos básicos (agua, alimentos, higiene) representan el $78.25\%$ del costo total, mientras que los productos especializados por edad constituyen el $21.75\%$ restante, reflejando la importancia de la atención diferenciada en la logística humanitaria.
 
 #### Análisis comparativo con el caso de Veracruz
 
@@ -234,7 +1361,7 @@ En la comparación con el caso de Veracruz, se observa que las diferencias clim�
 
 Desde el punto de vista **climático**, Cacahoatán presenta un entorno tropical húmedo con precipitaciones intensas concentradas en periodos cortos, mientras que Veracruz, aunque también expuesto a eventos hidrometeorológicos severos, posee una distribución más amplia de zonas costeras y planicies influenciadas por el Golfo de México. Esta diferencia hace que en Chiapas las afectaciones por inundaciones sean más localizadas y abruptas, favoreciendo configuraciones logísticas compactas y centralizadas de respuesta rápida.
 
-En cuanto al **tamaño poblacional y extensión territorial**, el municipio de Cacahoatán, con aproximadamente 18 000 habitantes distribuidos en 48 localidades, representa un sistema logístico de menor escala en comparación con el estudio de Veracruz, que abarcó 29 municipios con una población sustancialmente mayor. Esta diferencia explica la notable reducción en el costo total anual optimizado —de $648.3 millones MXN en Veracruz a $195.5 millones MXN en Cacahoatán— sin pérdida de eficiencia operativa.
+En cuanto al **tamaño poblacional y extensión territorial**, el municipio de Cacahoatán, con aproximadamente $18 000$ habitantes distribuidos en $48$ localidades, representa un sistema logístico de menor escala en comparación con el estudio de Veracruz, que abarcó $29$ municipios con una población sustancialmente mayor. Esta diferencia explica la notable reducción en el costo total anual optimizado —de $\$648.3$ millones MXN en Veracruz a $\$195.5$ millones MXN en Cacahoatán— sin pérdida de eficiencia operativa.
 
 Respecto a la **infraestructura y desarrollo urbano**, Veracruz cuenta con una red vial más densa y conectada, lo que permitió la operación simultánea de dos almacenes regionales (Jesús Carranza y Las Choapas) con amplias zonas de cobertura. En cambio, Cacahoatán presenta una infraestructura vial limitada, con carreteras secundarias y caminos rurales susceptibles a interrupciones durante las lluvias, razón por la cual el modelo optó por un esquema centralizado con un único almacén de alta eficiencia.
 
@@ -242,6 +1369,8 @@ En conjunto, las diferencias en estos tres factores confirman la **adaptabilidad
 
 
 ## Validación y análisis de robustez
+
+Para garantizar que el modelo logístico propuesto sea confiable y útil en situaciones reales de emergencia, se realizaron pruebas de validación bajo distintos escenarios de operación. Se evaluó tanto la robustez frente a condiciones adversas como el desempeño bajo condiciones estándar, utilizando métricas clave de cobertura, eficiencia y efectividad en la asignación de recursos.
 
 ### Escenarios de prueba implementados
 
@@ -252,32 +1381,24 @@ El modelo demostró robustez operativa mediante la evaluación de múltiples esc
 - **Fill rate alcanzado**: $100\%$
 - **Cobertura poblacional**: $100\%$
 - **Tasa de éxito de optimización**: $100\%$
-- **Eficiencia en asignaciones**: 4/4 localidades cubiertas
+- **Eficiencia en asignaciones**: $4/4$ localidades cubiertas
 
 La concentración de operaciones en un único almacén estratégicamente ubicado demostró ser adecuado para la escala de la emergencia en Cacahoatán, simplificando la gestión logística y reduciendo costos de coordinación.
 
 ## Conclusiones del caso Chiapas
 
-La implementación del modelo de optimización logística en el municipio de Cacahoatán, Chiapas, proporciona valiosas lecciones para la logística humanitaria en contextos de alta vulnerabilidad:
+La implementación del modelo de optimización logística en el municipio de Cacahoatán, Chiapas, confirma su efectividad en contextos de alta vulnerabilidad y dispersión poblacional. Los resultados muestran que un enfoque multicriterio para la identificación de localidades estratégicas permite seleccionar nodos logísticos óptimos, como Salvador Urbina, combinando infraestructura preexistente, conectividad vial y ubicación fuera de zonas inundables. Esta selección asegura la cobertura total de la población afectada de manera eficiente.
 
-### Hallazgos principales
+Contrario a las expectativas iniciales de requerir múltiples almacenes, el modelo demuestra que un único almacén centralizado puede atender el $100\%$ de los habitantes de las localidades críticas, simplificando la operación logística y reduciendo costos sin comprometer la efectividad del sistema. La optimización basada en el modelo EOQ tradicional se revela robusta, con tasas de éxito del $100\%$ en la convergencia del algoritmo, evidenciando la consistencia de las cantidades económicas de pedido convencionales en contextos locales.
 
-1. **Efectividad del enfoque de pesos posicionales**: La metodología multicriterio permitió identificar a Salvador Urbina como ubicación óptima para el almacén primario, combinando infraestructura existente (DICONSA), conectividad vial y posición estratégica fuera de zonas inundables.
+La distribución de recursos alcanzó un balance adecuado entre productos básicos ($78.25\%$ del presupuesto) y atenciones especializadas por grupos de edad ($21.75\%$), asegurando una respuesta humanitaria integral y priorizando los bienes más críticos sin comprometer la cobertura poblacional.
 
-2. **Configuración eficiente con un almacén**: Contrario a la expectativa inicial de requerir múltiples almacenes, la optimización demostró que un solo almacén estratégicamente ubicado puede cubrir el $100\%$ de la población afectada (7,407 personas) en las 4 localidades inundadas.
+### Implicaciones para la planeación logística
 
-3. **Estabilidad del modelo EOQ tradicional**: La optimización numérica confirmó que las cantidades económicas de pedido convencionales representan soluciones robustas para el contexto específico de Cacahoatán, con una tasa de éxito del $100\%$ en la convergencia del algoritmo.
-
-4. **Distribución balanceada de recursos**: El modelo logró equilibrar la provisión de productos básicos ($87.5\%$ del presupuesto) con atenciones especializadas por grupos de edad ($21.8\%$), asegurando una respuesta humanitaria integral.
-
-### Implicaciones para la planeación logística en Chiapas
-
-La experiencia en Cacahoatán sugiere que, para municipios con características similares de dispersión poblacional y vulnerabilidad hidrometeorológica, configuraciones logísticas centralizadas alrededor de nodos estratégicos pueden ofrecer soluciones eficientes y costo-efectivas.
-
-La metodología desarrollada demuestra capacidad para adaptarse a las particularidades del territorio chiapaneco, constituyendo una herramienta valiosa para la planeación anticipada de respuestas a emergencias en el estado.
+La experiencia en Cacahoatán sugiere que, para municipios con características similares de dispersión poblacional y vulnerabilidad hidrometeorológica, las configuraciones logísticas centralizadas alrededor de nodos estratégicos ofrecen soluciones eficientes y costo-efectivas. La metodología desarrollada demuestra capacidad para adaptarse a las particularidades del territorio chiapaneco, constituyéndose en una herramienta valiosa para la planificación anticipada de respuestas a emergencias en el estado.
 
 ### Perspectivas de escalabilidad
 
-Los resultados obtenidos establecen las bases para extender la implementación del modelo a otros municipios de Chiapas con perfiles de riesgo similares, contribuyendo al fortalecimiento de la resiliencia logística regional frente a desastres hidrometeorológicos en el contexto del cambio climático.
+Los resultados obtenidos establecen las bases para extender la implementación del modelo a otros municipios de Chiapas con perfiles de riesgo similares. Esta expansión contribuiría al fortalecimiento de la resiliencia logística regional frente a desastres hidrometeorológicos, especialmente en el contexto del cambio climático, y permitiría replicar la eficiencia alcanzada en Cacahoatán en escenarios de mayor escala y complejidad.
 
 :::

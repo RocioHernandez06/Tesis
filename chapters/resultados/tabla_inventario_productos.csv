@@ -1,0 +1,15 @@
+Producto,Almacen,Unidad,Demanda_7dias,Cantidad_EOQ,Cantidad_Optima,Punto_Reorden_R,Inventario_Seguridad_SS,Costo_Total,Ahorro
+Agua,Almacén 1,litros,103698.0,35276.0,35276.0,6913.0,1613.0,18776360.0,0.0
+Alimento_Alta_Energia,Almacén 1,raciones,10888.0,6599.0,6599.0,726.0,169.0,5940685.0,0.0
+Alimento_Balanceado,Almacén 1,raciones,9955.0,6532.0,6532.0,664.0,155.0,5073569.0,0.0
+Alimento_Energia,Almacén 1,raciones,13066.0,7396.0,7396.0,871.0,203.0,6807470.0,0.0
+Alimento_Masticacion_Facil,Almacén 1,raciones,2333.0,2958.0,2958.0,156.0,36.0,1372716.0,0.0
+Alimento_Nutritivo,Almacén 1,raciones,9696.0,6524.0,6524.0,646.0,151.0,4825125.0,0.0
+Alimentos,Almacén 1,kits,51849.0,8819.0,8819.0,3457.0,807.0,74894419.0,0.0
+Higiene,Almacén 1,kits,51849.0,11983.0,11983.0,3457.0,807.0,40608816.0,0.0
+Leche_Infantil,Almacén 1,litros,7777.0,5578.0,5578.0,518.0,121.0,4251131.0,0.0
+Medicamentos,Almacén 1,kits,741.0,1252.0,1256.0,49.0,12.0,777061.0,0.0
+Medicamentos_Basicos,Almacén 1,kits,518.0,1764.0,1764.0,35.0,8.0,197298.0,0.0
+Papilla_Niños,Almacén 1,raciones,31109.0,14966.0,14966.0,2074.0,484.0,9410133.0,0.0
+Pañales,Almacén 1,unidades,62219.0,43204.0,43204.0,4148.0,968.0,4532770.0,0.0
+Ropa,Almacén 1,kits,7407.0,2582.0,2583.0,494.0,115.0,17885374.0,0.0

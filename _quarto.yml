@@ -26,39 +26,28 @@ book:
     collapse-level: 2
     border: true
     search: true
-  repo-url: https://github.com/RocioHernandez06/thesis
+  repo-url: https://github.com/RocioHernandez06/Tesis
   page-navigation: true 
   chapters:
     - index.qmd
     - chapters/Introduccion.qmd
+    - chapters/capitulo2.qmd
+    - chapters/formulacion.qmd
     - chapters/chiapas.qmd
-    #   chapters: 
-    #     - partial_diff_eq.qmd
-    #     - boundary_problems.qmd
-    #     - initial_values.qmd
-    #     - texto_crank_nick.qmd
-    # - part: "Redes neuronales"
-    #   chapters: 
-    #     - pinns.qmd
-    #     - deeponet.qmd
-    # - part: PBHE.qmd
-    #   chapters:
-    #     - ecuacion.qmd
-    #     - ejemplos.qmd
-    # - part: estudio_caso.qmd
-    #   chapters: 
-    #     - metodologia.qmd
-    #     - pred_crank_nick.qmd
-    #     - model_don.qmd
-    #     - comparaciones.qmd
-    # - conclusiones.qmd
-    # - futuros_trabajos.qmd
     - references.qmd
 
 comments: 
   hypothesis: true
 
 bibliography: references.bib
+
+number-sections: true
+crossref:
+  chapters: true
+  fig-prefix: "Figura"
+  tbl-prefix: "Tabla"
+fig-cap-location: bottom
+tbl-cap-location: top
 
 format:
   html:
@@ -86,7 +75,6 @@ format:
       - text: |
           \usepackage{graphicx}
           \usepackage{float}
-          \usepackage{upgreek}
           \usepackage{amsmath}
     template-partials:
       - before-body.tex

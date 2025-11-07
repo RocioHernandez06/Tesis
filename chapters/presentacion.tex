@@ -276,6 +276,8 @@ Preposicionados e Inventario Humanitario}
   Escenarios Evaluados
 \item
   Conclusiones
+\item
+  Referencias
 \end{enumerate}
 \end{frame}
 
@@ -462,7 +464,7 @@ a la distribución normal:
 \begin{itemize}
 \tightlist
 \item
-  \textbf{Fill Rate} = Proporción de demanda satisfecha
+  \textbf{Fill Rate} proporción de demanda satisfecha
 \item
   \textbf{Relación directa} con nivel de servicio
 \item
@@ -502,7 +504,7 @@ C^p_i D^p_j} {\color{red}+
   \({\textcolor{blue}{\textbf{Costo de pedido o preparación}}}\): se
   reduce al aumentar la cantidad pedida.\\
 \item
-  \({\textcolor{blue}{\textbf{Costo de mantenimiento o almacenamiento}}}\):
+  \({\textcolor{blue}{\textbf{Costo del mantenimiento o almacenamiento}}}\):
   considerando el inventario promedio y la seguridad \(SS\).\\
 \item
   \({\textcolor{blue}{\textbf{Costo de adquisición}}}\): asociado a la
@@ -514,8 +516,8 @@ C^p_i D^p_j} {\color{red}+
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Peso Posicional}
-\phantomsection\label{peso-posicional}
+\begin{frame}{Peso Posicional (\(w_i\))}
+\phantomsection\label{peso-posicional-w_i}
 \begin{columns}[T]
 \begin{column}{0.5\linewidth}
 \textbf{Multicriterio para Selección}
@@ -530,6 +532,8 @@ Componentes del Peso Posicional \(w_i\):
   \textbf{Existencia de servicios básicos}
 \item
   \textbf{Infraestructura disponible}
+\item
+  \textbf{Población}
 \end{itemize}
 \end{column}
 
@@ -547,16 +551,15 @@ Priorizar localidades con \textbf{mayor capacidad logística} y
 \begin{frame}{Métricas de Desempeño}
 \phantomsection\label{muxe9tricas-de-desempeuxf1o}
 \textbf{Fill Rate del Sistema:}
-\[FR_{sistema} = \frac{\sum_{i \in I} \sum_{p \in P} D_{ip} \cdot FR_{ip}}{\sum_{i \in I} \sum_{p \in P} D_{ip}}\]
+\[FR_{sistema} = \frac{\sum_{i \in I} \sum_{p \in P} D_{ip} \cdot FR_{ip}}{\sum_{i \in I} \sum_{p \in P} D_{ip}}\text{,}\]
 
 \textbf{Costo Total por Persona Atendida:}
-
-\[Costo_{pe} = \frac{Costo_{t}}{Poblacion_{a}}\]
+\[Costo_{pe} = \frac{Costo_{t}}{Poblacion_{a}}\text{,}\]
 
 \textbf{Tiempo Promedio de Respuesta:}
-\[T_{respuesta} = \frac{\sum_{i \in I} \sum_{j \in J} t_{ij} \cdot Y_{ij}}{\sum_{i \in I} \sum_{j \in J} Y_{ij}}\]
+\[T_{respuesta} = \frac{\sum_{i \in I} \sum_{j \in J} t_{ij} \cdot Y_{ij}}{\sum_{i \in I} \sum_{j \in J} Y_{ij}}\text{,}\]
 
-Donde:
+donde:
 
 \begin{itemize}
 \tightlist
@@ -606,6 +609,32 @@ Donde:
 \begin{column}{0.4\linewidth}
 \includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{chiapas.png}
 \includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{productos.png}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Grupo de edades y productos específicos}
+\phantomsection\label{grupo-de-edades-y-productos-especuxedficos}
+\begin{columns}[T]
+\begin{column}{0.4\linewidth}
+\justifying
+
+\textbf{Observaciones clave:}
+
+\begin{itemize}
+\tightlist
+\item
+  Necesidades varían según \textbf{edad}: niños, adultos y ancianos.\\
+\item
+  \textbf{Mujeres} requieren kits de higiene distintos a los hombres.\\
+\item
+  La logística debe planificar la \textbf{distribución según edad y
+  género} para optimizar recursos.
+\end{itemize}
+\end{column}
+
+\begin{column}{0.6\linewidth}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{edades.png}
 \end{column}
 \end{columns}
 \end{frame}
@@ -731,7 +760,7 @@ humanitaria.
 \begin{itemize}
 \tightlist
 \item
-  Rango evaluado: \textbf{1 - 4 almacenes}
+  Rango evaluado: \textbf{1-2 almacenes}
 \item
   Trade-off: \textbf{Costo vs.~Cobertura}
 \end{itemize}
@@ -758,7 +787,7 @@ Hallazgos Principales
 \begin{itemize}
 \tightlist
 \item
-  \textbf{Marco decisiona}l para planificación pre-desastre
+  \textbf{Un marco decisional} para planificación pre-desastre
 \item
   \textbf{Herramienta cuantitativa} para agencias humanitarias
 \item
@@ -771,10 +800,7 @@ Hallazgos Principales
 \centering
 \large
 \textit{
-“Chiapas y Veracruz enfrentan desastres distintos, pero comparten una misma esperanza:  
-que la preparación salve más vidas que la reacción,  
-porque entre montañas o planicies, el agua no distingue fronteras,  
-pero la prevención sí puede marcar la diferencia.”
+“Tanto en Chiapas como en Veracruz, los desastres seguirán ocurriendo, pero la preparación puede marcar la diferencia.”
 }
 \end{block}
 \end{frame}
@@ -784,7 +810,7 @@ pero la prevención sí puede marcar la diferencia.”
 \begin{itemize}
 \tightlist
 \item
-  \textbf{Implementar configuración} de 2 almacenes
+  \textbf{Implementar configuración} de un almacén
 \item
   \textbf{Mantener inventarios} según cálculo EOQ con demanda
   Estocástica

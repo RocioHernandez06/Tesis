@@ -76,6 +76,7 @@ nocite: '@*'
  6. Aplicación en Chiapas
  7. Escenarios Evaluados
  8. Conclusiones
+ 9. Referencias
 
 ## Introducción
 ::: {.columns}
@@ -214,7 +215,7 @@ $$E[Z] = \phi(Z) - Z(1 - \Phi(Z))$$
 
 **Aplicación en Fill Rate:**
 
-- **Fill Rate** = Proporción de demanda satisfecha
+- **Fill Rate** proporción de demanda satisfecha
 - **Relación directa** con nivel de servicio
 - **Base para cálculo** de costos por escasez
 
@@ -245,11 +246,11 @@ $$
 
 
 - ${\textcolor{blue}{\textbf{Costo de pedido o preparación}}}$: se reduce al aumentar la cantidad pedida.  
-- ${\textcolor{blue}{\textbf{Costo de mantenimiento o almacenamiento}}}$: considerando el inventario promedio y la seguridad $SS$.  
+- ${\textcolor{blue}{\textbf{Costo del mantenimiento o almacenamiento}}}$: considerando el inventario promedio y la seguridad $SS$.  
 - ${\textcolor{blue}{\textbf{Costo de adquisición}}}$: asociado a la demanda esperada $D^p_j$ del producto $p$.  
 - ${\textcolor{red}{\textbf{Costo esperado de faltante}}}$: incorpora la variabilidad de la demanda $\sigma_d$ y el costo unitario de escasez $B$.  
 
-## Peso Posicional
+## Peso Posicional ($w_i$)
 ::: {.columns}
 :::: {.column width="50%"}
 **Multicriterio para Selección**
@@ -259,6 +260,7 @@ Componentes del Peso Posicional $w_i$:
 - **Accesibilidad por carretera** 
 - **Existencia de servicios básicos**
 - **Infraestructura disponible**
+- **Población**
 ::::
 
 :::: {.column width="50%"}
@@ -275,16 +277,15 @@ Priorizar localidades con **mayor capacidad logística** y **menor vulnerabilida
 
 
 **Fill Rate del Sistema:**
-$$FR_{sistema} = \frac{\sum_{i \in I} \sum_{p \in P} D_{ip} \cdot FR_{ip}}{\sum_{i \in I} \sum_{p \in P} D_{ip}}$$
+$$FR_{sistema} = \frac{\sum_{i \in I} \sum_{p \in P} D_{ip} \cdot FR_{ip}}{\sum_{i \in I} \sum_{p \in P} D_{ip}}\text{,}$$
 
 **Costo Total por Persona Atendida:**
-
-$$Costo_{pe} = \frac{Costo_{t}}{Poblacion_{a}}$$
+$$Costo_{pe} = \frac{Costo_{t}}{Poblacion_{a}}\text{,}$$
 
 **Tiempo Promedio de Respuesta:**
-$$T_{respuesta} = \frac{\sum_{i \in I} \sum_{j \in J} t_{ij} \cdot Y_{ij}}{\sum_{i \in I} \sum_{j \in J} Y_{ij}}$$
+$$T_{respuesta} = \frac{\sum_{i \in I} \sum_{j \in J} t_{ij} \cdot Y_{ij}}{\sum_{i \in I} \sum_{j \in J} Y_{ij}}\text{,}$$
 
-Donde:
+donde:
 
 - $t_{ij}$ : tiempo de transporte (horas) desde el almacén $𝑖$  hasta la zona afectada $𝑗$.
 
@@ -314,6 +315,24 @@ Donde:
 ::::
 
 :::
+
+## Grupo de edades y productos específicos
+::: {.columns}
+:::: {.column width="40%"}
+\justifying
+**Observaciones clave:**
+
+- Necesidades varían según **edad**: niños, adultos y ancianos.  
+- **Mujeres** requieren kits de higiene distintos a los hombres.  
+- La logística debe planificar la **distribución según edad y género** para optimizar recursos.
+::::
+
+:::: {.column width="60%"}
+![](edades.png){width=100%}
+::::
+
+:::
+
 
 ## Cálculo del Peso Posicional — Caso Chiapas
 
@@ -392,7 +411,7 @@ $$w_i = 0.20 (Diconsa_i +  AccesoVial_i +  Escuelas_i +  Servicios_i + Poblacion
 
 **Número de Almacenes:**
 
-- Rango evaluado: **1 - 4 almacenes**
+- Rango evaluado: **1-2 almacenes**
 - Trade-off: **Costo vs. Cobertura**
 
 ## Conclusiones
@@ -407,7 +426,7 @@ $$w_i = 0.20 (Diconsa_i +  AccesoVial_i +  Escuelas_i +  Servicios_i + Poblacion
 
 **Contribuciones:**
 
-- **Marco decisiona**l para planificación pre-desastre
+- **Un marco decisional** para planificación pre-desastre
 - **Herramienta cuantitativa** para agencias humanitarias
 - **Base metodológica** replicable en otros municipios
 
@@ -418,16 +437,13 @@ $$w_i = 0.20 (Diconsa_i +  AccesoVial_i +  Escuelas_i +  Servicios_i + Poblacion
 \centering
 \large
 \textit{
-“Chiapas y Veracruz enfrentan desastres distintos, pero comparten una misma esperanza:  
-que la preparación salve más vidas que la reacción,  
-porque entre montañas o planicies, el agua no distingue fronteras,  
-pero la prevención sí puede marcar la diferencia.”
+“Tanto en Chiapas como en Veracruz, los desastres seguirán ocurriendo, pero la preparación puede marcar la diferencia.”
 }
 \end{block}
 
 ## Recomendaciones para Cacahoatán
 
-- **Implementar configuración** de 2 almacenes
+- **Implementar configuración** de un almacén
 - **Mantener inventarios** según cálculo EOQ con demanda Estocástica
 - **Monitorear continuamente** factores de riesgo
 

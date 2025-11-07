@@ -1,0 +1,60 @@
+---
+title: Capitulo 
+lang: es
+format:
+  html: default
+  pdf: default  
+execute: 
+  freeze: auto 
+jupyter: python3
+---
+:::{style="text-align: justify"}
+##  Descripción del entorno computacional
+
+El desarrollo experimental de esta investigación se llevó a cabo en un entorno computacional basado en **Python 3.12**, un lenguaje ampliamente utilizado en modelación matemática y análisis numérico por su flexibilidad, facilidad de integración y extenso ecosistema de librerías científicas.
+
+Las principales herramientas empleadas fueron:
+
+- **NumPy**: para la ejecución eficiente de operaciones algebraicas y manejo de matrices.  
+- **Pandas**: destinada a la manipulación y análisis estructurado de datos provenientes de diversas fuentes.  
+- **SciPy (módulo `optimize`)**: utilizada para implementar métodos de optimización numérica, incluyendo algoritmos robustos como *L-BFGS-B*.  
+- **Matplotlib**: para la generación de representaciones gráficas que facilitan la interpretación de resultados.  
+
+El entorno de trabajo se configuró en un equipo con sistema operativo **Windows 11**, procesador de arquitectura **x64** y 16 GB de memoria RAM, garantizando estabilidad en las simulaciones y tiempos de ejecución adecuados.  
+
+La adopción de Python responde al interés de favorecer la **reproducibilidad y transparencia** de los resultados, principios fundamentales en la investigación científica contemporánea.  
+
+---
+
+## Estructura general del modelo computacional
+
+Antes de definir formalmente los modelos matemáticos, se estableció una estructura computacional modular que sirvió como marco de referencia para el desarrollo de los procedimientos de simulación y optimización.  
+
+Esta estructura permite mantener la coherencia entre las distintas etapas del trabajo y facilita su futura implementación en diferentes contextos.  
+
+Las etapas generales consideradas fueron:
+
+1. **Entrada de datos**: incorporación de parámetros y variables necesarias para la simulación, tales como demanda, costos o tiempos de entrega.  
+2. **Preprocesamiento y normalización**: transformación de los datos para garantizar consistencia y compatibilidad entre unidades.  
+3. **Definición de funciones objetivo y restricciones**: representación computacional de las expresiones matemáticas que serán objeto de optimización.  
+4. **Configuración de condiciones de frontera**: establecimiento de cotas o límites que aseguran la factibilidad de las soluciones.  
+5. **Ejecución del algoritmo de optimización**: aplicación del método seleccionado para resolver el problema de manera numérica.  
+6. **Salida y análisis de resultados**: obtención de indicadores que permiten validar la coherencia y desempeño del modelo.  
+
+Esta organización modular ofrece una visión integral del flujo de trabajo y posibilita la reutilización de componentes en futuros proyectos de investigación aplicada.  
+
+---
+
+##  Implementación del algoritmo *L-BFGS-B*
+
+Para la resolución de los problemas de optimización no lineal con restricciones tipo caja, se seleccionó el algoritmo **Limited-memory Broyden–Fletcher–Goldfarb–Shanno con Bounds (L-BFGS-B)**, perteneciente a la familia de métodos cuasi-Newton.  
+
+El *L-BFGS-B* se caracteriza por su **eficiencia en memoria**, **capacidad para manejar restricciones** y **robustez numérica**. Estas propiedades lo hacen especialmente adecuado para problemas de optimización de mediana escala, en los que es necesario mantener cotas sobre las variables sin reformular el modelo.  
+
+En términos conceptuales, el algoritmo aproxima de forma iterativa el gradiente y la matriz Hessiana del sistema, proyectando cada iteración dentro del espacio factible definido por los límites de las variables. La convergencia se alcanza cuando se satisfacen las condiciones de **Karush–Kuhn–Tucker (KKT)**, que garantizan la optimalidad local.  
+
+Aunque la implementación práctica se realizó mediante la función `minimize()` del módulo `scipy.optimize`, el código fuente completo se incluye en los **Anexos** del documento, con el propósito de mantener el enfoque teórico del capítulo y conservar la legibilidad del texto principal.  
+
+De esta manera, el presente capítulo establece los fundamentos computacionales y metodológicos necesarios para el desarrollo del **modelo de optimización** que se formulará en el **Capítulo siguiente**, y que posteriormente se aplicará al caso de estudio en un municipio del estado de **Chiapas**.  
+
+:::
