@@ -245,7 +245,7 @@ $${#eq-PBHE_completa}
 Un *fill rate* elevado indica una mayor cobertura de las necesidades, mientras que valores bajos sugieren fallas en la asignación de recursos o limitaciones estructurales de la red.
 
 
-## Escenario inicial estado de Veracruz
+## Escenario base estado de Veracruz
 
 Con el fin de verificar la eficiencia y robustez del modelo de optimización propuesto, se analizaron diversos escenarios que simulan condiciones reales y variaciones en la infraestructura logística, la demanda y las restricciones operativas. Los escenarios definidos permiten evaluar el impacto de las decisiones estratégicas (ubicación y número de almacenes, cantidad de inventario y rutas de distribución) sobre el costo total y el nivel de servicio.
 

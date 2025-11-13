@@ -50,7 +50,7 @@ div.csl-indent {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../chapters/capitulo2.html" rel="next">
+<link href="../chapters/metodos.html" rel="next">
 <link href="../index.html" rel="prev">
 <link href="../FCFMLOGO.png" rel="icon" type="image/png">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
@@ -357,26 +357,32 @@ window.MathJax = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/capitulo2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Capitulo</span></span></a>
+  <a href="../chapters/metodos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Métodos numéricos y optimización con restricciones tipo caja</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/implementacion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Implementación y herramientas computacionales</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../chapters/formulacion.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Formulacion del Problema</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Formulacion del Problema</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../chapters/chiapas.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Escenario principal estado de Chiapas</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Escenario principal estado de Chiapas</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../references.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">References</span></a>
+  <a href="../referencias.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Referencias</span></a>
   </div>
 </li>
     </ul>
@@ -411,13 +417,13 @@ window.MathJax = {
 
 
 <div style="text-align: justify">
-<p>Las inundaciones constituyen uno de los fenómenos naturales más frecuentes y devastadores a nivel global, afectando la infraestructura, el acceso a servicios básicos y, sobre todo, la vida y dignidad de las personas. En este contexto, el diseño y aplicación de modelos matemáticos orientados a la logística humanitaria cobra una relevancia crítica, no sólo como una herramienta de gestión operativa, sino como un instrumento de justicia social y resiliencia territorial. <span class="citation" data-cites="BarojasPayan2021">Barojas-Payán et&nbsp;al. (<a href="../references.html#ref-BarojasPayan2021" role="doc-biblioref">2021</a>)</span></p>
-<p>En esa línea, <span class="citation" data-cites="Insani2024">Insani, Widodo, y Rahman (<a href="../references.html#ref-Insani2024" role="doc-biblioref">2024</a>)</span> desarrollaron un modelo de programación entera mixta orientado a coordinar simultáneamente la evacuación y la entrega de ayuda en contextos de inundaciones tempranas. Su propuesta incorpora entregas divididas, reutilización de vehículos y múltiples viajes, siendo resuelta mediante un algoritmo genético modificado que alcanzó una eficiencia 92.5 % superior frente a métodos exactos tradicionales.</p>
-<p>Por su parte, <span class="citation" data-cites="Sheikholeslami2022">Sheikholeslami y Zarrinpoor (<a href="../references.html#ref-Sheikholeslami2022" role="doc-biblioref">2022</a>)</span> propusieron un modelo de programación lineal entera mixta multiperíodo bajo condiciones de incertidumbre. Este modelo integra restricciones difusas y estocásticas para optimizar la localización de almacenes, la gestión de inventarios y la provisión de atención médica posterior a los desastres.</p>
-<p>En otro enfoque, <span class="citation" data-cites="RomeroMancilla2024">Romero-Mancilla, Martínez-Flores, y Sánchez-Partida (<a href="../references.html#ref-RomeroMancilla2024" role="doc-biblioref">2024</a>)</span> diseñaron un modelo multimodal que combina transporte terrestre y aéreo mediante drones, estructurado como un modelo multiobjetivo que considera transbordos y múltiples depósitos. Su objetivo principal es equilibrar el costo logístico con los tiempos de entrega, especialmente en escenarios donde la infraestructura vial ha sido severamente afectada.</p>
-<p>Asimismo, <span class="citation" data-cites="SantanaRobles2024">Santana-Robles, López, y Rivera (<a href="../references.html#ref-SantanaRobles2024" role="doc-biblioref">2024</a>)</span> formularon un modelo híbrido que combina programación lineal entera con problemas de ruteo vehicular (VRP), enfocado en asignar refugios y optimizar la entrega de suministros bajo variaciones de demanda y recursos limitados.</p>
-<p>De forma complementaria, <span class="citation" data-cites="Mashrut2024">Mashrut y Rahimi (<a href="../references.html#ref-Mashrut2024" role="doc-biblioref">2024</a>)</span> propuso un modelo robusto-fuzzy-probabilístico biobjetivo que busca minimizar tanto el costo operativo como el costo de privación, es decir, el impacto social derivado de la falta de ayuda oportuna.</p>
-<p>Finalmente, <span class="citation" data-cites="Pujiana2020">Pujiana, Utama, y Rahmawati (<a href="../references.html#ref-Pujiana2020" role="doc-biblioref">2020</a>)</span> implementaron un modelo de ruteo multi-depósito (MDVRP) aplicado a la fase posterior a inundaciones, optimizando el uso de depósitos temporales, rutas y cobertura territorial con base en restricciones de capacidad y demanda.</p>
+<p>Las inundaciones constituyen uno de los fenómenos naturales más frecuentes y devastadores a nivel global, afectando la infraestructura, el acceso a servicios básicos y, sobre todo, la vida y dignidad de las personas. En este contexto, el diseño y aplicación de modelos matemáticos orientados a la logística humanitaria cobra una relevancia crítica, no sólo como una herramienta de gestión operativa, sino como un instrumento de justicia social y resiliencia territorial. <span class="citation" data-cites="BarojasPayan2021">Barojas-Payán et&nbsp;al. (<a href="../referencias.html#ref-BarojasPayan2021" role="doc-biblioref">2021</a>)</span></p>
+<p>En esa línea, <span class="citation" data-cites="Insani2024">Insani, Widodo, y Rahman (<a href="../referencias.html#ref-Insani2024" role="doc-biblioref">2024</a>)</span> desarrollaron un modelo de programación entera mixta orientado a coordinar simultáneamente la evacuación y la entrega de ayuda en contextos de inundaciones tempranas. Su propuesta incorpora entregas divididas, reutilización de vehículos y múltiples viajes, siendo resuelta mediante un algoritmo genético modificado que alcanzó una eficiencia 92.5 % superior frente a métodos exactos tradicionales.</p>
+<p>Por su parte, <span class="citation" data-cites="Sheikholeslami2022">Sheikholeslami y Zarrinpoor (<a href="../referencias.html#ref-Sheikholeslami2022" role="doc-biblioref">2022</a>)</span> propusieron un modelo de programación lineal entera mixta multiperíodo bajo condiciones de incertidumbre. Este modelo integra restricciones difusas y estocásticas para optimizar la localización de almacenes, la gestión de inventarios y la provisión de atención médica posterior a los desastres.</p>
+<p>En otro enfoque, <span class="citation" data-cites="RomeroMancilla2024">Romero-Mancilla, Martínez-Flores, y Sánchez-Partida (<a href="../referencias.html#ref-RomeroMancilla2024" role="doc-biblioref">2024</a>)</span> diseñaron un modelo multimodal que combina transporte terrestre y aéreo mediante drones, estructurado como un modelo multiobjetivo que considera transbordos y múltiples depósitos. Su objetivo principal es equilibrar el costo logístico con los tiempos de entrega, especialmente en escenarios donde la infraestructura vial ha sido severamente afectada.</p>
+<p>Asimismo, <span class="citation" data-cites="SantanaRobles2024">Santana-Robles, López, y Rivera (<a href="../referencias.html#ref-SantanaRobles2024" role="doc-biblioref">2024</a>)</span> formularon un modelo híbrido que combina programación lineal entera con problemas de ruteo vehicular (VRP), enfocado en asignar refugios y optimizar la entrega de suministros bajo variaciones de demanda y recursos limitados.</p>
+<p>De forma complementaria, <span class="citation" data-cites="Mashrut2024">Mashrut y Rahimi (<a href="../referencias.html#ref-Mashrut2024" role="doc-biblioref">2024</a>)</span> propuso un modelo robusto-fuzzy-probabilístico biobjetivo que busca minimizar tanto el costo operativo como el costo de privación, es decir, el impacto social derivado de la falta de ayuda oportuna.</p>
+<p>Finalmente, <span class="citation" data-cites="Pujiana2020">Pujiana, Utama, y Rahmawati (<a href="../referencias.html#ref-Pujiana2020" role="doc-biblioref">2020</a>)</span> implementaron un modelo de ruteo multi-depósito (MDVRP) aplicado a la fase posterior a inundaciones, optimizando el uso de depósitos temporales, rutas y cobertura territorial con base en restricciones de capacidad y demanda.</p>
 <p>Estos enfoques demuestran que la preparación logística previa al desastre no sólo mejora la eficiencia de la respuesta, sino que permite reducir desigualdades territoriales y proteger de manera diferenciada a las comunidades más vulnerables. La implementación de modelos que integren criterios técnicos (distancia, inventario, costo), operativos (capacidad, transporte) y sociales (accesibilidad, prioridad) es indispensable para enfrentar los desafíos logísticos que imponen los desastres hidrometeorológicos. En el caso del presente modelo, se implementa en el estado de Veracruz como área piloto, con miras a expandirse hacia el estado de Chiapas, dado que comparte vulnerabilidades similares frente a fenómenos hidrometeorológicos, alta dispersión poblacional y limitada infraestructura logística.</p>
 <p>Por todo lo anterior, el presente estudio se basa en la construcción de un modelo de optimización entero‑mixto no lineal, que articula variables de localización de almacenes preposicionados, gestión de inventarios y niveles de servicio (<em>fill rate</em>), con el fin de diseñar una red logística humanitaria eficiente, flexible y ética. Este modelo se inspira en las mejores prácticas de la literatura científica reciente, adaptándolas a condiciones de incertidumbre, alta demanda y restricciones operativas.</p>
 </div>
@@ -867,8 +873,8 @@ Sheikholeslami, Reza, y Nima Zarrinpoor. 2022. <span>«Multi-period MILP under u
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../chapters/capitulo2.html" class="pagination-link" aria-label="Capitulo">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Capitulo</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../chapters/metodos.html" class="pagination-link" aria-label="Métodos numéricos y optimización con restricciones tipo caja">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Métodos numéricos y optimización con restricciones tipo caja</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

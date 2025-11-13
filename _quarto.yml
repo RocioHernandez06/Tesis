@@ -1,5 +1,6 @@
 project:
   type: book
+  output-dir: _book 
 execute: 
   freeze: auto
 
@@ -31,10 +32,11 @@ book:
   chapters:
     - index.qmd
     - chapters/Introduccion.qmd
-    - chapters/capitulo2.qmd
+    - chapters/metodos.qmd
+    - chapters/implementacion.qmd
     - chapters/formulacion.qmd
     - chapters/chiapas.qmd
-    - references.qmd
+    - referencias.qmd
 
 comments: 
   hypothesis: true

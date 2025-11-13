@@ -1,5 +1,5 @@
 ---
-title: Capitulo 
+title: Implementación y herramientas computacionales
 lang: es
 format:
   html: default
