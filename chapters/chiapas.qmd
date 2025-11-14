@@ -1288,13 +1288,13 @@ fig.show()
 #| fig-cap: |
 #|   Distribución de los costos totales según el tipo de producto humanitario optimizado en Cacahoatán. 
 #|   Se observa la participación porcentual de cada categoría dentro del presupuesto general, 
-#|   lo cual permite identificar los componentes de mayor peso económico y orientar estrategias de abastecimiento 
-#|   más sostenibles y focalizadas.
+#|   lo cual permite identificar los componentes de mayor peso económico y orientar estrategias 
+#|   de abastecimiento más sostenibles y focalizadas.
 #| context: "true"
 #| echo: false
 #| warning: false
 #| message: false
-
+#| fig-align: center
 
 import plotly.graph_objects as go
 
@@ -1325,7 +1325,7 @@ fig = go.Figure(
     )
 )
 
-# --- Ajustes estéticos ---
+# --- Ajustes estéticos + TAMAÑO CONTROLADO ---
 fig.update_layout(
     title="Distribución de Costos por Tipo de Producto",
     title_x=0.5,
@@ -1333,9 +1333,17 @@ fig.update_layout(
     showlegend=False,
     plot_bgcolor="white",
     paper_bgcolor="white",
+    autosize=False,          # <- importante: evita que Plotly lo haga gigante
+    width=550,               # <- AJUSTA EL ANCHO AQUÍ (ej. 500 px)
+    height=400,              # <- AJUSTA EL ALTO AQUÍ (ej. 380 px)
+    margin=dict(l=20, r=20, t=60, b=60)
 )
 
-fig.show()
+# --- Mostrar sin barra de herramientas ---
+fig.show(config={
+    "displayModeBar": False,
+    "responsive": False      # <- esto detiene el comportamiento expansivo
+})
 ```
 ::: 
 ::: {.content-visible when-format="pdf"}

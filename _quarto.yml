@@ -22,7 +22,7 @@ book:
   downloads: [pdf, epub]
   favicon: FCFMLOGO.png
   sidebar:
-    logo: LOGO-JUBILEO.png
+    logo: LOGO.png
     style: floating
     collapse-level: 2
     border: true
