@@ -266,7 +266,7 @@
 
 \title{Inundaciones}
 \author{Yulissa del Rocío Hernández Vázquez}
-\date{2025-11-14}
+\date{2025-11-21}
 \begin{document}
 \begin{titlepage}
 \hspace{-1.7cm} %Este comando es para mandar a la izquierda ;)
@@ -409,6 +409,1278 @@ restricciones operativas.
 
 \bookmarksetup{startatroot}
 
+\chapter{Fundamentación Teórica y Formulación Matemática del
+Modelo}\label{fundamentaciuxf3n-teuxf3rica-y-formulaciuxf3n-matemuxe1tica-del-modelo}
+
+\section{Introducción al problema integrado de localización e
+inventario}\label{introducciuxf3n-al-problema-integrado-de-localizaciuxf3n-e-inventario}
+
+\subsection{Relevancia en logística humanitaria y gestión de
+emergencias}\label{relevancia-en-loguxedstica-humanitaria-y-gestiuxf3n-de-emergencias}
+
+La logística humanitaria desempeña un papel fundamental en la respuesta
+a desastres, al coordinar la disponibilidad, distribución y acceso
+equitativo a bienes esenciales en entornos caracterizados por alta
+incertidumbre, infraestructura comprometida y recursos limitados (Balcik
+\& Beamon, 2008; Caunhye et al., 2012). A diferencia de los sistemas
+logísticos comerciales ---donde predominan criterios de eficiencia
+económica---, los contextos humanitarios priorizan objetivos de
+\textbf{rapidez, cobertura universal y mitigación del riesgo}, lo que
+exige modelos matemáticos capaces de integrar decisiones estratégicas y
+tácticas bajo condiciones de información imperfecta.
+
+En este marco, el \textbf{problema integrado de localización e
+inventario} se ha consolidado como una herramienta clave para la
+planificación anticipada, ya que permite determinar, de manera conjunta:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{La ubicación óptima de almacenes de preposicionamiento}, y\\
+\item
+  \textbf{Los niveles de inventario que deben almacenarse antes de la
+  ocurrencia de un evento disruptivo}.
+\end{enumerate}
+
+Ambas decisiones condicionan el desempeño global del sistema en términos
+de costo total, robustez operativa y equidad en la atención (Vanajakum
+\& Kachitvichyanukul, 2023). Su naturaleza híbrida ---estratégica
+(ubicación) y táctica (inventario)--- impone desafíos estructurales que
+no pueden abordarse mediante enfoques secuenciales o modelos clásicos
+aislados.
+
+Aunque la demanda en estos escenarios es inherentemente incierta, en
+este trabajo se adopta un \textbf{enfoque determinista robusto},
+ampliamente fundamentado en la teoría de inventarios bajo demanda
+aleatoria (Hadley \& Whitin, 1963). Este enfoque no modela la
+incertidumbre mediante variables aleatorias ni formulaciones
+estocásticas, sino que la \textbf{incorpora de forma paramétrica}
+mediante un \textbf{stock de seguridad fijo}, derivado de estimaciones
+de la variabilidad de la demanda.
+
+Específicamente, se asume que la demanda en cada zona
+\(j\in\mathcal{J}\) posee un valor esperado \(d_j>0\) y una desviación
+estándar \(\sigma_j\geq0\), ambos tratados como \textbf{parámetros
+exógenos conocidos}. Dado un tiempo de reposición \(L>0\) y un nivel de
+servicio objetivo \(\alpha\in(0,1)\), se define el \textbf{factor de
+seguridad} como \(Z=\Phi^{-1}(\alpha)\), donde \(\Phi^{-1}\) denota la
+inversa de la función de distribución acumulada de la normal estándar.
+Aunque esta construcción tiene raíces probabilísticas, en el modelo
+propuesto \textbf{todos los elementos son deterministas}, y el término
+\(Z\sigma\sqrt{L}\) se incorpora como un parámetro de ajuste que refleja
+la magnitud de la incertidumbre.
+
+Este enfoque permite formular un \textbf{modelo de optimización no
+lineal determinista}, cuya estructura matemática se preserva intacta
+frente a la complejidad computacional inherente a los modelos
+estocásticos. La ausencia de esperanzas, escenarios o variables de
+segundo nivel garantiza trazabilidad analítica, estabilidad numérica y
+compatibilidad con métodos de optimización eficientes para problemas con
+cotas, como se discutirá en capítulos posteriores.
+
+\subsection{Limitaciones de los enfoques clásicos bajo incertidumbre y
+no
+linealidad}\label{limitaciones-de-los-enfoques-cluxe1sicos-bajo-incertidumbre-y-no-linealidad}
+
+Los modelos clásicos de localización e inventario ---como el problema de
+localización sin capacidades (UFLP), el modelo de lote económico (EOQ) o
+sus variantes deterministas--- han sido ampliamente estudiados bajo el
+supuesto de \textbf{información perfecta y estructura lineal}, un
+enfoque cuya pertinencia disminuye notablemente en escenarios
+humanitarios caracterizados por \textbf{incertidumbre estructural} y
+\textbf{no linealidad inherente} en costos y restricciones (Hadley \&
+Whitin, 1963; Snyder, 2006).
+
+\subsubsection{Supuestos restrictivos del modelo EOQ
+clásico}\label{supuestos-restrictivos-del-modelo-eoq-cluxe1sico}
+
+El modelo EOQ se fundamenta en supuestos como:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Demanda constante y conocida \(D>0\).
+\item
+  Tiempo de entrega determinista \(L \geq 0\).
+\item
+  Costos lineales: costo de pedido \(S\), costo unitario de
+  mantenimiento \(H\), sin faltantes.
+\item
+  Reposición instantánea y sin restricciones de capacidad (Hadley \&
+  Whitin, 1963).
+\end{enumerate}
+
+El costo total del modelo es:
+
+\[
+Z^{EOQ}(Q)=\frac{D}{Q}S+\frac{Q}{2}H+DC,
+\]
+
+y su solución óptima clásica:
+
+\[
+Q^{EOQ}=\sqrt{\frac{2DS}{H}}.
+\]
+
+Este resultado depende de la \textbf{deterministicidad} y la
+\textbf{convexidad estricta}. Sin embargo, en logística humanitaria:
+
+\begin{itemize}
+\tightlist
+\item
+  La demanda es aleatoria \(D(\omega)\).
+\item
+  \(L\) es incierto debido a afectaciones en infraestructura.
+\item
+  Los faltantes deben modelarse mediante una penalización finita
+  \(\beta>0\).
+\item
+  Los costos pueden presentar economías de escala y no convexidades
+  (Porteus, 2002).
+\end{itemize}
+
+\subsubsection{Incapacidad del EOQ para capturar
+riesgo}\label{incapacidad-del-eoq-para-capturar-riesgo}
+
+Si la demanda durante el tiempo de entrega es
+\(D_L\sim\mathcal{N}(\mu_L,\sigma_L^2)\), el inventario de seguridad
+requiere:
+
+\[
+\mathbb{P}(D_L\leq Q/2 + Z_\alpha\sigma_L)\geq \alpha.
+\]
+
+Con ello, la función de costo extendida se vuelve:
+
+\[
+Z(Q)=\frac{D}{Q}S+\left(\frac{Q}{2}+Z_\alpha\sigma_L\right)H+DC+\frac{D}{Q}\beta C. \tag{2.1}
+\]
+
+Esta función \textbf{no es convexa globalmente} cuando \(\sigma_L\)
+depende de \(Q\), como ocurre cuando existe congestión en transporte o
+variabilidad dependiente del tamaño del pedido (Bertsimas \& Thiele,
+2006; Shapiro et al., 2021).
+
+\begin{quote}
+\textbf{Proposición (No linealidad estricta).}\\
+La función \(Z(Q)\) definida en (2.1) es diferenciable en
+\((0,\infty)\), pero no es convexa globalmente si \(\beta>0\) y
+\(\sigma_L>0\).\\
+Si \(\sigma_L\) es constante: \[
+\frac{d^2 Z}{dQ^2}=\frac{2D(S+\beta C)}{Q^3}>0.
+\] Pero si \(\sigma_L=\sigma\sqrt{L(Q)}\) y \(L(Q)\) es no lineal,
+entonces \(Z(Q)\) pierde convexidad.
+\end{quote}
+
+Esto demuestra que muchos métodos clásicos basados en convexidad y
+separabilidad resultan inaplicables en condiciones realistas.
+
+\subsubsection{Limitaciones de modelos de localización
+deterministas}\label{limitaciones-de-modelos-de-localizaciuxf3n-deterministas}
+
+El modelo clásico UFLP resuelve:
+
+\[
+\min_{x\in\{0,1\}^m, y\ge 0}\sum_{i}f_i x_i + \sum_{i}\sum_j c_{ij}y_{ij},
+\]
+
+bajo restricciones de asignación deterministas. Sin embargo:
+
+\begin{itemize}
+\tightlist
+\item
+  La demanda \(d_j\) es aleatoria.
+\item
+  Los costos pueden variar según accesibilidad o daños.
+\item
+  Las capacidades reales son inciertas.
+\end{itemize}
+
+Modelar \(d_j\) mediante \(\mathbb{E}[d_j]\) genera soluciones frágiles
+frente a escenarios adversos (Snyder, 2006).
+
+\subsubsection{Ejemplo ilustrativo: EOQ clásico vs.~EOQ extendido con
+stock de seguridad y
+penalización}\label{ejemplo-ilustrativo-eoq-cluxe1sico-vs.-eoq-extendido-con-stock-de-seguridad-y-penalizaciuxf3n}
+
+Considérese un contexto en el que la demanda esperada es \(D=1000\)
+unidades, con una variabilidad estimada cuya desviación estándar es
+\(\sigma=10\). Aunque la demanda real puede fluctuar (por ejemplo, entre
+800 y 1200 unidades en eventos históricos), en este enfoque se modela la
+incertidumbre mediante parámetros fijos derivados de su comportamiento
+estadístico. Los demás parámetros son:
+
+\begin{itemize}
+\tightlist
+\item
+  Costo de pedido: \(S=100\)\\
+\item
+  Costo unitario de mantenimiento: \(H=5\)\\
+\item
+  Costo unitario de adquisición: \(C=10\)\\
+\item
+  Penalización por faltante: \(\beta=50\)\\
+\item
+  Tiempo de reposición: \(L=0.1\)\\
+\item
+  Nivel de servicio objetivo: \(95\%\Rightarrow Z_{\alpha}=1.645\)
+\end{itemize}
+
+El stock de seguridad se calcula como:
+
+\[
+SS=Z_{\alpha}\sigma\sqrt{L}\approx1.645\cdot10\cdot\sqrt{0.1}\approx5.20,
+\]
+
+aunque en la función de costo extendida, este valor se incorpora como un
+término constante.
+
+\subsubsection{EOQ clásico (ignora incertidumbre y
+faltantes)}\label{eoq-cluxe1sico-ignora-incertidumbre-y-faltantes}
+
+\[
+Q_{EOQ}=\sqrt{\frac{2DS}{H}}=\sqrt{\frac{2(1000)(100)}{5}}=200,
+\]
+
+y su costo asociado es:
+
+\[
+Z_{EOQ}=\frac{200}{1000}\cdot100+\frac{2}{200}\cdot5+1000\cdot10
+=500+500+10000=11000.
+\]
+
+\subsubsection{EOQ extendido (con stock de seguridad y penalización por
+faltantes)}\label{eoq-extendido-con-stock-de-seguridad-y-penalizaciuxf3n-por-faltantes}
+
+La función de costo adopta la forma:
+
+\[
+Z(Q)=\frac{Q}{D}(S+\beta C)+\left(\frac{2}{Q}+Z_{\alpha}\sigma\sqrt{L}\right)H+DC.
+\]
+
+Sustituyendo los valores:
+
+\[
+Z(Q)=\frac{Q}{1000}(100+500)+\left(\frac{2}{Q}+5.20\right)\cdot5+10000
+=\frac{Q}{600000}+2.5Q+10026.
+\]
+
+Minimizando esta función determinista:
+
+\[
+Q^{\ast}=\sqrt{\frac{2.5}{600000}}\approx489.9,\qquad
+Z(Q^{\ast})\approx12475.44.
+\]
+
+Si, por error, se usara la política del EOQ clásico (\(Q=200\)):
+
+\[
+Z(200)=\frac{200}{600000}+2.5\cdot200+10026
+=3000+500+10026=13526,
+\]
+
+lo que representa un \textbf{8.4\% más de costo} respecto a la política
+óptima del modelo extendido, además de una \textbf{exposición
+significativamente mayor al riesgo de faltante}.
+
+Este contraste demuestra que los modelos deterministas que ignoran la
+variabilidad de la demanda y los costos de faltante pueden producir
+políticas subóptimas o inadmisibles en contextos humanitarios, donde la
+insatisfacción de la demanda tiene consecuencias operativas y éticas
+relevantes.
+
+\subsection{Estructura híbrida: decisiones discretas (ubicación) y
+continuas
+(inventario)}\label{estructura-huxedbrida-decisiones-discretas-ubicaciuxf3n-y-continuas-inventario}
+
+Los problemas integrados de localización e inventario forman parte de
+una clase fundamental denominada \emph{modelos híbridos} o
+\emph{problemas de decisión mixta}, en los que coexisten variables
+discretas y continuas. Este tipo de modelos presenta una complejidad
+inherente debida a la ruptura topológica inducida por las variables
+binarias, lo cual conlleva dominios no convexos y no conexos, impidiendo
+la aplicación directa de técnicas clásicas basadas en convexidad
+(Wolsey, 1998; Grossmann, 2002; Daskin, 2013).
+
+\subsubsection{Formulación matemática del espacio de
+decisiones}\label{formulaciuxf3n-matemuxe1tica-del-espacio-de-decisiones}
+
+Sea: - \(\mathcal{I} = \{1,\ldots,m\}\) el conjunto de ubicaciones
+posibles para almacenes, - \(\mathcal{J} = \{1,\ldots,n\}\) las zonas de
+demanda, - \(x = (x_1,\dots,x_m)^\top \in \{0,1\}^m\) las decisiones
+binarias de apertura, - \(y = (y_{ij}) \in \mathbb{R}_+^{m\times n}\)
+los flujos desde almacenes a zonas, -
+\(s = (s_1,\dots,s_m)^\top \in \mathbb{R}_+^m\) el inventario
+preposicionado.
+
+El espacio factible se define como:
+
+\[
+\mathcal{X} := 
+\left\{
+(x,y,s)\in \{0,1\}^m\times \mathbb{R}_+^{m\times n}\times \mathbb{R}_+^m \;\middle|\;
+\begin{aligned}
+&\sum_{i\in\mathcal{I}} y_{ij} \ge d_j, &&\forall j\in\mathcal{J},\\
+&\sum_{j\in\mathcal{J}} y_{ij} \le s_i, &&\forall i\in\mathcal{I},\\
+&s_i \le M x_i, &&\forall i\in\mathcal{I}
+\end{aligned}
+\right\}.
+\tag{2.2}
+\]
+
+Aquí, \(d_j > 0\) representa la demanda de la zona \(j\) y \(M\) es un
+parámetro de gran magnitud. La tercera restricción describe un vínculo
+lógico: si \(x_i = 0\), entonces \(s_i = 0\) y, en consecuencia,
+\(y_{ij} = 0\). Este acoplamiento induce una \textbf{no convexidad
+estructural} (Bertsekas, 1999).
+
+\begin{quote}
+\textbf{Proposición (No convexidad).}\\
+El conjunto \(\mathcal{X}\) definido en (2.2) \textbf{no es convexo}.\\
+\emph{Demostración.} Considérense las configuraciones factibles
+\(x^{(1)}=(1,0,\dots,0)\) y \(x^{(2)}=(0,1,0,\dots,0)\).\\
+El punto medio \(\tfrac12 x^{(1)} + \tfrac12 x^{(2)}\) tiene componentes
+iguales a \(1/2\), lo cual viola la condición binaria. Luego,
+\(\mathcal{X}\) no es convexo. ∎
+\end{quote}
+
+La consecuencia directa es que condiciones de optimalidad de tipo KKT
+\textbf{no garantizan} optimalidad global (Lewis \& Overton, 2013).
+
+\subsubsection{Función objetivo y acoplamiento
+estructural}\label{funciuxf3n-objetivo-y-acoplamiento-estructural}
+
+El costo total del sistema se modela como:
+
+\[
+Z(x,y,s) 
+= 
+\underbrace{\sum_{i\in\mathcal{I}} f_i(x_i)}_{\text{Costos fijos}}
++ \underbrace{\sum_{i\in\mathcal{I}} h_i s_i}_{\text{Costos de inventario}}
++ \underbrace{\sum_{i\in\mathcal{I}}\sum_{j\in\mathcal{J}} c_{ij} y_{ij}}_{\text{Costos de transporte}}.
+\tag{2.3}
+\]
+
+Aunque la parte en variables continuas es lineal, el término
+\(f_i(x_i)\) genera una \textbf{no linealidad discreta}; más aún, en la
+práctica humanitaria pueden existir economías de escala, accesibilidad
+variable o costos de apertura no lineales, reforzando la complejidad
+global (Grossmann, 2002).
+
+El sistema presenta una jerarquía:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \(x\) determina la infraestructura disponible,\\
+\item
+  \(s\) depende de \(x\),\\
+\item
+  \(y\) depende de \(s\).
+\end{enumerate}
+
+Esto produce una dependencia en cascada que elimina la separabilidad
+global del problema.
+
+\begin{quote}
+\textbf{Proposición (Convexidad condicional).}\\
+Para cualquier \(\bar{x} \in \{0,1\}^m\), el subproblema
+
+\[
+\min_{(y,s) \in \mathcal{X}(\bar{x})} Z(\bar{x}, y, s)
+\]
+
+es un programa lineal y, por tanto, convexo.\\
+\emph{Demostración.} Fijado \(\bar{x}\), todas las restricciones son
+lineales en \((y,s)\) y la función objetivo es afín. ∎
+\end{quote}
+
+Esta propiedad respalda el uso de descomposición tipo Benders o esquemas
+maestro--subproblema (Wolsey, 1998).
+
+\subsubsection{Ejemplo ilustrativo: interacción
+discreto--continuo}\label{ejemplo-ilustrativo-interacciuxf3n-discretocontinuo}
+
+Considérese: - \(m=2\) almacenes,\\
+- \(n=2\) demandas con \(d_1=d_2=50\),\\
+- Costos fijos \(f_1=300\), \(f_2=400\),\\
+- Costos de inventario \(h_1=h_2=3\),\\
+- Costos de transporte:\\
+\(c_{11}=8\), \(c_{12}=15\),\\
+\(c_{21}=12\), \(c_{22}=7\),\\
+- \(M=100\).
+
+\textbf{(i) Abrir solo 1:}\\
+\[
+Z = 300 + 3\cdot 100 + (8\cdot 50 + 15\cdot 50)=1750.
+\]
+
+\textbf{(ii) Abrir solo 2:}\\
+\[
+Z = 400 + 3\cdot 100 + (12\cdot 50 + 7\cdot 50)=1650.
+\]
+
+\textbf{(iii) Abrir ambos:}\\
+Asignación eficiente, pero mayor costo fijo:\\
+\[
+Z = 300 + 400 + 3\cdot 100 + (8\cdot 50 + 7\cdot 50)=1750.
+\]
+
+Conclusión: es óptimo \textbf{abrir solo el almacén 2}.\\
+La solución cambiaría si los costos fijos disminuyeran, lo que evidencia
+la \emph{sensibilidad estructural} del diseño híbrido (Daskin, 2013).
+
+La integración simultánea de decisiones discretas y continuas induce
+dominios no convexos, dependencias lógicas y estructuras no separables
+que requieren marcos teóricos propios de la programación entera mixta,
+análisis no suave y descomposición matemática. Esta base establece los
+fundamentos del modelo propuesto en las siguientes secciones, donde se
+formaliza la integración bajo condiciones logísticas realistas y
+restricciones humanitarias.
+
+\section{Marco general de modelado: variables, parámetros y espacio de
+decisión}\label{marco-general-de-modelado-variables-paruxe1metros-y-espacio-de-decisiuxf3n}
+
+\subsection{\texorpdfstring{Conjuntos de índices: instalaciones
+potenciales \(\mathcal{I}\) y zonas de demanda
+\(\mathcal{J}\)}{Conjuntos de índices: instalaciones potenciales \textbackslash mathcal\{I\} y zonas de demanda \textbackslash mathcal\{J\}}}\label{conjuntos-de-uxedndices-instalaciones-potenciales-mathcali-y-zonas-de-demanda-mathcalj}
+
+La construcción rigurosa de un modelo de optimización comienza con la
+definición precisa de los conjuntos de índices, los cuales encapsulan la
+estructura topológica y semántica del sistema bajo estudio. En el
+contexto del problema integrado de localización e inventario para
+logística humanitaria, dos conjuntos indexados fundamentales determinan
+la arquitectura del modelo: el conjunto de instalaciones potenciales y
+el conjunto de zonas de demanda.
+
+\subsubsection{\texorpdfstring{\textbf{Definición (Conjunto de
+instalaciones
+potenciales).}}{Definición (Conjunto de instalaciones potenciales).}}\label{definiciuxf3n-conjunto-de-instalaciones-potenciales.}
+
+Sea
+
+\[
+\mathcal{I} := \{1, 2, \dots, m\}, \quad m \in \mathbb{N},\; m \geq 1,
+\]
+
+el conjunto finito y numerable de ubicaciones candidatas para la
+apertura de almacenes de preposicionamiento. Cada índice
+\(i \in \mathcal{I}\) representa una localización geográfica factible
+donde podría instalarse una instalación de almacenamiento y
+distribución.
+
+\subsubsection{\texorpdfstring{\textbf{Definición (Conjunto de zonas de
+demanda).}}{Definición (Conjunto de zonas de demanda).}}\label{definiciuxf3n-conjunto-de-zonas-de-demanda.}
+
+Sea
+
+\[
+\mathcal{J} := \{1, 2, \dots, n\}, \quad n \in \mathbb{N},\; n \geq 1,
+\]
+
+el conjunto finito y numerable de zonas afectadas o potenciales de
+demanda. Cada índice \(j \in \mathcal{J}\) denota una región geográfica
+donde se anticipa la necesidad de suministros humanitarios tras un
+evento disruptivo.
+
+\begin{quote}
+\textbf{Observación}\\
+Los conjuntos \(\mathcal{I}\) y \(\mathcal{J}\) se asumen disjuntos en
+función, aunque no necesariamente en localización física. Desde el punto
+de vista del modelo, los roles son distintos:\\
+- Los elementos de \(\mathcal{I}\) son fuentes de suministro.\\
+- Los elementos de \(\mathcal{J}\) son sumideros de demanda.
+\end{quote}
+
+La cardinalidad de estos conjuntos ---es decir, \(m = |\mathcal{I}|\) y
+\(n = |\mathcal{J}|\)--- determina directamente la complejidad
+combinatoria del problema. En particular, el número de configuraciones
+posibles de apertura de almacenes es \(2^m\), lo que implica que incluso
+para valores modestos (por ejemplo, \(m = 30\)), el espacio discreto es
+del orden de \(10^9\). Esta explosión combinatoria subraya la necesidad
+de métodos de optimización estructurada.
+
+\subsubsection{\texorpdfstring{\textbf{Ejemplo
+ilustrativo}}{Ejemplo ilustrativo}}\label{ejemplo-ilustrativo}
+
+Supóngase un escenario de planificación para respuesta a inundaciones
+dividido en cinco distritos. Se identifican tres ubicaciones potenciales
+para almacenes:
+
+\begin{itemize}
+\tightlist
+\item
+  \(i = 1\): Aeropuerto internacional,\\
+\item
+  \(i = 2\): Base militar,\\
+\item
+  \(i = 3\): Centro de distribución de una ONG.
+\end{itemize}
+
+Asimismo, se consideran cuatro zonas vulnerables:
+
+\begin{itemize}
+\tightlist
+\item
+  \(j = 1\): Zona ribereña,\\
+\item
+  \(j = 2\): Área rural,\\
+\item
+  \(j = 3\): Barrio urbano denso,\\
+\item
+  \(j = 4\): Comunidad indígena aislada.
+\end{itemize}
+
+Los conjuntos índice resultan:
+
+\[\mathcal{I} = \{1,2,3\}, \quad 
+\mathcal{J} = \{1,2,3,4\}.\]
+
+Sobre estos conjuntos se definirán:
+
+\begin{itemize}
+\tightlist
+\item
+  variables binarias \(x_i \in \{0,1\}\) para cada
+  \(i \in \mathcal{I}\),\\
+\item
+  variables continuas de flujo \(y_{ij} \ge 0\) para
+  \((i,j) \in \mathcal{I} \times \mathcal{J}\),\\
+\item
+  parámetros exógenos como \(c_{ij}\) (costos), \(f_i\) (costos fijos) y
+  \(d_j\) (demanda).
+\end{itemize}
+
+\begin{quote}
+\textbf{Nota metodológica.}\\
+En modelado riguroso, los conjuntos índice deben definirse antes que las
+variables, dado que estas heredan su dominio directamente de aquellos.
+\end{quote}
+
+Los conjuntos \(\mathcal{I}\) y \(\mathcal{J}\) constituyen estructuras
+matemáticas esenciales que determinan la escala, la conectividad y la
+complejidad del modelo. Su correcta definición resulta crucial para la
+formalización posterior de variables, restricciones y dependencias del
+sistema.
+
+\subsection{\texorpdfstring{Variables de decisión: binarias (\(x_i\)) y
+continuas
+(\(y_{ij}\))}{Variables de decisión: binarias (x\_i) y continuas (y\_\{ij\})}}\label{variables-de-decisiuxf3n-binarias-x_i-y-continuas-y_ij}
+
+Una vez establecida la estructura combinatoria del problema mediante los
+conjuntos índice \(\mathcal{I}\) y \(\mathcal{J}\), el siguiente paso en
+la formulación rigurosa de un modelo de optimización es la definición
+precisa del \textbf{espacio de decisiones}, mediante la especificación
+de las \textbf{variables de decisión}. En el problema integrado de
+localización e inventario, este espacio es híbrido, compuesto por dos
+tipos cualitativamente distintos de variables:
+
+\begin{itemize}
+\tightlist
+\item
+  Variables binarias, que modelan elecciones discretas de
+  infraestructura,
+\item
+  Variables continuas, que representan flujos físicos de recursos.
+\end{itemize}
+
+Esta dualidad refleja la naturaleza multinivel del problema: decisiones
+estratégicas (¿dónde construir?) y decisiones tácticas u operativas
+(¿cuánto enviar?).
+
+\subsubsection{\texorpdfstring{\textbf{Definición (Variables binarias de
+localización).}}{Definición (Variables binarias de localización).}}\label{definiciuxf3n-variables-binarias-de-localizaciuxf3n.}
+
+Para cada \(i \in \mathcal{I}\), se define la variable binaria
+
+\[
+x_i \in \{0,1\},
+\]
+
+donde
+
+\[
+x_i =
+\begin{cases}
+1, & \text{si se decide abrir una instalación en la ubicación } i, \\
+0, & \text{en caso contrario}.
+\end{cases}
+\]
+
+El vector \(x = (x_i)_{i \in \mathcal{I}} \in \{0,1\}^m\) codifica una
+\textbf{configuración de infraestructura} del sistema logístico. Estas
+variables pertenecen a un espacio discreto no convexo y finito cuya
+cardinalidad es \(2^m\).
+
+\subsubsection{\texorpdfstring{\textbf{Definición (Variables continuas
+de
+flujo).}}{Definición (Variables continuas de flujo).}}\label{definiciuxf3n-variables-continuas-de-flujo.}
+
+Para cada par \((i,j) \in \mathcal{I} \times \mathcal{J}\), se define la
+variable continua
+
+\[
+y_{ij} \in \mathbb{R}_+,
+\]
+
+que representa la cantidad de unidades asignadas desde la instalación
+\(i\) a la zona de demanda \(j\) en el período de planificación.
+
+El tensor
+\(y = (y_{ij})_{(i,j) \in \mathcal{I} \times \mathcal{J}} \in \mathbb{R}_+^{m \times n}\)
+describe la estructura de asignación del sistema, y pertenece a un
+espacio vectorial convexo, cerrado y de dimensión finita.
+
+\begin{quote}
+\textbf{Observación (Naturaleza híbrida del espacio de decisiones).}\\
+El espacio total de decisiones es el producto cartesiano\\
+\[
+\mathcal{D} = \{0,1\}^m \times \mathbb{R}_+^{m \times n},
+\] que es no convexo, no conexo y discontinuo en la dirección discreta.
+Esta estructura impide la aplicación directa de herramientas del
+análisis convexo clásico y exige métodos de optimización mixta.
+\end{quote}
+
+Las variables \(x_i\) y \(y_{ij}\) no son independientes. Su
+acoplamiento se establece mediante \textbf{restricciones de
+factibilidad}, que garantizan que no se asignen flujos desde
+instalaciones no abiertas. Para todo \(i \in \mathcal{I}\) y
+\(j \in \mathcal{J}\):
+
+\[
+y_{ij} \le M x_i, \tag{2.4}
+\]
+
+donde \(M > 0\) es una constante suficientemente grande (por ejemplo,
+\(M = \sum_{j \in \mathcal{J}} d_j\)). La restricción (2.4) es una
+formulación \emph{big-M} estándar que modela la implicación lógica:
+
+\[
+x_i = 0 \;\Rightarrow\; y_{ij} = 0 \quad \forall j \in \mathcal{J}.
+\]
+
+\subsection{\texorpdfstring{\textbf{Ejemplo ilustrativo: interpretación
+y acoplamiento de
+variables}}{Ejemplo ilustrativo: interpretación y acoplamiento de variables}}\label{ejemplo-ilustrativo-interpretaciuxf3n-y-acoplamiento-de-variables}
+
+Sea:
+
+\[
+\mathcal{I} = \{1,2,3\}, \qquad \mathcal{J} = \{1,2,3,4\}.
+\]
+
+Supóngase que se decide abrir instalaciones en \(i=1\) y \(i=3\), pero
+no en \(i=2\):
+
+\[
+x = (1,0,1).
+\]
+
+Las restricciones big-M implican:
+
+\begin{itemize}
+\tightlist
+\item
+  \(y_{2j} = 0\) para todo \(j\),
+\item
+  \(y_{1j}, y_{3j} \ge 0\) como flujos posibles.
+\end{itemize}
+
+Una asignación factible es:
+
+\[
+\begin{aligned}
+y_{11} &= 30, & y_{12} &= 20, & y_{13} &= 0, & y_{14} &= 0, \\
+y_{21} &= y_{22} = y_{23} = y_{24} = 0, \\
+y_{31} &= 10, & y_{32} &= 0, & y_{33} &= 40, & y_{34} &= 25.
+\end{aligned}
+\]
+
+Si la demanda es \(d = (40,20,40,25)\), esta asignación es factible y
+completa.
+
+Este ejemplo muestra que las variables binarias \textbf{activan o
+desactivan} subespacios del espacio continuo de flujos, generando una
+partición de \(\mathcal{D}\) en \(2^m\) subespacios convexos.
+
+Las variables \(x_i\) y \(y_{ij}\) constituyen los grados de libertad
+fundamentales del modelo. Su naturaleza híbrida ---discreta y
+continua--- refleja la dualidad entre planeación estratégica y operación
+táctica. El acoplamiento lógico mediante restricciones big-M introduce
+no convexidad, justificando el uso de técnicas de optimización entera y
+métodos especializados. Las siguientes secciones integrarán estas
+variables en la función objetivo y en las restricciones de balance de
+flujo.
+
+\subsection{Parámetros del sistema: costos fijos, unitarios, demanda y
+capacidades}\label{paruxe1metros-del-sistema-costos-fijos-unitarios-demanda-y-capacidades}
+
+En la formulación matemática de un problema de optimización, los
+\textbf{parámetros} constituyen los datos exógenos que estructuran el
+espacio factible y la función objetivo. Su correcta especificación es
+requisito previo a la definición de variables y restricciones; por
+tanto, deben presentarse con dominio y unidades explícitas (práctica
+recomendada por Lewis y colaboradores; Lewis, 2003). En el problema
+integrado de localización e inventario consideramos, de modo explícito,
+las cuatro familias de parámetros siguientes.
+
+\subsubsection{Costos fijos de apertura}\label{costos-fijos-de-apertura}
+
+Para cada \(i\in\mathcal{I}\) definimos \[
+f_i \in \mathbb{R}_{+}
+\] como el \textbf{costo fijo de apertura} de la instalación en la
+localización \(i\). En la formulación estándar el término contribuye a
+la función objetivo mediante \(f_i x_i\) si \(x_i\) es la variable
+binaria de apertura. Se exige \[
+f_i \ge 0,\qquad \forall i\in\mathcal{I}.
+\]
+
+Observación práctica: cuando la apertura implica economías o
+penalizaciones no triviales (por ejemplo, coste creciente con la
+capacidad instalada o costes discretos adicionales por remoción),
+\(f_i\) puede modelarse como función \(f_i(x_i,s_i)\); sin embargo, para
+la formulación base se adopta linealidad en \(x_i\) y se externalizan
+las no linealidades en extensiones (Shapiro et al., 2021).
+
+\subsubsection{Costos unitarios de
+transporte}\label{costos-unitarios-de-transporte}
+
+Para cada par \((i,j)\in\mathcal{I}\times\mathcal{J}\) definimos \[
+c_{ij}\in\mathbb{R}_{+},
+\] el \textbf{costo unitario de transportar} una unidad desde la
+instalación \(i\) hasta la zona de demanda \(j\). Requerimos \[
+c_{ij}\ge 0,\quad \forall i,j,
+\] y denotamos la matriz
+\(C:=[c_{ij}]_{i,j}\in\mathbb{R}_+^{m\times n}\). En contextos
+humanitarios \(c_{ij}\) incorpora distancia, tiempo de acceso y
+penalizaciones por rutas inseguras; su estimación suele derivar de
+información geoespacial y modelos de capacidad vial (Daskin, 2013).
+
+\subsubsection{Demanda esperada}\label{demanda-esperada}
+
+Para cada \(j\in\mathcal{J}\), sea \[
+d_j\in\mathbb{R}_{++}
+\] la \textbf{demanda esperada} en la zona \(j\) durante el horizonte
+considerado. Adicionalmente definimos el vector
+\(d=(d_j)_{j\in\mathcal{J}}\). En la formulación determinista de
+referencia usamos \(d_j\) como estimador puntual (p.~ej. esperanza), con
+la advertencia explícita de que su uso directo puede producir soluciones
+frágiles en colas de distribución (Snyder, 2006). Notación:
+
+\[
+d_j>0,\quad \forall j,\qquad d\in\mathbb{R}_{++}^n.
+\]
+
+\subsubsection{Capacidades de
+almacenamiento}\label{capacidades-de-almacenamiento}
+
+Para cada \(i\in\mathcal{I}\) definimos la \textbf{capacidad máxima}
+\(s_i^{\max}\) mediante \[
+s_i^{\max}\in\mathbb{R}_{+}\cup\{+\infty\}.
+\]
+
+La restricción de capacidad se escribe, asociada a la lógica de
+activación \(x_i\):
+
+\[
+\sum_{j\in\mathcal{J}} y_{ij} \le s_i^{\max} x_i,\qquad \forall i\in\mathcal{I}. \tag{2.5}
+\]
+
+En ausencia de un tope operativo se toma \(s_i^{\max}=+\infty\) (modelo
+no capacitado); en práctica real \(s_i^{\max}\) suele venir de
+disponibilidad física, limitaciones regulatorias o logísticas.
+
+\subsubsection{Propiedades y observaciones
+formales}\label{propiedades-y-observaciones-formales}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Dominios y no ambigüedad:} Todos los parámetros deben venir
+  acompañados de su dominio y unidades. Esto evita ambigüedades en
+  pruebas de existencia, estabilidad numérica y escalado de variables
+  (Lewis, 2003).
+\item
+  \textbf{Sensibilidad estructural:} Pequeñas variaciones en \(f_i\),
+  \(c_{ij}\), \(d_j\) o \(s_i^{\max}\) pueden cambiar la estructura del
+  óptimo (p.~ej. la configuración \(x^*\)). Por ello, el análisis de
+  sensibilidad y escenarios es parte inseparable de la modelación
+  robusta (Snyder, 2006; Shapiro et al., 2021).
+\item
+  \textbf{Elección de \(M\) en big-M:} Si se usa la formulación
+  \(y_{ij}\le M x_i\) para acoplar variables (versus la formulación con
+  \(s_i^{\max}\)), se recomienda elegir \(M\) igual a una cota realista
+  (ej. \(\sum_j d_j\)) para evitar degradación numérica; empero, la
+  formulación (2.5) es preferible por su interpretación física y por
+  estrechar el dominio factible.
+\end{enumerate}
+
+\subsubsection{Ejemplo numérico (verificación de factibilidad y cálculo
+de
+costo)}\label{ejemplo-numuxe9rico-verificaciuxf3n-de-factibilidad-y-cuxe1lculo-de-costo}
+
+Tomemos la instancia didáctica ya utilizada en las secciones previas:
+
+\begin{itemize}
+\tightlist
+\item
+  \(\mathcal{I}=\{1,2,3\}\), \(\mathcal{J}=\{1,2,3,4\}\).
+\item
+  Costos fijos (miles USD): \(f=(300,400,250)\).
+\item
+  Matriz \(C=[c_{ij}]\) (USD/unidad):
+\end{itemize}
+
+\[
+C=
+\begin{bmatrix}
+8 & 20 & 15 & 25 \\
+12 & 18 & 10 & 30 \\
+20 & 10 & 12 & 18
+\end{bmatrix}.
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  Demanda: \(d=(40,20,40,25)\) (unidades).
+\item
+  Capacidades: \(s^{\max}=(100,80,90)\).
+\item
+  Consideramos la decisión \(x=(1,0,1)\) y la asignación \[
+  \begin{aligned}
+  &y_{11}=30,\; y_{12}=20,\; y_{13}=0,\; y_{14}=0,\\
+  &y_{21}=y_{22}=y_{23}=y_{24}=0,\\
+  &y_{31}=10,\; y_{32}=0,\; y_{33}=40,\; y_{34}=25.
+  \end{aligned}
+  \]
+\end{itemize}
+
+\textbf{Paso 1 --- Verificación de capacidades (ecuación (2.5)):}
+
+\begin{itemize}
+\tightlist
+\item
+  Para \(i=1\): \[
+  \sum_j y_{1j}=30+20+0+0=50 \le s_1^{\max} x_1 = 100\cdot 1 = 100\quad\checkmark.
+  \]
+\item
+  Para \(i=2\): \[
+  \sum_j y_{2j}=0 \le 80\cdot 0 = 0\quad\checkmark.
+  \]
+\item
+  Para \(i=3\): \[
+  \sum_j y_{3j}=10+0+40+25=75 \le 90\cdot 1 = 90\quad\checkmark.
+  \]
+\end{itemize}
+
+\textbf{Paso 2 --- Verificación de cobertura de demanda:}
+
+\begin{itemize}
+\tightlist
+\item
+  \(j=1\): \(y_{11}+y_{31}=30+10=40 = d_1\),
+\item
+  \(j=2\): \(y_{12}=20 = d_2\),
+\item
+  \(j=3\): \(y_{33}=40 = d_3\),
+\item
+  \(j=4\): \(y_{34}=25 = d_4\).
+\end{itemize}
+
+Cobertura completa \(\Rightarrow\) factible.
+
+\textbf{Paso 3 --- Cálculo del costo total}
+
+La función de costo (determinista, sin mantenimiento de inventario
+explícito) se toma como
+
+\[
+Z(x,y)=\sum_{i\in\mathcal{I}} f_i x_i + \sum_{i\in\mathcal{I}}\sum_{j\in\mathcal{J}} c_{ij} y_{ij}.
+\]
+
+Sustituyendo:
+
+\begin{itemize}
+\tightlist
+\item
+  Término fijo: \(f_1 x_1 + f_3 x_3 = 300 + 250 = 550\) (miles USD).
+\item
+  Transporte (USD): calcular cada contribución \[
+  \begin{aligned}
+  &8\cdot 30 = 240,\quad 20\cdot 20 = 400,\quad 20\cdot 10 = 200,\\
+  &12\cdot 40 = 480,\quad 18\cdot 25 = 450.
+  \end{aligned}
+  \] Suma transporte = \(240+400+200+480+450 = 1770\) USD.
+\end{itemize}
+
+Total (homogeneizando unidades a miles USD): \[
+Z = 550\ (\text{miles}) + 1.770\ (\text{miles}) = 2.320\ \text{miles USD}.
+\]
+
+\textbf{Interpretación:} la solución es factible y el costo
+cuantificado; variaciones en \(d\), \(c_{ij}\) o \(f_i\) deben
+re-evaluarse mediante análisis de sensibilidad y, en contextos reales,
+mediante formulaciones estocásticas o robustas (Snyder, 2006; Shapiro et
+al., 2021).
+
+La especificación explícita de \(f_i\), \(c_{ij}\), \(d_j\) y
+\(s_i^{\max}\) permite no solo la construcción del problema determinista
+base sino también su extensión a modelos estocásticos (reemplazando
+\(d_j\) por variables aleatorias \(\tilde d_j\)) o robustos (definiendo
+conjuntos de incertidumbre para \(d_j\) y \(c_{ij}\)). La práctica
+recomendada (Lewis, 2003; Shapiro et al., 2021) es: (i) documentar
+fuentes y unidades de cada parámetro; (ii) fijar cotas realistas para
+\(s_i^{\max}\) o \(M\); y (iii) efectuar pruebas de sensibilidad
+sistemáticas antes de adoptar políticamente cualquier solución.
+
+\section{\texorpdfstring{\textbf{Definición formal del espacio factible
+\(\mathcal{X}\)}}{Definición formal del espacio factible \textbackslash mathcal\{X\}}}\label{definiciuxf3n-formal-del-espacio-factible-mathcalx}
+
+En optimización matemática, la \textbf{estructura del conjunto factible}
+determina en gran medida la naturaleza del problema, su complejidad
+computacional y la aplicabilidad de métodos de solución. Para el
+problema integrado de localización e inventario, el espacio factible es
+un \textbf{subconjunto híbrido} del producto cartesiano entre un espacio
+discreto y uno continuo. A continuación se define formalmente este
+conjunto y se analizan sus propiedades estructurales clave.
+
+\section{\texorpdfstring{\textbf{Definición (Espacio
+factible).}}{Definición (Espacio factible).}}\label{definiciuxf3n-espacio-factible.}
+
+Dado el conjunto de instalaciones potenciales \(\mathcal{I}\), el
+conjunto de zonas de demanda \(\mathcal{J}\), y los parámetros exógenos
+\(d_j > 0\), \(s_i^{\max} \in \mathbb{R}_+ \cup \{+\infty\}\), y una
+constante \(M > 0\) suficientemente grande (por ejemplo,
+\(M = \sum_{j \in \mathcal{J}} d_j\)), el \textbf{espacio factible} del
+modelo se define como:
+
+\[
+\mathcal{X} := 
+\left\{
+(x, y) \in \{0,1\}^m \times \mathbb{R}_+^{m \times n}
+\ \middle|\
+\begin{aligned}
+&\text{(i)}\quad \sum_{i \in \mathcal{I}} y_{ij} \ge d_j, && \forall j \in \mathcal{J}, \\
+&\text{(ii)}\quad \sum_{j \in \mathcal{J}} y_{ij} \le s_i^{\max} x_i, && \forall i \in \mathcal{I}, \\
+&\text{(iii)}\quad y_{ij} \le M x_i, && \forall (i,j) \in \mathcal{I}\times\mathcal{J}
+\end{aligned}
+\right\}.
+\]
+
+Las tres familias de restricciones tienen interpretaciones operativas
+precisas:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{(i) Cobertura de demanda}: cada zona \(j\) debe recibir al
+  menos su demanda esperada \(d_j\).
+\item
+  \textbf{(ii) Capacidad condicionada}: el flujo total saliente de la
+  instalación \(i\) no puede exceder su capacidad máxima si está abierta
+  (\(x_i = 1\)).\\
+\item
+  \textbf{(iii) Activación lógica fuerte}: garantiza \(y_{ij}=0\) cuando
+  \(x_i=0\), fortaleciendo las relajaciones lineales.
+\end{itemize}
+
+\begin{quote}
+\textbf{Observación 2.2.4.1.}\\
+Si \(s_i^{\max} = +\infty\), la restricción (ii) se sustituye
+simplemente por \(y_{ij} \le M x_i\). La estructura analítica permanece
+intacta.
+\end{quote}
+
+\subsection{\texorpdfstring{\textbf{Propiedades estructurales del
+espacio
+\(\mathcal{X}\)}}{Propiedades estructurales del espacio \textbackslash mathcal\{X\}}}\label{propiedades-estructurales-del-espacio-mathcalx}
+
+\subsubsection{\texorpdfstring{\textbf{Proposición (No convexidad y no
+conexidad).}}{Proposición (No convexidad y no conexidad).}}\label{proposiciuxf3n-no-convexidad-y-no-conexidad.}
+
+El conjunto \(\mathcal{X}\) es \textbf{no convexo} y, en general,
+\textbf{no conexo} en la topología estándar de
+\(\mathbb{R}^m \times \mathbb{R}^{m\times n}\).
+
+\textbf{Demostración.}\\
+Considérese \(m \ge 2\). Sean:
+
+\begin{itemize}
+\tightlist
+\item
+  \((x^{(1)}, y^{(1)})\) con \(x^{(1)} = e_1\) y \(y^{(1)}_{1j} = d_j\),
+\item
+  \((x^{(2)}, y^{(2)})\) con \(x^{(2)} = e_2\) y \(y^{(2)}_{2j} = d_j\).
+\end{itemize}
+
+Ambos puntos son factibles. Su media:
+
+\[
+(\bar{x}, \bar{y}) = \tfrac{1}{2}(x^{(1)}, y^{(1)}) + \tfrac{1}{2}(x^{(2)}, y^{(2)})
+\]
+
+tiene \(\bar{x}_1 = \bar{x}_2 = 1/2 \notin \{0,1\}\), por lo que no
+pertenece a \(\mathcal{X}\).\\
+Además, no existe un camino continuo dentro de \(\mathcal{X}\) que
+conecte ambos puntos, ya que cualquier camino debe atravesar valores
+fraccionarios de \(x\). ∎
+
+\subsubsection{\texorpdfstring{\textbf{Proposición (Descomposición en
+secciones
+convexas).}}{Proposición (Descomposición en secciones convexas).}}\label{proposiciuxf3n-descomposiciuxf3n-en-secciones-convexas.}
+
+\[
+\mathcal{X}
+=
+\bigcup_{\bar{x} \in \{0,1\}^m}
+\left(
+\{\bar{x}\} \times \mathcal{Y}(\bar{x})
+\right),
+\]
+
+donde
+
+\[
+\mathcal{Y}(\bar{x}) :=
+\left\{
+y \in \mathbb{R}_+^{m \times n}
+\ \middle|\
+\begin{aligned}
+&\sum_i y_{ij} \ge d_j,\ \forall j, \\
+&\sum_j y_{ij} \le s_i^{\max} \bar{x}_i,\ \forall i
+\end{aligned}
+\right\}
+\]
+
+es un \textbf{poliedro convexo} (posiblemente vacío).
+
+\textbf{Demostración.}\\
+Para \(\bar{x}\) fijo, las restricciones que definen
+\(\mathcal{Y}(\bar{x})\) son lineales en \(y\), por lo que el conjunto
+es convexo y cerrado.\\
+La unión es disjunta porque cada sección responde a un valor distinto de
+\(x\). ∎
+
+Esta descomposición motiva algoritmos híbridos: resolver un subproblema
+convexo para cada \(\bar{x}\) y usar técnicas combinatorias para
+explorar \(\{0,1\}^m\).
+
+\subsubsection{\texorpdfstring{\textbf{Ejemplo ilustrativo: construcción
+explícita de
+\(\mathcal{X}\)}}{Ejemplo ilustrativo: construcción explícita de \textbackslash mathcal\{X\}}}\label{ejemplo-ilustrativo-construcciuxf3n-expluxedcita-de-mathcalx}
+
+Sea:
+
+\begin{itemize}
+\tightlist
+\item
+  \(\mathcal{I} = \{1,2\}\)
+\item
+  \(\mathcal{J} = \{1\}\)\\
+\item
+  \(d_1 = 10\)\\
+\item
+  \(s_1^{\max} = s_2^{\max} = 15\)\\
+\item
+  \(M = 10\)
+\end{itemize}
+
+Entonces:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{\(x=(0,0)\):}\\
+  \(y_{11}=y_{21}=0\), pero exige \(y_{11}+y_{21} \ge 10\) ⇒
+  \textbf{infeasible}.
+\item
+  \textbf{\(x=(1,0)\):}\\
+  \(y_{21}=0\), \(y_{11}\in[10,15]\).
+\item
+  \textbf{\(x=(0,1)\):}\\
+  \(y_{11}=0\), \(y_{21}\in[10,15]\).
+\item
+  \textbf{\(x=(1,1)\):}\\
+  \(y_{11}+y_{21}\ge 10\), con \(y_{ij}\le 15\).\\
+  Es un poliedro factible en dimensión 2.
+\end{enumerate}
+
+Este ejemplo muestra que \(\mathcal{X}\) está formado por componentes
+disjuntas: dos segmentos y un poliedro 2D.
+
+El conjunto \(\mathcal{X}\) posee una estructura combinatoria compleja:
+es no convexo y no conexo, pero admite una descomposición en secciones
+convexas. Su correcta caracterización es esencial para asegurar
+consistencia del modelo, existencia de solución y diseño de algoritmos
+eficientes. En las siguientes secciones, este espacio actuará como
+dominio de la función de costo total.
+
+\subsection{Función objetivo general en problemas de
+localización--inventario}\label{funciuxf3n-objetivo-general-en-problemas-de-localizaciuxf3ninventario}
+
+La \textbf{función objetivo} de un modelo de optimización encapsula el
+criterio de desempeño que se busca minimizar o maximizar. En problemas
+de localización--inventario para logística humanitaria, este criterio
+suele ser una medida \textbf{económica agregada} que refleja los costos
+totales del sistema, ponderando compromisos entre infraestructura fija,
+operación logística y servicio a la demanda. A continuación, se define
+formalmente la función objetivo general, se descompone en sus
+componentes estructurales y se analizan sus propiedades matemáticas.
+
+\subsubsection{\texorpdfstring{\textbf{Definición (Función objetivo
+total)}}{Definición (Función objetivo total)}}\label{definiciuxf3n-funciuxf3n-objetivo-total}
+
+Dado el espacio factible \(\mathcal{X}\) definido previamente y los
+parámetros \(f_i \ge 0\), \(c_{ij} \ge 0\), la \textbf{función objetivo
+total} \(Z: \mathcal{X} \to \mathbb{R}\) se define como:
+
+\[
+Z(x, y) :=
+\underbrace{\sum_{i \in \mathcal{I}} f_i x_i}_{\text{(A) Costo fijo de apertura}}
++
+\underbrace{\sum_{i \in \mathcal{I}} \sum_{j \in \mathcal{J}} c_{ij} y_{ij}}_{\text{(B) Costo de transporte}}
++
+\underbrace{\sum_{i \in \mathcal{I}} h_i \left( \sum_{j \in \mathcal{J}} y_{ij} \right)}_{\text{(C) Costo de inventario}}.
+\]
+
+Aquí, \(h_i \ge 0\) es el \textbf{costo unitario de mantenimiento de
+inventario} en la instalación \(i\). El término modela el costo asociado
+al volumen total preposicionado (equivalente al total despachado en el
+modelo determinista base).
+
+La función \(Z\) es \textbf{afín en \(y\)} para \(x\) fijo, y
+\textbf{lineal en \(x\)} cuando \(y\) es tratado como variable libre.
+Sin embargo, en el dominio restringido \(\mathcal{X}\), la interacción
+discontinua entre ambas familias de variables induce una
+\textbf{estructura global no lineal}.
+
+\begin{quote}
+\textbf{Observación (Interpretación económica de los términos)}\\
+- (A): decisiones estratégicas de largo plazo.\\
+- (B): costos operativos de corto plazo.\\
+- (C): costo de oportunidad del inventario preposicionado.\\
+En logística humanitaria, \(f_i\), \(c_{ij}\) y \(h_i\) pueden
+incorporar factores no monetarios (tiempo, riesgo, deterioro, ética),
+siempre que estén normalizados en una métrica común.
+\end{quote}
+
+\subsubsection{\texorpdfstring{\textbf{Propiedades analíticas de \$ Z
+\$}}{Propiedades analíticas de \$ Z \$}}\label{propiedades-analuxedticas-de-z}
+
+\subsubsection{\texorpdfstring{\textbf{Proposición (Continuidad y
+acotación
+inferior)}}{Proposición (Continuidad y acotación inferior)}}\label{proposiciuxf3n-continuidad-y-acotaciuxf3n-inferior}
+
+La función \(Z : \mathcal{X} \to \mathbb{R}\) es \textbf{continua} en la
+topología relativa de \(\mathcal{X}\) y está \textbf{acotada
+inferiormente} por cero.
+
+\textbf{Demostración.}\\
+Como \(\mathcal{X} \subset \{0,1\}^m \times \mathbb{R}_+^{m \times n}\),
+su topología relativa es la unión disjunta de secciones del tipo
+\(\{\bar{x}\} \times \mathcal{Y}(\bar{x})\). En cada sección, la función
+\(y \mapsto Z(\bar{x}, y)\) es afín, y por tanto continua. Dado que
+todos los coeficientes \(f_i\), \(c_{ij}\), \(h_i\) son no negativos, se
+tiene \(Z(x, y) \ge 0\) para todo punto factible. ∎
+
+\subsubsection{\texorpdfstring{\textbf{Proposición (Coercividad
+condicional y existencia de
+solución)}}{Proposición (Coercividad condicional y existencia de solución)}}\label{proposiciuxf3n-coercividad-condicional-y-existencia-de-soluciuxf3n}
+
+Si \(\mathcal{X} \ne \emptyset\), entonces el problema
+
+\[
+\min_{(x, y) \in \mathcal{X}} Z(x, y)
+\]
+
+\textbf{admite solución óptima}.
+
+\textbf{Demostración.}\\
+Como el conjunto discreto \(\{0,1\}^m\) es finito, la minimización puede
+escribirse como:
+
+\[
+\min_{\bar{x} \in \{0,1\}^m}
+\left\{
+\sum_i f_i \bar{x}_i
++
+\min_{y \in \mathcal{Y}(\bar{x})}
+\left(
+\sum_{i,j} (c_{ij} + h_i)\, y_{ij}
+\right)
+\right\}.
+\]
+
+Para cada \(\bar{x}\) tal que \(\mathcal{Y}(\bar{x}) \ne \emptyset\), el
+subproblema interno es un \textbf{programa lineal} definido sobre un
+poliedro no vacío y acotado (ya que existen cotas inferiores por demanda
+y los coeficientes son no negativos). Por el teorema de existencia de
+mínimo en poliedros, el subproblema posee solución. Como el número de
+posibles \(\bar{x}\) es finito, el mínimo global existe. ∎
+
+\subsubsection{\texorpdfstring{\textbf{Ejemplo ilustrativo: evaluación
+explícita de
+\(Z(x, y)\)}}{Ejemplo ilustrativo: evaluación explícita de Z(x, y)}}\label{ejemplo-ilustrativo-evaluaciuxf3n-expluxedcita-de-zx-y}
+
+Considérese el escenario:
+
+\begin{itemize}
+\tightlist
+\item
+  \(\mathcal{I} = \{1,2\}\),\\
+\item
+  \(\mathcal{J} = \{1\}\),\\
+\item
+  \(d_1 = 10\),\\
+\item
+  \(f_1 = 300\), \(f_2 = 400\),\\
+\item
+  \(c_{11} = 10\), \(c_{21} = 12\),\\
+\item
+  \(h_1 = 3\), \(h_2 = 2\).
+\end{itemize}
+
+\textbf{Caso 1: \(x = (1, 0)\), \(y_{11} = 12\), \(y_{21} = 0\)}
+
+\[
+\begin{aligned}
+Z(x,y)
+&= f_1 x_1 + f_2 x_2 + (c_{11}+h_1)\,y_{11} + (c_{21}+h_2)\,y_{21} \\
+&= 300 + 0 + (10+3)\cdot 12 + (12+2)\cdot 0 \\
+&= 300 + 156 = 456.
+\end{aligned}
+\]
+
+\textbf{Caso 2: \(x = (0,1)\), \(y_{21} = 10\)}
+
+\[
+Z = 0 + 400 + (12+2)\cdot 10 = 540.
+\]
+
+\textbf{Caso 3: \(x = (1,1)\), \(y_{11} = 6\), \(y_{21} = 4\)}
+
+\[
+Z = 300 + 400 + 13\cdot 6 + 14\cdot 4 = 834.
+\]
+
+El valor mínimo se obtiene abriendo únicamente la instalación 1, con
+inventario despachado \(12\) (mayor que la demanda), lo cual es
+admisible y económicamente óptimo bajo estos parámetros.
+
+La función objetivo \(Z(x, y)\) formaliza el análisis de compromisos
+entre inversión en infraestructura, costos operativos e inventario
+preposicionado. Su estructura afín por partes y la no convexidad del
+dominio \(\mathcal{X}\) definen un MILP clásico, aunque constituyen la
+base teórica necesaria para extensiones no lineales, robustas o
+estocásticas. La existencia garantizada de al menos una solución óptima
+justifica el enfoque algorítmico planteado en el Capítulo 3.
+
+\bookmarksetup{startatroot}
+
 \chapter{Métodos numéricos y optimización con restricciones tipo
 caja}\label{muxe9todos-numuxe9ricos-y-optimizaciuxf3n-con-restricciones-tipo-caja}
 
@@ -421,21 +1693,20 @@ físicos, económicos y logísticos, donde las condiciones naturales o
 estructurales limitan el espacio de búsqueda de soluciones Bertsekas
 (2016).
 
-El desarrollo del capítulo se organiza en cinco apartados. En primer
+El desarrollo del capítulo se organiza en cinco secciones. En primer
 lugar, se introducen los fundamentos de los métodos iterativos de primer
 y segundo orden, enfatizando los mecanismos de actualización del
 gradiente y la aproximación del Hessiano. Posteriormente, se extiende el
 análisis hacia dominios con restricciones tipo caja, detallando la
 formulación y justificación estructural del algoritmo \textbf{L-BFGS-B},
 uno de los más eficientes para resolver problemas de gran escala con
-cotas Byrd et~al. (1995); Nocedal y Wright (2006).
-
-En la tercera sección se analizan los resultados teóricos de
-convergencia del método bajo hipótesis de regularidad, presentando un
-teorema global que garantiza la existencia de puntos estacionarios que
-satisfacen las condiciones de Karush-Kuhn-Tucker (KKT). En seguida, la
-cuarta parte describe la implementación computacional del algoritmo y
-los experimentos numéricos realizados para evaluar su desempeño frente a
+cotas bajo el esquema de Byrd et~al. (1995); Nocedal y Wright (2006). En
+la tercera sección se analizan los resultados teóricos de convergencia
+del método bajo hipótesis de regularidad, presentando un teorema global
+que garantiza la existencia de puntos estacionarios que satisfacen las
+condiciones de Karush-Kuhn-Tucker (KKT). En seguida, la cuarta parte
+describe la implementación computacional del algoritmo y los
+experimentos numéricos realizados para evaluar su desempeño frente a
 otros métodos clásicos de optimización sin restricciones. Finalmente, se
 incluye una discusión crítica acerca de las ventajas, limitaciones y
 posibles extensiones del enfoque propuesto.
@@ -458,8 +1729,8 @@ propiedad geométrica de que el gradiente de una función escalar
 \(f: \mathbb{R}^n \to \mathbb{R}\), diferenciable en un punto
 \(x \in \mathbb{R}^n\), apunta en la dirección de máximo crecimiento
 local. En consecuencia, la dirección opuesta, \(-\nabla f(x)\), indica
-un camino de descenso local siempre que \(\nabla f(x) \neq 0\) Nocedal y
-Wright (2006).
+un camino de descenso local siempre que \(\nabla f(x) \neq 0\) (Nocedal
+y Wright (2006)).
 
 Formalmente, dado un punto inicial \(x_0 \in \mathbb{R}^n\), el método
 genera una sucesión \(\{x_k\}_{k \geq 0}\) definida por
@@ -472,8 +1743,8 @@ donde \(\alpha_k > 0\) es la longitud de paso seleccionada en cada
 iteración mediante una búsqueda lineal adecuada.
 
 La elección de \(\alpha_k\) resulta determinante para la convergencia.
-Una estrategia robusta impone las \textbf{condiciones de Wolfe} Nocedal
-y Wright (2006):
+Una estrategia robusta impone las \textbf{condiciones de Wolfe} (Nocedal
+y Wright (2006)):
 
 \[
   f(x_k - \alpha_k \nabla f(x_k)) \le f(x_k) - c_1 \alpha_k \|\nabla f(x_k)\|^2,
@@ -521,9 +1792,7 @@ entonces la sucesión \(\{x_k\}\) converge linealmente al minimizador
   \|x_{k+1} - x^\star\| \le \rho \|x_k - x^\star\|, \quad \rho \in (0,1).
 \]
 
-\subsubsection{\texorpdfstring{Ejemplo ilustrativo: función cuadrática
-en
-\(\mathbb{R}^2\)}{Ejemplo ilustrativo: función cuadrática en \textbackslash mathbb\{R\}\^{}2}}\label{ejemplo-ilustrativo-funciuxf3n-cuadruxe1tica-en-mathbbr2}
+\subsubsection{Ejemplo ilustrativo}\label{ejemplo-ilustrativo-1}
 
 Consideremos \(f(x) = \tfrac{1}{2}x^\top A x - b^\top x\), con
 
@@ -636,7 +1905,7 @@ El método BFGS posee propiedades teóricas destacadas:
   \lim_{k \to \infty} \frac{\|x_{k+1} - x^\star\|}{\|x_k - x^\star\|} = 0.
   \]
 
-  Este resultado se basa en la caracterización de Dennis--Moré (1977):
+  Este resultado se basa en la caracterización de Dennis y Moré (1977):
 
   \[
   \lim_{k \to \infty} \frac{\|(B_k - \nabla^2 f(x^\star)) s_k\|}{\|s_k\|} = 0.
@@ -920,8 +2189,8 @@ caja.
 \subsection{Proyección ortogonal sobre conjuntos de cotas: definición y
 propiedades}\label{proyecciuxf3n-ortogonal-sobre-conjuntos-de-cotas-definiciuxf3n-y-propiedades}
 
-En la optimización con restricciones tipo caja, el conjunto factible se
-define como
+En la optimización con restricciones tipo caja, el \textbf{conjunto
+factible} se define como
 
 \[
 \Omega = \{x \in \mathbb{R}^n : \ell_i \le x_i \le u_i,\; i = 1,\dots,n\},
@@ -935,7 +2204,7 @@ satisfacen \(\ell_i < u_i\) para todo \(i\). Este conjunto es
 ortogonal de cualquier punto \(z \in \mathbb{R}^n\) sobre \(\Omega\)
 está bien definida y es única.
 
-\subsubsection{Definición formal}\label{definiciuxf3n-formal}
+\subsubsection{Proyección Ortogonal}\label{proyecciuxf3n-ortogonal}
 
 La proyección ortogonal de \(z\) sobre \(\Omega\), denotada
 \(P_\Omega(z)\), se define como la solución única del problema de
@@ -973,8 +2242,8 @@ fundamentales}\label{propiedades-fundamentales}
 \item
   \textbf{Caracterización variacional}
 
-  Un punto \(x^\star \in \Omega\) satisface \(x^\star = P_\Omega(z)\) si
-  y solo si
+  Un punto \(x^\star \in \Omega\) satisface \(x^\star = P_\Omega(z)\),
+  si y solo si,
 
   \[
   (z - x^\star)^\top (x - x^\star) \le 0, \quad \forall x \in \Omega. \tag{3.21}
@@ -1047,11 +2316,6 @@ simplicidad y propiedades de estabilidad hacen que el operador
 \(P_\Omega\) sea esencial en algoritmos de optimización a gran escala,
 como el método \textbf{L-BFGS-B}, en el cual se aplica en cada iteración
 para mantener las variables dentro de los límites definidos.
-
-Esta sección establece las bases geométricas necesarias para el
-tratamiento de restricciones tipo caja y servirá de fundamento para la
-formulación y análisis del algoritmo L-BFGS-B en las secciones
-siguientes.
 
 \subsection{El algoritmo L-BFGS-B: formulación y justificación
 estructural}\label{el-algoritmo-l-bfgs-b-formulaciuxf3n-y-justificaciuxf3n-estructural}
@@ -1188,9 +2452,10 @@ memoria limitada y la proyección garantizan simultáneamente
 \textbf{eficiencia y factibilidad}.
 
 La formulación L-BFGS-B preserva las propiedades de convergencia global
-del BFGS bajo las hipótesis de suavidad y curvatura positiva Byrd et~al.
-(1995); Zhu et~al. (1997), y constituye uno de los métodos estándar para
-problemas de gran escala con restricciones tipo caja.
+del BFGS bajo las hipótesis de suavidad y curvatura positiva. Para más
+detalles Byrd et~al. (1995); Zhu et~al. (1997), y constituye uno de los
+métodos estándar para problemas de gran escala con restricciones tipo
+caja.
 
 \subsection{Condiciones de optimalidad bajo cotas: KKT para problemas
 con restricciones tipo
@@ -1452,15 +2717,15 @@ generada por L-BFGS-B verifica \[
 \textbf{Bosquejo de prueba.}\\
 De (H2) se sigue que \(\{x_k\} \subset \mathcal{L}\) es acotada, por lo
 que posee subsucesiones convergentes. La desigualdad (3.39) y las
-condiciones de Wolfe garantizan un descenso suficiente de \$ f \$. La
+condiciones de Wolfe garantizan un descenso suficiente de \(f\). La
 condición de curvatura \(y_k^\top s_k > 0\) asegura que las matrices
 \(H_k\) permanecen definidas positivas y acotadas. Por tanto, todo punto
 límite \(\bar{x}\) de la sucesión satisface la condición de
 estacionariedad proyectada \(\nabla_\Omega f(\bar{x}) = 0\). Nocedal y
 Wright (2006); Byrd et~al. (1995).
 
-\subsubsection{Ejemplo paso a paso: verificación de las
-hipótesis}\label{ejemplo-paso-a-paso-verificaciuxf3n-de-las-hipuxf3tesis}
+\subsubsection{Ejemplo de verificación de las
+hipótesis}\label{ejemplo-de-verificaciuxf3n-de-las-hipuxf3tesis}
 
 Consideremos el problema \[
 \min_{x \in \mathbb{R}^2} f(x) = x_1^4 + x_2^2
@@ -1522,8 +2787,8 @@ diferenciable, y el conjunto factible
 
 es cerrado, convexo y no vacío.
 
-El \textbf{resultado fundamental de convergencia global} Byrd et~al.
-(1995) establece que, bajo hipótesis estándar de regularidad y
+El \textbf{resultado fundamental de convergencia global}, Byrd et~al.
+(1995), establece que, bajo hipótesis estándar de regularidad y
 condiciones adecuadas de búsqueda lineal, la sucesión generada por el
 algoritmo posee puntos límite que satisfacen las \textbf{condiciones
 necesarias de optimalidad de Karush--Kuhn--Tucker (KKT)}. Dicho de otra
@@ -1617,8 +2882,8 @@ demostración}\label{bosquejo-de-la-demostraciuxf3n}
   \] que equivale a las condiciones KKT (véase Sección 3.2.3).
 \end{enumerate}
 
-\subsubsection{Ejemplo paso a paso: convergencia hacia un punto
-KKT}\label{ejemplo-paso-a-paso-convergencia-hacia-un-punto-kkt}
+\subsubsection{Ejemplo de convergencia hacia un punto
+KKT}\label{ejemplo-de-convergencia-hacia-un-punto-kkt}
 
 Consideremos:
 
@@ -1642,7 +2907,7 @@ El punto más cercano factible es \(x^\star = (2,1)^\top\).
   Por tanto, \(x^\star\) satisface KKT.
 \end{itemize}
 
-\textbf{Evolución de L-BFGS-B (memoria limitada \$ m = 2 \$):}
+\textbf{Evolución de L-BFGS-B (memoria limitada \(m = 2\)):}
 
 \begin{itemize}
 \tightlist
@@ -1772,8 +3037,8 @@ Además, al ser \(Q^* > \mathbf{1}\), se tiene
 La unicidad y compacidad implican que toda la sucesión \(\{Q_k\}\)
 converge a \(Q^*\). ∎
 
-\subsubsection{Ejemplo paso a paso: modelo con barrera
-logarítmica}\label{ejemplo-paso-a-paso-modelo-con-barrera-logaruxedtmica}
+\subsubsection{Ejemplo de modelo con barrera
+logarítmica}\label{ejemplo-de-modelo-con-barrera-logaruxedtmica}
 
 Considérese el funcional
 
@@ -1866,8 +3131,8 @@ i = k-m,\dots,k-1.
 
 Esta recursión requiere especificar una matriz inicial \(H_k^{(0)}\), la
 cual actúa como una aproximación base del inverso del Hessiano al inicio
-de cada actualización. Según se ha documentado ampliamente (Liu \&
-Nocedal, 1989; Nocedal \& Wright, 2006), la elección de \(H_k^{(0)}\)
+de cada actualización. Según se ha documentado ampliamente (Liu y
+Nocedal (1989); Nocedal y Wright (2006)), la elección de \(H_k^{(0)}\)
 influye de forma directa en la dirección de búsqueda
 \(p_k = -H_k \nabla f(x_k)\), afectando así estabilidad y eficiencia del
 método.
@@ -2106,7 +3371,7 @@ decrecientes. Sea:
 \tightlist
 \item
   \(k_{\varepsilon}(m)\): número mínimo de iteraciones tal que
-  \(\|\nabla_\Omega f(x_k)\| \le \varepsilon\).
+  \(\|\nabla_\Omega f(x_k)\| \le \varepsilon\) para \(0 <\varepsilon\).
 \end{itemize}
 
 La evidencia teórica y computacional muestra que:
@@ -2124,7 +3389,8 @@ La evidencia teórica y computacional muestra que:
 Este comportamiento se justifica porque muchas aplicaciones presentan
 curvatura activa en un subespacio reducido; por ello, valores de
 \(m \in [10,20]\) suelen capturar la información esencial sin costos
-elevados Liu y Nocedal (1989); Nocedal y Wright (2006).
+elevados para más detalles Liu y Nocedal (1989); Nocedal y Wright
+(2006).
 
 \subsubsection{Estimación empírica del número de
 iteraciones}\label{estimaciuxf3n-empuxedrica-del-nuxfamero-de-iteraciones}
@@ -2240,7 +3506,7 @@ ser eficaces; en problemas masivos (\(n \ge 10^6\)), valores pequeños
 (\(m \in [3,7]\)) permiten mantener costos lineales con estabilidad
 adecuada.
 
-En suma, la memoria limitada proporciona un mecanismo flexible para
+En resumen, la memoria limitada proporciona un mecanismo flexible para
 modular la aproximación Hessiana sin abandonar la eficiencia propia de
 los métodos de primer orden.
 
@@ -2384,10 +3650,19 @@ Los resultados muestran que:
   inicial, en contraste con L-BFGS-B.
 \end{itemize}
 
-La robustez observada se explica por: 1. El escalamiento automático del
-Hessiano aproximado, 2. La corrección iterativa basada en pares
-\((s_k, y_k)\) que reduce la anisotropía, 3. La estabilidad introducida
-por la proyección factible.
+La robustez observada se explica por:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  El escalamiento automático del Hessiano aproximado,
+\item
+  La corrección iterativa basada en pares \((s_k, y_k)\) que reduce la
+  anisotropía,
+\item
+  La estabilidad introducida por la proyección factible.
+\end{enumerate}
 
 \subsubsection{Contraste: función de Rosenbrock
 acotada}\label{contraste-funciuxf3n-de-rosenbrock-acotada}
@@ -2453,13 +3728,23 @@ problema canónico
 \]
 
 y comparamos L-BFGS-B con tres métodos clásicos sin tratamiento directo
-de cotas: (i) gradiente descendente (GD) con búsqueda lineal Wolfe; (ii)
-Newton inexacto (Newton--CG) resolviendo las ecuaciones lineales por CG;
-(iii) BFGS sin proyección. La comparación se realiza mediante las
-métricas: número de iteraciones hasta
-\(\|\nabla_\Omega f(x_k)\|\le\varepsilon\), número de evaluaciones de
-gradiente (proxy de costo) y factibilidad de la solución final
-(satisfacción de KKT bajo cotas).
+de cotas:
+
+\begin{enumerate}
+\def\labelenumi{(\roman{enumi})}
+\tightlist
+\item
+  gradiente descendente (GD) con búsqueda lineal Wolfe;
+\item
+  Newton inexacto (Newton--CG) resolviendo las ecuaciones lineales por
+  CG;
+\item
+  BFGS sin proyección. La comparación se realiza mediante las métricas:
+  número de iteraciones hasta
+  \(\|\nabla_\Omega f(x_k)\|\le\varepsilon\), número de evaluaciones de
+  gradiente y factibilidad de la solución final (satisfacción de KKT
+  bajo cotas).
+\end{enumerate}
 
 Las referencias metodológicas que sustentan este análisis son bien
 conocidas en la literatura sobre optimización numérica (p.~ej., Nocedal
@@ -2608,9 +3893,7 @@ cualitativo}\label{anuxe1lisis-cuantitativo-y-cualitativo}
     (128 evaluaciones de gradiente en promedio en este experimento).\\
   \item
     L-BFGS-B presenta un compromiso favorable: número moderado de
-    iteraciones (28) y bajo número de evaluaciones (30), con costo por
-    iteración \(\mathcal{O}(mn)=\mathcal{O}(200)\) operaciones en este
-    caso.\\
+    iteraciones (28) y bajo número de evaluaciones (30).
   \item
     GD requiere muchas iteraciones (1 842), por lo tanto su costo global
     es prohibitivo en problemas mal condicionados.
@@ -2725,8 +4008,8 @@ y_i = \nabla f(x_{i+1}) - \nabla f(x_i).
 
 La dirección de búsqueda \(p_k = -H_k \nabla f(x_k)\) se calcula
 mediante la \textbf{recursión de dos bucles} (Algoritmo 7.4 en Nocedal y
-Wright, 2006), que aplica secuencialmente las actualizaciones BFGS a una
-matriz inicial escalada \(H_k^{(0)} = \gamma_k I\), sin necesidad de
+Wright (2006)), que aplica secuencialmente las actualizaciones BFGS a
+una matriz inicial escalada \(H_k^{(0)} = \gamma_k I\), sin necesidad de
 formar \(H_k\) explícitamente. El costo computacional de esta operación
 es:
 
@@ -2776,9 +4059,9 @@ Comparativamente:
   condicionados
 \end{itemize}
 
-\subsubsection{\texorpdfstring{Ejemplo paso a paso: comparación de
-costos en un problema de dimensión
-\(n = 10^5\)}{Ejemplo paso a paso: comparación de costos en un problema de dimensión n = 10\^{}5}}\label{ejemplo-paso-a-paso-comparaciuxf3n-de-costos-en-un-problema-de-dimensiuxf3n-n-105}
+\subsubsection{\texorpdfstring{Ejemplo de comparación de costos en un
+problema de dimensión
+\(n = 10^5\)}{Ejemplo de comparación de costos en un problema de dimensión n = 10\^{}5}}\label{ejemplo-de-comparaciuxf3n-de-costos-en-un-problema-de-dimensiuxf3n-n-105}
 
 Consideremos un problema de regresión logística regularizada:
 
@@ -2923,7 +4206,7 @@ condicionado:
 
 Como consecuencia, el algoritmo puede caer en \textbf{estancamiento
 progresivo}, reduciendo su eficacia incluso en casos donde no hay
-degeneración estructural (Zhu et al., 1997).
+degeneración estructural (Zhu et~al. (1997)).
 
 Este fenómeno es especialmente relevante en aplicaciones como:\\
 - inversión de parámetros en EDPs,\\
@@ -2975,9 +4258,9 @@ precondicionado. Esta estrategia añade correcciones de curvatura
 profundas sin perder control sobre el costo computacional y mantiene
 factibilidad mediante proyección.
 
-\subsubsection{\texorpdfstring{Ejemplo paso a paso: función cuadrática
-mal condicionada con
-\(\kappa = 10^6\)}{Ejemplo paso a paso: función cuadrática mal condicionada con \textbackslash kappa = 10\^{}6}}\label{ejemplo-paso-a-paso-funciuxf3n-cuadruxe1tica-mal-condicionada-con-kappa-106}
+\subsubsection{\texorpdfstring{Ejemplo de función cuadrática mal
+condicionada con
+\(\kappa = 10^6\)}{Ejemplo de función cuadrática mal condicionada con \textbackslash kappa = 10\^{}6}}\label{ejemplo-de-funciuxf3n-cuadruxe1tica-mal-condicionada-con-kappa-106}
 
 Consideremos:
 
@@ -3177,9 +4460,9 @@ Si se imponen restricciones tipo caja \(x\ge \mathbf{1}\), la
 factibilidad se mantiene mediante la proyección global componente a
 componente \(P_\Omega\) sin alterar la estructura separable.
 
-\subsubsection{\texorpdfstring{Ejemplo paso a paso: función parcialmente
-separable en
-\(\mathbb{R}^4\)}{Ejemplo paso a paso: función parcialmente separable en \textbackslash mathbb\{R\}\^{}4}}\label{ejemplo-paso-a-paso-funciuxf3n-parcialmente-separable-en-mathbbr4}
+\subsubsection{\texorpdfstring{Ejemplo de función parcialmente separable
+en
+\(\mathbb{R}^4\)}{Ejemplo de función parcialmente separable en \textbackslash mathbb\{R\}\^{}4}}\label{ejemplo-de-funciuxf3n-parcialmente-separable-en-mathbbr4}
 
 Consideremos
 

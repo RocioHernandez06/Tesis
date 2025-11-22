@@ -1,0 +1,250 @@
+Perfecto, Rocío ⚙️
+
+Si el **modelo de optimización no lineal con restricciones tipo caja** constituye el eje final de tu tesis, la estructura natural de un trabajo de **Matemáticas Aplicadas** debe guiar al lector desde los fundamentos teóricos hasta la implementación computacional reproducible.
+
+Te propongo ahora una **estructura en cuatro capítulos**, donde los tres primeros conforman el desarrollo teórico, metodológico y analítico, y el cuarto contiene el **código, experimentación y resultados computacionales**.
+
+Toda la propuesta está redactada en tono académico, con énfasis en **rigurosidad matemática, coherencia deductiva y relación aplicada** al contexto de logística humanitaria.
+
+---
+
+## 🧩 Estructura general propuesta
+
+> **Título de la tesis:**
+> *“Modelo de Optimización No Lineal con Restricciones Tipo Caja para la Localización e Inventario Humanitario”*
+
+---
+
+## **Capítulo I. Preliminares teóricos y fundamentos conceptuales**
+
+Este capítulo establece el marco matemático formal y los conceptos de optimización necesarios para formular el problema. Además, introduce la relación entre teoría matemática y contexto logístico-humanitario.
+
+### 1.1. Fundamentos de optimización matemática
+
+* **Definición 1.1.1 (Problema general de optimización):**
+  Sea ( f : \mathbb{R}^n \to \mathbb{R} ) una función continua. El problema de optimización consiste en determinar
+  [
+  \min_{x \in \Omega} f(x),
+  ]
+  donde ( \Omega \subseteq \mathbb{R}^n ) representa el conjunto factible.
+
+* **Definición 1.1.2 (Restricciones tipo caja):**
+  [
+  \Omega = { x \in \mathbb{R}^n : l_i \leq x_i \leq u_i, , i = 1,\dots,n }
+  ]
+  Las restricciones tipo caja acotan cada variable mediante límites inferiores y superiores.
+
+* **Definición 1.1.3 (Óptimo local y global):**
+  Se define el óptimo local (x^*) si existe (\epsilon > 0) tal que (f(x^*) \le f(x)) para todo (x \in \Omega) con (|x - x^*| < \epsilon).
+  Si esta desigualdad se cumple para todo (x \in \Omega), entonces (x^*) es óptimo global.
+
+---
+
+### 1.2. Condiciones de optimalidad
+
+* **Proposición 1.2.1 (Condiciones KKT para restricciones tipo caja):**
+  Si ( f ) es continuamente diferenciable en un conjunto factible tipo caja, ( x^* ) es óptimo si y solo si cumple las condiciones de Karush–Kuhn–Tucker:
+  [
+  \begin{cases}
+  \nabla f(x^*) = 0, & \text{si } l_i < x_i^* < u_i, \
+  \nabla f(x^*) \ge 0, & \text{si } x_i^* = l_i, \
+  \nabla f(x^*) \le 0, & \text{si } x_i^* = u_i.
+  \end{cases}
+  ]
+
+* **Definición 1.2.1 (Gradiente y Hessiano):**
+  [
+  \nabla f(x) = \left( \frac{\partial f}{\partial x_1}, \dots, \frac{\partial f}{\partial x_n} \right), \quad
+  \nabla^2 f(x) = \left( \frac{\partial^2 f}{\partial x_i \partial x_j} \right)_{i,j}.
+  ]
+
+---
+
+### 1.3. Conceptos de teoría de inventarios
+
+* **Definición 1.3.1 (Parámetros básicos):**
+
+  * ( D ): Demanda anual.
+  * ( S ): Costo por pedido.
+  * ( C ): Costo unitario del producto.
+  * ( H ): Tasa de mantenimiento.
+  * ( L ): Tiempo de entrega (lead time).
+
+* **Definición 1.3.2 (Modelo EOQ clásico):**
+  [
+  Q^* = \sqrt{\frac{2DS}{HC}}
+  ]
+
+* **Definición 1.3.3 (Inventario de seguridad):**
+  [
+  SS = Z \cdot \sigma \cdot \sqrt{L}
+  ]
+  donde ( Z ) es el nivel de servicio y ( \sigma ) la desviación estándar de la demanda.
+
+* **Proposición 1.3.1 (Costo total del EOQ):**
+  [
+  Z(Q) = \frac{D}{Q}S + \frac{Q}{2}HC + DC
+  ]
+
+---
+
+### 1.4. Contexto humanitario
+
+Explica la pertinencia del modelo en la **gestión de ayuda ante desastres naturales**, enfatizando:
+
+* Incertidumbre en la demanda.
+* Necesidad de minimizar faltantes y sobrecostos.
+* Decisiones logísticas preposicionales (almacenes estratégicos).
+
+Referencias: (Altay & Green, 2006; Balcik & Beamon, 2008; Tatham & Kovács, 2010).
+
+---
+
+## **Capítulo II. Formulación matemática del modelo no lineal**
+
+Aquí se presenta la **construcción formal del modelo propuesto**, su derivación desde la teoría clásica y la incorporación de elementos de incertidumbre y restricciones tipo caja.
+
+### 2.1. Componentes del modelo
+
+* **Definición 2.1.1 (Función de costo total extendida):**
+  [
+  Z(Q) = \frac{D}{Q}S + \left( \frac{Q}{2} + Z\sigma\sqrt{L} \right)HC + DC + \frac{D}{Q}\beta C
+  ]
+  donde ( \beta ) representa la penalización por faltantes.
+
+* **Proposición 2.1.1 (No linealidad de ( Z(Q) )):**
+  Los términos ( D/Q ) y ( \sqrt{L} ) introducen una estructura no lineal, lo que impide resolver el problema mediante programación lineal clásica.
+
+---
+
+### 2.2. Problema general
+
+[
+\begin{align*}
+\min_{Q} \quad & f(Q) = \frac{D}{Q}S + \left( \frac{Q}{2} + Z\sigma\sqrt{L} \right)HC + DC + \frac{D}{Q}\beta C \
+\text{s.a.} \quad & Q \ge 1
+\end{align*}
+]
+
+* **Lema 2.2.1 (Existencia de mínimo):**
+  Si ( f(Q) ) es continua y ( f(Q) \to \infty ) cuando ( Q \to 1^+ ) o ( Q \to \infty ), existe al menos un ( Q^* \in [1, +\infty) ) tal que ( f(Q^*) = \min f(Q) ).
+
+* **Proposición 2.2.1 (Comparación con EOQ clásico):**
+  Si ( \beta > 0 ) y ( Z > 0 ), entonces ( Q^*_{\text{no lineal}} < Q^*_{\text{EOQ}} ), mostrando una corrección descendente debido a la penalización por faltantes.
+
+---
+
+### 2.3. Derivación de condiciones de primer orden
+
+* **Definición 2.3.1 (Derivada de la función de costo):**
+  [
+  \frac{dZ}{dQ} = -\frac{DS}{Q^2} + \frac{H C}{2} - \frac{D\beta C}{Q^2}
+  ]
+
+* **Teorema 2.3.1 (Condición de optimalidad):**
+  El valor óptimo ( Q^* ) satisface:
+  [
+  \frac{dZ}{dQ}(Q^*) = 0 \Rightarrow Q^* = \sqrt{\frac{2D(S + \beta C)}{HC}}
+  ]
+  cuando se ignora la restricción inferior; de otro modo, ( Q^* = \max{1, Q^*} ).
+
+---
+
+### 2.4. Interpretación analítica
+
+* El modelo resultante es un **problema unidimensional no lineal con restricción inferior**, resuelto mediante técnicas numéricas eficientes.
+* Introduce un parámetro de riesgo (β) que refleja la incertidumbre humanitaria.
+
+---
+
+## **Capítulo III. Métodos numéricos y optimización con restricciones tipo caja**
+
+Este capítulo traduce el modelo teórico a un problema numérico resoluble mediante métodos iterativos, garantizando convergencia bajo hipótesis matemáticas.
+
+### 3.1. Métodos de gradiente y cuasi-Newton
+
+* **Definición 3.1.1 (Método de gradiente descendente):**
+  [
+  x_{k+1} = x_k - \alpha_k \nabla f(x_k)
+  ]
+
+* **Definición 3.1.2 (Método cuasi-Newton):**
+  [
+  x_{k+1} = x_k - B_k^{-1} \nabla f(x_k)
+  ]
+  donde ( B_k ) aproxima el Hessiano ( \nabla^2 f(x_k) ).
+
+---
+
+### 3.2. El algoritmo L-BFGS-B
+
+* **Definición 3.2.1 (Actualización L-BFGS-B):**
+  [
+  x_{k+1} = P_{\Omega}(x_k - \alpha_k B_k^{-1} \nabla f(x_k)),
+  ]
+  con (P_{\Omega}) la proyección sobre las restricciones tipo caja.
+
+* **Teorema 3.2.1 (Convergencia):**
+  Bajo continuidad de gradiente y acotamiento de (\Omega), el método L-BFGS-B converge a un punto (x^*) que cumple las condiciones KKT.
+
+* **Corolario 3.2.1 (Aplicación al modelo propuesto):**
+  La secuencia generada por L-BFGS-B converge a ( Q^* ) que satisface:
+  [
+  \nabla f(Q^*) = 0, \quad Q^* \ge 1.
+  ]
+
+---
+
+### 3.3. Discusión numérica
+
+* Estimación del número de iteraciones.
+* Sensibilidad a condiciones iniciales.
+* Comparación de convergencia entre métodos (Newton, Gradiente, L-BFGS-B).
+
+---
+
+## **Capítulo IV. Implementación computacional y resultados experimentales**
+
+Este capítulo final integra todo el trabajo teórico en una **implementación reproducible en Python**, con visualizaciones, tablas y análisis de sensibilidad.
+
+### 4.1. Descripción del entorno computacional
+
+* Lenguaje: **Python 3.12**
+* Librerías: `numpy`, `scipy.optimize`, `matplotlib`, `pandas`.
+
+### 4.2. Definición de la función objetivo y parámetros
+
+Incluye la traducción directa de ( Z(Q) ) en código y la definición de los parámetros logísticos.
+
+### 4.3. Implementación del algoritmo L-BFGS-B
+
+Código completo documentado y explicado paso a paso.
+
+### 4.4. Análisis de resultados
+
+* Comparación entre ( Q_{\text{EOQ}} ) y ( Q^*_{\text{no lineal}} ).
+* Evaluación de ahorro porcentual de costos.
+* Gráficas de sensibilidad de ( Z(Q) ).
+* Discusión del impacto humanitario.
+
+### 4.5. Conclusiones y trabajo futuro
+
+* Generalización del modelo a múltiples productos o almacenes.
+* Integración con modelos de localización (facility location).
+* Posibles extensiones con incertidumbre estocástica o borrosa.
+
+---
+
+## 📚 Referencias (APA 7ª edición)
+
+* Altay, N., & Green, W. G. (2006). *OR/MS research in disaster operations management*. *European Journal of Operational Research*, 175(1), 475–493. [https://doi.org/10.1016/j.ejor.2005.05.016](https://doi.org/10.1016/j.ejor.2005.05.016)
+* Balcik, B., & Beamon, B. M. (2008). *Facility location in humanitarian relief*. *International Journal of Logistics*, 11(2), 101–121. [https://doi.org/10.1080/13675560701561789](https://doi.org/10.1080/13675560701561789)
+* Byrd, R. H., Lu, P., Nocedal, J., & Zhu, C. (1995). *A limited memory algorithm for bound constrained optimization*. *SIAM Journal on Scientific Computing*, 16(5), 1190–1208. [https://doi.org/10.1137/0916069](https://doi.org/10.1137/0916069)
+* Snyder, L. V., & Shen, Z.-J. M. (2019). *Fundamentals of supply chain theory*. John Wiley & Sons.
+* Silver, E. A., Pyke, D. F., & Peterson, R. (1998). *Inventory management and production planning and scheduling*. John Wiley & Sons.
+* Tatham, P., & Kovács, G. (2010). *The application of “swift trust” to humanitarian logistics*. *International Journal of Production Economics*, 126(1), 35–45. [https://doi.org/10.1016/j.ijpe.2009.10.006](https://doi.org/10.1016/j.ijpe.2009.10.006)
+
+---
+
+¿Quieres que te redacte ahora los **tres primeros capítulos en versión formal académica (en formato LaTeX o Quarto)**, con numeración, ecuaciones y citas en estilo APA integradas?
+Puedo construirte el **Capítulo I completo (Preliminares)** como base para iniciar la redacción formal de la tesis.

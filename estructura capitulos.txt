@@ -1,0 +1,127 @@
+desarrolla la seccion en tono riguroso para una tesis de maestria en matematicas aplicadas siguiendo las recomendaco nes de adrian walwork : desarrolla en tono riguroso esta seccion presenta las ecuaciones matematicas desarrolla un ejemplo paso a paso (en caso de ser necesario) en tono riguroso nivel maestria en matematicas aplicadas 
+
+Capítulo 2. Fundamentación Teórica y Formulación Matemática del Modelo
+2.1. Introducción al problema integrado de localización e inventario
+2.1.1. Relevancia en logística humanitaria y gestión de emergencias
+2.1.2. Limitaciones de los enfoques clásicos bajo incertidumbre y no linealidad
+2.1.3. Estructura híbrida: decisiones discretas (ubicación) y continuas (inventario)
+Literatura clave: 
+
+Balcik & Beamon (2008), OR Spectrum
+Caunhye et al. (2012), EJOR
+Rawls & Turnquist (2010), Transportation Research Part E
+2.2. Marco general de modelado: variables, parámetros y espacio de decisión
+2.2.1. Conjuntos de índices: instalaciones potenciales I y zonas de demanda J
+2.2.2. Variables de decisión: binarias (xi) y continuas (yij)
+2.2.3. Parámetros del sistema: costos fijos, unitarios, demanda, capacidades
+2.2.4. Definición formal del espacio factible X
+2.2.5. Función objetivo general en problemas de localización-inventario
+Literatura clave: 
+
+Daskin (2013), Network and Discrete Location
+Laporte et al. (2015), Location Science
+Snyder & Shen (2019), Fundamentals of Supply Chain Theory
+2.3. Modelo clásico de lote económico (EOQ): bases y limitaciones
+2.3.1. Supuestos deterministas del EOQ
+2.3.2. Derivación analítica del tamaño óptimo de pedido
+2.3.3. Inadecuación en contextos humanitarios: demanda incierta, faltantes costosos
+2.3.4. Motivación para una extensión no lineal con penalización y riesgo
+Literatura clave: 
+
+Axsäter (2015), Inventory Control
+Hadley & Whitin (1963), Analysis of Inventory Systems
+Silver, Pyke & Peterson (1998)
+2.4. Extensión no lineal del modelo EOQ con incertidumbre y penalización
+2.4.1. Definición rigurosa de la función de costo total extendida Z(Q)
+2.4.2. Interpretación del término Zσ L: nivel de servicio y riesgo
+2.4.3. Incorporación de la penalización por faltantes mediante βC
+2.4.4. Análisis de no linealidad: origen en D/Q y dependencia de L
+2.4.5. Comparación cuantitativa con EOQ clásico: efecto descendente en Q 
+∗
+ 
+Literatura clave: 
+
+Porteus (2002), Foundations of Stochastic Inventory Theory
+Arrow, Harris & Marschak (1951), Econometrica
+Zipkin (2000), Foundations of Inventory Management
+2.5. Propiedades analíticas del problema unidimensional
+2.5.1. Formulación del problema de optimización: min Q≥1f(Q)
+2.5.2. Continuidad y coercividad: garantía de existencia del mínimo (Lema 2.2.1)
+2.5.3. Análisis de convexidad local y unicidad del óptimo
+2.5.4. Comportamiento asintótico de f(Q) cuando Q→1 + y Q→∞
+# Opcional (2.5.5. Implicaciones para la resolubilidad numérica)
+Literatura clave: 
+
+Boyd & Vandenberghe (2004), Convex Optimization
+Bazaraa, Sherali & Shetty (2013), Nonlinear Programming
+Bertsekas (1999), Nonlinear Programming
+2.6. Condiciones de optimalidad y solución cerrada aproximada
+2.6.1. Derivación formal de dQdZ
+​2.6.2. Condición de primer orden:  dQdZ(Q ∗)=0
+2.6.3. Expresión explícita de Q∗sin restricción de caja
+2.6.4. Tratamiento de la restricción Q≥1 : proyección del óptimo
+2.6.5. Sensibilidad del óptimo respecto a β , Z , H , y S
+Literatura clave: 
+
+Nocedal & Wright (2006), Numerical Optimization
+Luenberger & Ye (2015), Linear and Nonlinear Programming
+# 2.7. Integración en un modelo MINLP: acoplamiento de inventario y localización
+2.7.1. Extensión de Q a flujos y ij y niveles de inventario por almacén
+2.7.2. Reformulación de la función de costo en términos de (x,y)
+2.7.3. Estructura de bloque: separabilidad condicional dada x
+2.7.4. Convexidad del subproblema continuo para x fijo (Proposición 2.2)
+2.7.5. Origen de la no convexidad global: variables binarias y términos fijos no lineales
+Literatura clave: 
+
+Grossmann (2002), Computers & Chemical Engineering
+Belotti et al. (2013), INFORMS Journal on Computing
+Floudas (1995), Nonlinear and Mixed-Integer Optimization
+# 2.8. Extensiones bajo incertidumbre: modelos estocásticos y robustos
+2.8.1. Representación de parámetros inciertos mediante ξ
+2.8.2. Formulación estocástica: minimización del costo esperado
+2.8.3. Incorporación de funciones de riesgo R(x,y) y equidad
+2.8.4. Enfoque robusto: conjuntos de incertidumbre y soluciones conservadoras
+2.8.5. Resiliencia operativa: preposicionamiento ante fallos en la red
+Literatura clave: 
+
+Tricoire et al. (2012), EJOR
+Ben-Tal, El Ghaoui & Nemirovski (2009), Robust Optimization
+Shapiro et al. (2021), Lectures on Stochastic Programming
+2.9. Conclusiones del capítulo
+2.9.1. Síntesis del modelo matemático propuesto y sus propiedades
+2.9.2. Contribución teórica: integración de riesgo, no linealidad y decisiones mixtas
+2.9.3. Pertinencia en contextos humanitarios con alta incertidumbre
+2.9.4. Transición natural al desarrollo de métodos de solución (Capítulo 3)
+
+Capítulo III. Métodos numéricos y optimización con restricciones tipo caja
+3.1. Fundamentos de métodos iterativos de primer y segundo orden
+  3.1.1. Método de gradiente descendente y sus propiedades de convergencia
+  3.1.2. Métodos cuasi-Newton: aproximación del Hessiano y convergencia superlineal
+  3.1.3. Familia Broyden y el método BFGS como caso prototípico
+
+3.2. Extensión a dominios con restricciones tipo caja
+  3.2.1. Proyección ortogonal sobre conjuntos de cotas: definición y propiedades
+  3.2.2. El algoritmo L-BFGS-B: formulación y justificación estructural
+  3.2.3. Condiciones de optimalidad bajo cotas: KKT para problemas con restricciones tipo caja
+
+3.3. Convergencia del método L-BFGS-B
+  3.3.1. Hipótesis de regularidad: Lipschitz-continuidad del gradiente y compacidad del dominio
+  3.3.2. Teorema de convergencia global: límite de puntos estacionarios que satisfacen KKT
+  3.3.3. Corolario aplicado al modelo propuesto: existencia y unicidad de Q∗≥1 tal que ∇f(Q∗)=0
+
+3.4. Implementación y análisis numérico
+  3.4.1. Estrategias de inicialización y escalado del inverso del Hessiano aproximado
+  3.4.2. Estimación empírica del número de iteraciones y dependencia del parámetro de memoria m
+  3.4.3. Sensibilidad a las condiciones iniciales y robustez del algoritmo
+  3.4.4. Comparación numérica con otros métodos: gradiente descendente, Newton inexacto y BFGS sin restricciones
+
+3.5. Discusión y perspectivas computacionales
+  3.5.1. Ventajas del enfoque de memoria limitada en problemas de gran escala
+  3.5.2. Limitaciones en problemas mal condicionados y alternativas híbridas
+  3.5.3. Posibilidades de extensión a problemas con estructura parcialmente separable
+
+
+
+
+verificar referencias ( 202 )
+# para el futuro 

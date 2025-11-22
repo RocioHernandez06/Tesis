@@ -12,9 +12,7 @@ jupyter: python3
 :::{style="text-align: justify"}
 En este capítulo se presentan los fundamentos teóricos y computacionales de los métodos de optimización aplicados a problemas con restricciones tipo caja, es decir, aquellos en los que las variables de decisión se encuentran acotadas superior e inferiormente dentro de un dominio compacto. Este tipo de problemas es común en la modelación de sistemas físicos, económicos y logísticos, donde las condiciones naturales o estructurales limitan el espacio de búsqueda de soluciones @Bertsekas2016.
 
-El desarrollo del capítulo se organiza en cinco apartados. En primer lugar, se introducen los fundamentos de los métodos iterativos de primer y segundo orden, enfatizando los mecanismos de actualización del gradiente y la aproximación del Hessiano. Posteriormente, se extiende el análisis hacia dominios con restricciones tipo caja, detallando la formulación y justificación estructural del algoritmo **L-BFGS-B**, uno de los más eficientes para resolver problemas de gran escala con cotas @Byrd1995; @NocedalWright2006.
-
-En la tercera sección se analizan los resultados teóricos de convergencia del método bajo hipótesis de regularidad, presentando un teorema global que garantiza la existencia de puntos estacionarios que satisfacen las condiciones de Karush-Kuhn-Tucker (KKT). En seguida, la cuarta parte describe la implementación computacional del algoritmo y los experimentos numéricos realizados para evaluar su desempeño frente a otros métodos clásicos de optimización sin restricciones. Finalmente, se incluye una discusión crítica acerca de las ventajas, limitaciones y posibles extensiones del enfoque propuesto.
+El desarrollo del capítulo se organiza en cinco secciones. En primer lugar, se introducen los fundamentos de los métodos iterativos de primer y segundo orden, enfatizando los mecanismos de actualización del gradiente y la aproximación del Hessiano. Posteriormente, se extiende el análisis hacia dominios con restricciones tipo caja, detallando la formulación y justificación estructural del algoritmo **L-BFGS-B**, uno de los más eficientes para resolver problemas de gran escala con cotas bajo el esquema de @Byrd1995; @NocedalWright2006. En la tercera sección se analizan los resultados teóricos de convergencia del método bajo hipótesis de regularidad, presentando un teorema global que garantiza la existencia de puntos estacionarios que satisfacen las condiciones de Karush-Kuhn-Tucker (KKT). En seguida, la cuarta parte describe la implementación computacional del algoritmo y los experimentos numéricos realizados para evaluar su desempeño frente a otros métodos clásicos de optimización sin restricciones. Finalmente, se incluye una discusión crítica acerca de las ventajas, limitaciones y posibles extensiones del enfoque propuesto.
 
 El propósito de este capítulo es ofrecer una comprensión integral del método **L-BFGS-B**, integrando su base matemática, su estructura computacional y su relevancia práctica para la resolución eficiente de problemas con restricciones tipo caja.
 
@@ -22,7 +20,7 @@ El propósito de este capítulo es ofrecer una comprensión integral del método
 
 ### Método de gradiente descendente y sus propiedades de convergencia
 
-El método de gradiente descendente constituye el algoritmo más elemental dentro de los métodos iterativos de primer orden para la minimización no lineal de funciones diferenciables. Su fundamento se basa en la propiedad geométrica de que el gradiente de una función escalar $f: \mathbb{R}^n \to \mathbb{R}$, diferenciable en un punto $x \in \mathbb{R}^n$, apunta en la dirección de máximo crecimiento local. En consecuencia, la dirección opuesta, $-\nabla f(x)$, indica un camino de descenso local siempre que $\nabla f(x) \neq 0$ @NocedalWright2006.
+El método de gradiente descendente constituye el algoritmo más elemental dentro de los métodos iterativos de primer orden para la minimización no lineal de funciones diferenciables. Su fundamento se basa en la propiedad geométrica de que el gradiente de una función escalar $f: \mathbb{R}^n \to \mathbb{R}$, diferenciable en un punto $x \in \mathbb{R}^n$, apunta en la dirección de máximo crecimiento local. En consecuencia, la dirección opuesta, $-\nabla f(x)$, indica un camino de descenso local siempre que $\nabla f(x) \neq 0$ (@NocedalWright2006).
 
 Formalmente, dado un punto inicial $x_0 \in \mathbb{R}^n$, el método genera una sucesión $\{x_k\}_{k \geq 0}$ definida por  
 
@@ -32,7 +30,7 @@ $$
 
 donde $\alpha_k > 0$ es la longitud de paso seleccionada en cada iteración mediante una búsqueda lineal adecuada.
 
-La elección de $\alpha_k$ resulta determinante para la convergencia. Una estrategia robusta impone las **condiciones de Wolfe** @NocedalWright2006:
+La elección de $\alpha_k$ resulta determinante para la convergencia. Una estrategia robusta impone las **condiciones de Wolfe** (@NocedalWright2006):
 
 $$
   f(x_k - \alpha_k \nabla f(x_k)) \le f(x_k) - c_1 \alpha_k \|\nabla f(x_k)\|^2,
@@ -68,7 +66,7 @@ $$
   \|x_{k+1} - x^\star\| \le \rho \|x_k - x^\star\|, \quad \rho \in (0,1).
 $$
 
-#### Ejemplo ilustrativo: función cuadrática en $\mathbb{R}^2$
+#### Ejemplo ilustrativo
 
 Consideremos $f(x) = \tfrac{1}{2}x^\top A x - b^\top x$, con  
 
@@ -143,7 +141,7 @@ El método BFGS posee propiedades teóricas destacadas:
   \lim_{k \to \infty} \frac{\|x_{k+1} - x^\star\|}{\|x_k - x^\star\|} = 0.
   $$
 
-  Este resultado se basa en la caracterización de Dennis–Moré (1977):
+  Este resultado se basa en la caracterización de @DennisMore1977:
 
   $$
   \lim_{k \to \infty} \frac{\|(B_k - \nabla^2 f(x^\star)) s_k\|}{\|s_k\|} = 0.
@@ -326,7 +324,7 @@ Estos problemas aparecen con frecuencia en aplicaciones de ingeniería, finanzas
 
 ###  Proyección ortogonal sobre conjuntos de cotas: definición y propiedades
 
-En la optimización con restricciones tipo caja, el conjunto factible se define como
+En la optimización con restricciones tipo caja, el **conjunto factible** se define como
 
 $$
 \Omega = \{x \in \mathbb{R}^n : \ell_i \le x_i \le u_i,\; i = 1,\dots,n\},
@@ -334,7 +332,7 @@ $$
 
 donde $\ell = (\ell_1,\dots,\ell_n)^\top \in \mathbb{R}^n \cup \{-\infty\}^n$ y $u = (u_1,\dots,u_n)^\top \in \mathbb{R}^n \cup \{+\infty\}^n$ satisfacen $\ell_i < u_i$ para todo $i$. Este conjunto es **convexo, cerrado y no vacío**, lo que garantiza que la proyección ortogonal de cualquier punto $z \in \mathbb{R}^n$ sobre $\Omega$ está bien definida y es única.
 
-#### Definición formal
+#### Proyección Ortogonal
 
 La proyección ortogonal de $z$ sobre $\Omega$, denotada $P_\Omega(z)$, se define como la solución única del problema de minimización
 
@@ -362,7 +360,7 @@ Esta expresión corresponde a la llamada *función de recorte* (*clipping functi
 
 2. **Caracterización variacional**
 
-   Un punto $x^\star \in \Omega$ satisface $x^\star = P_\Omega(z)$ si y solo si
+   Un punto $x^\star \in \Omega$ satisface $x^\star = P_\Omega(z)$, si y solo si,
 
    $$
    (z - x^\star)^\top (x - x^\star) \le 0, \quad \forall x \in \Omega. \tag{3.21}
@@ -419,8 +417,6 @@ $x_1^\star=1$ con $z_1=0.5\le1$, $x_2^\star=2$ con $z_2=2.5\ge2$, y $x_3^\star=0
 
 
 Este ejemplo ilustra cómo la proyección actúa localmente sobre cada componente, garantizando factibilidad sin resolver sistemas lineales. Su simplicidad y propiedades de estabilidad hacen que el operador $P_\Omega$ sea esencial en algoritmos de optimización a gran escala, como el método **L-BFGS-B**, en el cual se aplica en cada iteración para mantener las variables dentro de los límites definidos.
-
-Esta sección establece las bases geométricas necesarias para el tratamiento de restricciones tipo caja y servirá de fundamento para la formulación y análisis del algoritmo L-BFGS-B en las secciones siguientes.
 
 ### El algoritmo L-BFGS-B: formulación y justificación estructural
 
@@ -522,7 +518,7 @@ Con $\alpha_1=1$, $\tilde{x}_2=(2,1)^\top$, $x_2=P_\Omega(\tilde{x}_2)=(2,1)^\to
 El método converge en dos iteraciones, demostrando que la estructura de memoria limitada y la proyección garantizan simultáneamente **eficiencia y factibilidad**.
 
 
-La formulación L-BFGS-B preserva las propiedades de convergencia global del BFGS bajo las hipótesis de suavidad y curvatura positiva @Byrd1995; @Zhu1997, y constituye uno de los métodos estándar para problemas de gran escala con restricciones tipo caja.
+La formulación L-BFGS-B preserva las propiedades de convergencia global del BFGS bajo las hipótesis de suavidad y curvatura positiva. Para más detalles @Byrd1995; @Zhu1997, y constituye uno de los métodos estándar para problemas de gran escala con restricciones tipo caja.
 
 ### Condiciones de optimalidad bajo cotas: KKT para problemas con restricciones tipo caja
 
@@ -713,9 +709,9 @@ $$
 $$
 
 **Bosquejo de prueba.**  
-De (H2) se sigue que $\{x_k\} \subset \mathcal{L}$ es acotada, por lo que posee subsucesiones convergentes. La desigualdad (3.39) y las condiciones de Wolfe garantizan un descenso suficiente de $ f $. La condición de curvatura $y_k^\top s_k > 0$ asegura que las matrices $H_k$ permanecen definidas positivas y acotadas. Por tanto, todo punto límite $\bar{x}$ de la sucesión satisface la condición de estacionariedad proyectada $\nabla_\Omega f(\bar{x}) = 0$.  @NocedalWright2006; @Byrd1995.
+De (H2) se sigue que $\{x_k\} \subset \mathcal{L}$ es acotada, por lo que posee subsucesiones convergentes. La desigualdad (3.39) y las condiciones de Wolfe garantizan un descenso suficiente de $f$. La condición de curvatura $y_k^\top s_k > 0$ asegura que las matrices $H_k$ permanecen definidas positivas y acotadas. Por tanto, todo punto límite $\bar{x}$ de la sucesión satisface la condición de estacionariedad proyectada $\nabla_\Omega f(\bar{x}) = 0$.  @NocedalWright2006; @Byrd1995.
 
-#### Ejemplo paso a paso: verificación de las hipótesis
+#### Ejemplo de verificación de las hipótesis
 
 Consideremos el problema
 $$
@@ -766,7 +762,7 @@ $$
 
 es cerrado, convexo y no vacío.  
 
-El **resultado fundamental de convergencia global** @Byrd1995 establece que, bajo hipótesis estándar de regularidad y condiciones adecuadas de búsqueda lineal, la sucesión generada por el algoritmo posee puntos límite que satisfacen las **condiciones necesarias de optimalidad de Karush–Kuhn–Tucker (KKT)**. Dicho de otra forma, el algoritmo converge —en el sentido de subsecuencias— hacia el conjunto de puntos estacionarios proyectados.
+El **resultado fundamental de convergencia global**, @Byrd1995, establece que, bajo hipótesis estándar de regularidad y condiciones adecuadas de búsqueda lineal, la sucesión generada por el algoritmo posee puntos límite que satisfacen las **condiciones necesarias de optimalidad de Karush–Kuhn–Tucker (KKT)**. Dicho de otra forma, el algoritmo converge —en el sentido de subsecuencias— hacia el conjunto de puntos estacionarios proyectados.
 
 
 #### Teorema de convergencia global
@@ -844,7 +840,7 @@ El **resultado fundamental de convergencia global** @Byrd1995 establece que, baj
    que equivale a las condiciones KKT (véase Sección 3.2.3).
 
 
-#### Ejemplo paso a paso: convergencia hacia un punto KKT
+#### Ejemplo de convergencia hacia un punto KKT
 
 Consideremos:
 
@@ -862,7 +858,7 @@ El punto más cercano factible es $x^\star = (2,1)^\top$.
 - $x_2^\star = 1 = \ell_2 \Rightarrow \nabla_2 f(x^\star) = 2(1 - 0.5) = 1 \ge 0$.  
 Por tanto, $x^\star$ satisface KKT.
 
-**Evolución de L-BFGS-B (memoria limitada $ m = 2 $):**
+**Evolución de L-BFGS-B (memoria limitada $m = 2$):**
 
 - Desde $x_0 = (1,1)^\top$, se obtiene $x_1 = (3,1)$, $x_2 = (2.5,1)$, $x_3 = (2.25,1)$, $x_4 = (2.125,1)$, hasta estabilizarse en $x_k \to (2,1)$.
 - Para cada iteración:
@@ -951,7 +947,7 @@ Además, al ser $Q^* > \mathbf{1}$, se tiene $\nabla_\Omega f(Q^*) = 0 \iff \nab
 La unicidad y compacidad implican que toda la sucesión $\{Q_k\}$ converge a $Q^*$. ∎
 
 
-#### Ejemplo paso a paso: modelo con barrera logarítmica
+#### Ejemplo de modelo con barrera logarítmica
 
 Considérese el funcional
 
@@ -1023,7 +1019,7 @@ y_i = \nabla f(x_{i+1}) - \nabla f(x_i),
 i = k-m,\dots,k-1.
 $$
 
-Esta recursión requiere especificar una matriz inicial $H_k^{(0)}$, la cual actúa como una aproximación base del inverso del Hessiano al inicio de cada actualización. Según se ha documentado ampliamente (Liu & Nocedal, 1989; Nocedal & Wright, 2006), la elección de $H_k^{(0)}$ influye de forma directa en la dirección de búsqueda $p_k = -H_k \nabla f(x_k)$, afectando así estabilidad y eficiencia del método.
+Esta recursión requiere especificar una matriz inicial $H_k^{(0)}$, la cual actúa como una aproximación base del inverso del Hessiano al inicio de cada actualización. Según se ha documentado ampliamente (@LiuNocedal1989; @NocedalWright2006), la elección de $H_k^{(0)}$ influye de forma directa en la dirección de búsqueda $p_k = -H_k \nabla f(x_k)$, afectando así estabilidad y eficiencia del método.
 
 #### Inicialización básica e inicialización escalada
 
@@ -1039,7 +1035,7 @@ $$
 H_k^{(0)} = \gamma_k I,
 $$
 
-donde el factor positivo $\gamma_k$ captura la curvatura promedio observada en la iteración previa. La regla recomendada por Liu y Nocedal (1989) define:
+donde el factor positivo $\gamma_k$ captura la curvatura promedio observada en la iteración previa. La regla recomendada por @LiuNocedal1989 define:
 
 $$
 \gamma_k = \frac{s_{k-1}^{\top} y_{k-1}}{y_{k-1}^{\top} y_{k-1}}.
@@ -1205,14 +1201,14 @@ puede resolverse con BFGS clásico reconstruyendo exactamente el Hessiano en a l
 
 En consecuencia, **la reducción del error del gradiente proyectado depende directamente de $m$**, aunque con retornos marginales decrecientes. Sea:
 
-- $k_{\varepsilon}(m)$: número mínimo de iteraciones tal que $\|\nabla_\Omega f(x_k)\| \le \varepsilon$.
+- $k_{\varepsilon}(m)$: número mínimo de iteraciones tal que $\|\nabla_\Omega f(x_k)\| \le \varepsilon$ para $0 <\varepsilon$.
 
 La evidencia teórica y computacional muestra que:
 
 - $k_{\varepsilon}(m)$ **disminuye monótonamente** al incrementar $m$;
 - existe un umbral $m_{\text{sat}}$ tal que **incrementar $m$ más allá de dicho punto no produce mejoras significativas**.
 
-Este comportamiento se justifica porque muchas aplicaciones presentan curvatura activa en un subespacio reducido; por ello, valores de $m \in [10,20]$ suelen capturar la información esencial sin costos elevados @LiuNocedal1989; @NocedalWright2006.
+Este comportamiento se justifica porque muchas aplicaciones presentan curvatura activa en un subespacio reducido; por ello, valores de $m \in [10,20]$ suelen capturar la información esencial sin costos elevados para más detalles @LiuNocedal1989; @NocedalWright2006.
 
 #### Estimación empírica del número de iteraciones
 
@@ -1289,7 +1285,7 @@ valor cercano al observado (512), con discrepancias atribuibles a la fase inicia
 
 La selección del parámetro de memoria $m$ debe entenderse como un hiperparámetro que responde a la **estructura de curvatura** del problema y a los **recursos computacionales disponibles**. En dimensiones moderadas ($n \le 10^4$), valores $m \in [10,20]$ suelen ser eficaces; en problemas masivos ($n \ge 10^6$), valores pequeños ($m \in [3,7]$) permiten mantener costos lineales con estabilidad adecuada.
 
-En suma, la memoria limitada proporciona un mecanismo flexible para modular la aproximación Hessiana sin abandonar la eficiencia propia de los métodos de primer orden.
+En resumen, la memoria limitada proporciona un mecanismo flexible para modular la aproximación Hessiana sin abandonar la eficiencia propia de los métodos de primer orden.
 
 ### Sensibilidad a las condiciones iniciales y robustez del algoritmo
 
@@ -1366,6 +1362,7 @@ Los resultados muestran que:
 - Métodos de primer orden, como el gradiente descendente, requieren varios miles de iteraciones y presentan fuerte dependencia del punto inicial, en contraste con L-BFGS-B.
 
 La robustez observada se explica por:
+
 1. El escalamiento automático del Hessiano aproximado,
 2. La corrección iterativa basada en pares $(s_k, y_k)$ que reduce la anisotropía,
 3. La estabilidad introducida por la proyección factible.
@@ -1409,7 +1406,11 @@ $$
 \tag{3.110}
 $$
 
-y comparamos L-BFGS-B con tres métodos clásicos sin tratamiento directo de cotas: (i) gradiente descendente (GD) con búsqueda lineal Wolfe; (ii) Newton inexacto (Newton–CG) resolviendo las ecuaciones lineales por CG; (iii) BFGS sin proyección. La comparación se realiza mediante las métricas: número de iteraciones hasta $\|\nabla_\Omega f(x_k)\|\le\varepsilon$, número de evaluaciones de gradiente (proxy de costo) y factibilidad de la solución final (satisfacción de KKT bajo cotas).
+y comparamos L-BFGS-B con tres métodos clásicos sin tratamiento directo de cotas: 
+
+(i) gradiente descendente (GD) con búsqueda lineal Wolfe; 
+(ii) Newton inexacto (Newton–CG) resolviendo las ecuaciones lineales por CG; 
+(iii) BFGS sin proyección. La comparación se realiza mediante las métricas: número de iteraciones hasta $\|\nabla_\Omega f(x_k)\|\le\varepsilon$, número de evaluaciones de gradiente y factibilidad de la solución final (satisfacción de KKT bajo cotas).
 
 Las referencias metodológicas que sustentan este análisis son bien conocidas en la literatura sobre optimización numérica (p. ej., @NocedalWright2006; @LiuNocedal1989; @Zhu1997).
 
@@ -1488,7 +1489,7 @@ $$
 
 1. **Eficiencia en iteraciones vs. costo por iteración.**  
    - Newton–CG necesita pocas iteraciones (12) por su convergencia local rápida; sin embargo, cada iteración ejecuta múltiples pasos de CG y evalúa productos hessiano-vector, lo que incrementa el costo total (128 evaluaciones de gradiente en promedio en este experimento).  
-   - L-BFGS-B presenta un compromiso favorable: número moderado de iteraciones (28) y bajo número de evaluaciones (30), con costo por iteración $\mathcal{O}(mn)=\mathcal{O}(200)$ operaciones en este caso.  
+   - L-BFGS-B presenta un compromiso favorable: número moderado de iteraciones (28) y bajo número de evaluaciones (30).
    - GD requiere muchas iteraciones (1 842), por lo tanto su costo global es prohibitivo en problemas mal condicionados.
 
 2. **Factibilidad.**  
@@ -1530,7 +1531,7 @@ y_i = \nabla f(x_{i+1}) - \nabla f(x_i).
 \tag{3.120}
 $$
 
-La dirección de búsqueda $p_k = -H_k \nabla f(x_k)$ se calcula mediante la **recursión de dos bucles** (Algoritmo 7.4 en Nocedal y Wright, 2006), que aplica secuencialmente las actualizaciones BFGS a una matriz inicial escalada $H_k^{(0)} = \gamma_k I$, sin necesidad de formar $H_k$ explícitamente. El costo computacional de esta operación es:
+La dirección de búsqueda $p_k = -H_k \nabla f(x_k)$ se calcula mediante la **recursión de dos bucles** (Algoritmo 7.4 en @NocedalWright2006), que aplica secuencialmente las actualizaciones BFGS a una matriz inicial escalada $H_k^{(0)} = \gamma_k I$, sin necesidad de formar $H_k$ explícitamente. El costo computacional de esta operación es:
 
 - **Memoria**: $\mathcal{O}(mn)$ (almacenamiento de $2m$ vectores de dimensión $n$)  
 - **Operaciones aritméticas**: $\mathcal{O}(mn)$ por iteración  
@@ -1550,7 +1551,7 @@ Comparativamente:
 - **Gradiente descendente**: demasiado lento en problemas mal condicionados  
 
 
-#### Ejemplo paso a paso: comparación de costos en un problema de dimensión $n = 10^5$
+#### Ejemplo de comparación de costos en un problema de dimensión $n = 10^5$
 
 Consideremos un problema de regresión logística regularizada:
 
@@ -1617,7 +1618,7 @@ Aunque L-BFGS-B utiliza actualizaciones cuasi-Newton implícitas para aproximar 
 - Si $m$ es pequeño, la aproximación $H_k$ es incapaz de capturar esta estructura con suficiente fidelidad.
 - Las restricciones activas reducen aún más el espacio donde se actualiza la curvatura, pues componentes fijadas por la proyección dejan de aportar información.
 
-Como consecuencia, el algoritmo puede caer en **estancamiento progresivo**, reduciendo su eficacia incluso en casos donde no hay degeneración estructural (Zhu et al., 1997).
+Como consecuencia, el algoritmo puede caer en **estancamiento progresivo**, reduciendo su eficacia incluso en casos donde no hay degeneración estructural (@Zhu1997).
 
 Este fenómeno es especialmente relevante en aplicaciones como:  
 - inversión de parámetros en EDPs,  
@@ -1658,7 +1659,7 @@ $$
 Si $\eta_k$ cae por debajo de un umbral predefinido, se activa un paso de Newton inexacto resuelto mediante gradiente conjugado precondicionado. Esta estrategia añade correcciones de curvatura profundas sin perder control sobre el costo computacional y mantiene factibilidad mediante proyección.
 
 
-#### Ejemplo paso a paso: función cuadrática mal condicionada con $\kappa = 10^6$
+#### Ejemplo de función cuadrática mal condicionada con $\kappa = 10^6$
 
 Consideremos:
 
@@ -1781,7 +1782,7 @@ Este esquema posee ventajas computacionales significativas:
 
 Si se imponen restricciones tipo caja $x\ge \mathbf{1}$, la factibilidad se mantiene mediante la proyección global componente a componente $P_\Omega$ sin alterar la estructura separable.
 
-#### Ejemplo paso a paso: función parcialmente separable en $\mathbb{R}^4$
+#### Ejemplo de función parcialmente separable en $\mathbb{R}^4$
 
 Consideremos
 

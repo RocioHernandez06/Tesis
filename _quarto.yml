@@ -32,6 +32,7 @@ book:
   chapters:
     - index.qmd
     - chapters/Introduccion.qmd
+    - chapters/Teoria.qmd
     - chapters/metodos.qmd
     - chapters/implementacion.qmd
     - chapters/formulacion.qmd
