@@ -13,16 +13,16 @@ jupyter: python3
 ## Introducción al problema integrado de localización e inventario
 ###  Relevancia en logística humanitaria y gestión de emergencias
 
-La logística humanitaria desempeña un papel fundamental en la respuesta a desastres, al coordinar la disponibilidad, distribución y acceso equitativo a bienes esenciales en entornos caracterizados por alta incertidumbre, infraestructura comprometida y recursos limitados (Balcik & Beamon, 2008; Caunhye et al., 2012). A diferencia de los sistemas logísticos comerciales —donde predominan criterios de eficiencia económica—, los contextos humanitarios priorizan objetivos de **rapidez, cobertura universal y mitigación del riesgo**, lo que exige modelos matemáticos capaces de integrar decisiones estratégicas y tácticas bajo condiciones de información imperfecta.
+La logística humanitaria desempeña un papel fundamental en la respuesta a desastres, al coordinar la disponibilidad, distribución y acceso equitativo a bienes esenciales en entornos caracterizados por alta incertidumbre, infraestructura comprometida y recursos limitados (@BalcikBeamon2008; @CaunhyeNiePokharel2012). A diferencia de los sistemas logísticos comerciales, donde predominan criterios de eficiencia económica, los contextos humanitarios priorizan objetivos de **rapidez, cobertura universal y mitigación del riesgo**, lo que exige modelos matemáticos capaces de integrar decisiones estratégicas y tácticas bajo condiciones de información imperfecta.
 
 En este marco, el **problema integrado de localización e inventario** se ha consolidado como una herramienta clave para la planificación anticipada, ya que permite determinar, de manera conjunta:
 
 1. **La ubicación óptima de almacenes de preposicionamiento**, y  
 2. **Los niveles de inventario que deben almacenarse antes de la ocurrencia de un evento disruptivo**.
 
-Ambas decisiones condicionan el desempeño global del sistema en términos de costo total, robustez operativa y equidad en la atención (Vanajakum & Kachitvichyanukul, 2023). Su naturaleza híbrida —estratégica (ubicación) y táctica (inventario)— impone desafíos estructurales que no pueden abordarse mediante enfoques secuenciales o modelos clásicos aislados.
+Ambas decisiones condicionan el desempeño global del sistema en términos de costo total, robustez operativa y equidad en la atención. Su naturaleza híbrida, estratégica (ubicación) y táctica (inventario), impone desafíos estructurales que no pueden abordarse mediante enfoques secuenciales o modelos clásicos aislados.
 
-Aunque la demanda en estos escenarios es inherentemente incierta, en este trabajo se adopta un **enfoque determinista robusto**, ampliamente fundamentado en la teoría de inventarios bajo demanda aleatoria (Hadley & Whitin, 1963). Este enfoque no modela la incertidumbre mediante variables aleatorias ni formulaciones estocásticas, sino que la **incorpora de forma paramétrica** mediante un **stock de seguridad fijo**, derivado de estimaciones de la variabilidad de la demanda.
+Aunque la demanda en estos escenarios es inherentemente incierta, en este trabajo se adopta un **enfoque determinista robusto**, ampliamente fundamentado en la teoría de inventarios bajo demanda aleatoria (@HadleyWhitin1963). Este enfoque no modela la incertidumbre mediante variables aleatorias ni formulaciones estocásticas, sino que la **incorpora de forma paramétrica** mediante un **stock de seguridad fijo**, derivado de estimaciones de la variabilidad de la demanda.
 
 Específicamente, se asume que la demanda en cada zona $j\in\mathcal{J}$ posee un valor esperado $d_j>0$ y una desviación estándar $\sigma_j\geq0$, ambos tratados como **parámetros exógenos conocidos**. Dado un tiempo de reposición $L>0$ y un nivel de servicio objetivo $\alpha\in(0,1)$, se define el **factor de seguridad** como $Z=\Phi^{-1}(\alpha)$, donde $\Phi^{-1}$ denota la inversa de la función de distribución acumulada de la normal estándar. Aunque esta construcción tiene raíces probabilísticas, en el modelo propuesto **todos los elementos son deterministas**, y el término $Z\sigma\sqrt{L}$ se incorpora como un parámetro de ajuste que refleja la magnitud de la incertidumbre.
 
@@ -30,7 +30,7 @@ Este enfoque permite formular un **modelo de optimización no lineal determinist
 
 ###  Limitaciones de los enfoques clásicos bajo incertidumbre y no linealidad
 
-Los modelos clásicos de localización e inventario —como el problema de localización sin capacidades (UFLP), el modelo de lote económico (EOQ) o sus variantes deterministas— han sido ampliamente estudiados bajo el supuesto de **información perfecta y estructura lineal**, un enfoque cuya pertinencia disminuye notablemente en escenarios humanitarios caracterizados por **incertidumbre estructural** y **no linealidad inherente** en costos y restricciones (Hadley & Whitin, 1963; Snyder, 2006).
+Los modelos clásicos de localización e inventario, como el Uncapacitated Facility Location Problem (UFLP) y el Economic Order Quantity (EOQ) model o sus variantes deterministas, han sido ampliamente estudiados bajo el supuesto de **información perfecta y estructura lineal**, un enfoque cuya pertinencia disminuye notablemente en escenarios humanitarios caracterizados por **incertidumbre estructural** y **no linealidad inherente** en costos y restricciones [@HadleyWhitin1963; @Snyder2006].
 
 ####  Supuestos restrictivos del modelo EOQ clásico
 
@@ -39,7 +39,7 @@ El modelo EOQ se fundamenta en supuestos como:
 1. Demanda constante y conocida $D>0$.
 2. Tiempo de entrega determinista $L \geq 0$.
 3. Costos lineales: costo de pedido $S$, costo unitario de mantenimiento $H$, sin faltantes.
-4. Reposición instantánea y sin restricciones de capacidad (Hadley & Whitin, 1963).
+4. Reposición instantánea y sin restricciones de capacidad (@HadleyWhitin1963).
 
 El costo total del modelo es:
 
@@ -58,7 +58,7 @@ Este resultado depende de la **deterministicidad** y la **convexidad estricta**.
 - La demanda es aleatoria $D(\omega)$.
 - $L$ es incierto debido a afectaciones en infraestructura.
 - Los faltantes deben modelarse mediante una penalización finita $\beta>0$.
-- Los costos pueden presentar economías de escala y no convexidades (Porteus, 2002).
+- Los costos pueden presentar economías de escala y no convexidades (@Porteus2002).
 
 ####  Incapacidad del EOQ para capturar riesgo
 
@@ -74,7 +74,7 @@ $$
 Z(Q)=\frac{D}{Q}S+\left(\frac{Q}{2}+Z_\alpha\sigma_L\right)H+DC+\frac{D}{Q}\beta C. \tag{2.1}
 $$
 
-Esta función **no es convexa globalmente** cuando $\sigma_L$ depende de $Q$, como ocurre cuando existe congestión en transporte o variabilidad dependiente del tamaño del pedido (Bertsimas & Thiele, 2006; Shapiro et al., 2021).
+Esta función **no es convexa globalmente** cuando $\sigma_L$ depende de $Q$, como ocurre cuando existe congestión en transporte o variabilidad dependiente del tamaño del pedido (@BertsimasThiele2006; @ShapiroDentchevaRuszczynski2021).
 
 > **Proposición  (No linealidad estricta).**  
 > La función $Z(Q)$ definida en (2.1) es diferenciable en $(0,\infty)$, pero no es convexa globalmente si $\beta>0$ y $\sigma_L>0$.  
@@ -100,7 +100,7 @@ bajo restricciones de asignación deterministas. Sin embargo:
 - Los costos pueden variar según accesibilidad o daños.
 - Las capacidades reales son inciertas.
 
-Modelar $d_j$ mediante $\mathbb{E}[d_j]$ genera soluciones frágiles frente a escenarios adversos (Snyder, 2006).
+Modelar $d_j$ mediante $\mathbb{E}[d_j]$ genera soluciones frágiles frente a escenarios adversos (@Snyder2006).
 
 #### Ejemplo ilustrativo: EOQ clásico vs. EOQ extendido con stock de seguridad y penalización
 
@@ -173,11 +173,12 @@ Este contraste demuestra que los modelos deterministas que ignoran la variabilid
 
 ###  Estructura híbrida: decisiones discretas (ubicación) y continuas (inventario)
 
-Los problemas integrados de localización e inventario forman parte de una clase fundamental denominada *modelos híbridos* o *problemas de decisión mixta*, en los que coexisten variables discretas y continuas. Este tipo de modelos presenta una complejidad inherente debida a la ruptura topológica inducida por las variables binarias, lo cual conlleva dominios no convexos y no conexos, impidiendo la aplicación directa de técnicas clásicas basadas en convexidad (Wolsey, 1998; Grossmann, 2002; Daskin, 2013).
+Los problemas integrados de localización e inventario forman parte de una clase fundamental denominada *modelos híbridos* o *problemas de decisión mixta*, en los que coexisten variables discretas y continuas. Este tipo de modelos presenta una complejidad inherente debida a la ruptura topológica inducida por las variables binarias, lo cual conlleva dominios no convexos y no conexos, impidiendo la aplicación directa de técnicas clásicas basadas en convexidad (@wolsey1998; @Grossmann2002; @Daskin2013).
 
 ####  Formulación matemática del espacio de decisiones
 
 Sea:
+
 - $\mathcal{I} = \{1,\ldots,m\}$ el conjunto de ubicaciones posibles para almacenes,
 - $\mathcal{J} = \{1,\ldots,n\}$ las zonas de demanda,
 - $x = (x_1,\dots,x_m)^\top \in \{0,1\}^m$ las decisiones binarias de apertura,
@@ -187,26 +188,27 @@ Sea:
 El espacio factible se define como:
 
 $$
-\mathcal{X} := 
-\left\{
-(x,y,s)\in \{0,1\}^m\times \mathbb{R}_+^{m\times n}\times \mathbb{R}_+^m \;\middle|\;
+\mathcal{X} := \left\{ (x, y, s) \;\middle|\;
 \begin{aligned}
-&\sum_{i\in\mathcal{I}} y_{ij} \ge d_j, &&\forall j\in\mathcal{J},\\
-&\sum_{j\in\mathcal{J}} y_{ij} \le s_i, &&\forall i\in\mathcal{I},\\
-&s_i \le M x_i, &&\forall i\in\mathcal{I}
+& x_i \in \{0,1\}, && \forall i \in \mathcal{I}, \\
+& y_{ij} \ge 0,    && \forall i \in \mathcal{I},\; \forall j \in \mathcal{J}, \\
+& s_i \ge 0,       && \forall i \in \mathcal{I}, \\
+& \sum_{i \in \mathcal{I}} y_{ij} \ge d_j, && \forall j \in \mathcal{J}, \\
+& \sum_{j \in \mathcal{J}} y_{ij} \le s_i, && \forall i \in \mathcal{I}, \\
+& s_i \le M x_i,   && \forall i \in \mathcal{I}
 \end{aligned}
 \right\}.
 \tag{2.2}
 $$
 
-Aquí, $d_j > 0$ representa la demanda de la zona $j$ y $M$ es un parámetro de gran magnitud. La tercera restricción describe un vínculo lógico: si $x_i = 0$, entonces $s_i = 0$ y, en consecuencia, $y_{ij} = 0$. Este acoplamiento induce una **no convexidad estructural** (Bertsekas, 1999).
+Aquí, $d_j > 0$ representa la demanda de la zona $j$ y $M$ es un parámetro de gran magnitud. La tercera restricción describe un vínculo lógico: si $x_i = 0$, entonces $s_i = 0$ y, en consecuencia, $y_{ij} = 0$. Este acoplamiento induce una **no convexidad estructural** (@Bertsekas1999).
 
 > **Proposición  (No convexidad).**  
 > El conjunto $\mathcal{X}$ definido en (2.2) **no es convexo**.  
 > *Demostración.* Considérense las configuraciones factibles $x^{(1)}=(1,0,\dots,0)$ y $x^{(2)}=(0,1,0,\dots,0)$.  
 > El punto medio $\tfrac12 x^{(1)} + \tfrac12 x^{(2)}$ tiene componentes iguales a $1/2$, lo cual viola la condición binaria. Luego, $\mathcal{X}$ no es convexo. ∎
 
-La consecuencia directa es que condiciones de optimalidad de tipo KKT **no garantizan** optimalidad global (Lewis & Overton, 2013).
+La consecuencia directa es que condiciones de optimalidad de tipo KKT **no garantizan** optimalidad global (@LewisOverton2013).
 
 
 ####  Función objetivo y acoplamiento estructural
@@ -222,7 +224,7 @@ Z(x,y,s)
 \tag{2.3}
 $$
 
-Aunque la parte en variables continuas es lineal, el término $f_i(x_i)$ genera una **no linealidad discreta**; más aún, en la práctica humanitaria pueden existir economías de escala, accesibilidad variable o costos de apertura no lineales, reforzando la complejidad global (Grossmann, 2002).
+Aunque la parte en variables continuas es lineal, el término $f_i(x_i)$ genera una **no linealidad discreta**; más aún, en la práctica humanitaria pueden existir economías de escala, accesibilidad variable o costos de apertura no lineales, reforzando la complejidad global del problema, entendida como la combinación de no convexidad, discreción y no linealidad que lo sitúa en la clase de problemas MINLP, de resolución computacionalmente exigente (@Grossmann2002).
 
 El sistema presenta una jerarquía:
 
@@ -239,11 +241,13 @@ Esto produce una dependencia en cascada que elimina la separabilidad global del 
 > \min_{(y,s) \in \mathcal{X}(\bar{x})} Z(\bar{x}, y, s)
 > $$
 > 
-> es un programa lineal y, por tanto, convexo.  
-> *Demostración.* Fijado $\bar{x}$, todas las restricciones son lineales en $(y,s)$ y la función objetivo es afín. ∎
+> es un problema de programación lineal y, por tanto, convexo.  
+> *Demostración.*  Al fijar $\bar{x}$, los t\'erminos $f_i \bar{x}_i$ se convierten en constantes. La funci\'on objetivo resultante es lineal en $(y,s)$, y todas las restricciones que definen $\mathcal{X}(\bar{x})$ son lineales en estas variables. Por definici\'on, esto constituye un problema de programación lineal, cuyo conjunto factible es un poliedro convexo. $\blacksquare$
 
-Esta propiedad respalda el uso de descomposición tipo Benders o esquemas maestro–subproblema (Wolsey, 1998).
+Esta propiedad, consistente en *la convexidad del subproblema continuo para una configuración de apertura fija*, es fundamental para la aplicación de métodos de descomposición, tales como el algoritmo de Benders. En dichos enfoques, el problema original se divide en:
 
+- **problema maestro**, que maneja las variables enteras ($x$) y genera configuraciones candidatas, y
+- un **subproblema**, que, para una configuración dada, resuelve el problema continuo (aquí, lineal) y devuelve información (por ejemplo, cortes de Benders) para refinar el problema maestro (@wolsey1998).
 
 #### Ejemplo ilustrativo: interacción discreto–continuo
 
@@ -273,44 +277,26 @@ $$
 Z = 300 + 400 + 3\cdot 100 + (8\cdot 50 + 7\cdot 50)=1750.
 $$
 
-Conclusión: es óptimo **abrir solo el almacén 2**.  
-La solución cambiaría si los costos fijos disminuyeran, lo que evidencia la *sensibilidad estructural* del diseño híbrido (Daskin, 2013).
 
+La mejor configuración es abrir únicamente el almacén 2. Este resultado ilustra una propiedad fundamental de los problemas que combinan variables discretas y continuas: **la solución óptima puede cambiar de manera discontinua ante pequeñas variaciones en los parámetros** (por ejemplo, si $f_2$ disminuye a 350, sigue siendo óptimo; pero si $f_1$ baja a 250, podría convenir abrir el almacén 1). Esta **sensibilidad discreta**, originada por la naturaleza combinatoria de las decisiones de apertura, es una característica distintiva de los modelos mixtos entero-continuos (@Daskin2013).
 
-La integración simultánea de decisiones discretas y continuas induce dominios no convexos, dependencias lógicas y estructuras no separables que requieren marcos teóricos propios de la programación entera mixta, análisis no suave y descomposición matemática. Esta base establece los fundamentos del modelo propuesto en las siguientes secciones, donde se formaliza la integración bajo condiciones logísticas realistas y restricciones humanitarias.
+El conjunto factible de este tipo de problemas, definido por la combinación de variables binarias y continuas junto con restricciones de activación lógica, **no es convexo** (como se demostró en la Proposición~2.1.3.1). Esta no convexidad, junto con la interacción entre decisiones estratégicas y operativas, exige el uso de técnicas propias de la programación entera mixta y de la optimización combinatoria. Estas bases teóricas sustentan el modelo propuesto en las secciones siguientes, donde se integra esta estructura con un componente de inventario no lineal bajo incertidumbre parametrizada.
 
 ## Marco general de modelado: variables, parámetros y espacio de decisión
 
-###  Conjuntos de índices: instalaciones potenciales $\mathcal{I}$ y zonas de demanda $\mathcal{J}$
+### Conjuntos de índices: instalaciones potenciales $\mathcal{I}$ y zonas de demanda $\mathcal{J}$
 
-La construcción rigurosa de un modelo de optimización comienza con la definición precisa de los conjuntos de índices, los cuales encapsulan la estructura topológica y semántica del sistema bajo estudio. En el contexto del problema integrado de localización e inventario para logística humanitaria, dos conjuntos indexados fundamentales determinan la arquitectura del modelo: el conjunto de instalaciones potenciales y el conjunto de zonas de demanda.
+En la formulación matemática del problema integrado de localización e inventario, los conjuntos de índices constituyen la base sobre la cual se definen las variables de decisión, los parámetros y las restricciones. Como se estableció en la Sección~2.1, denotamos por  
 
-#### **Definición (Conjunto de instalaciones potenciales).**
+- $\mathcal{I}$: el conjunto de **almacenes candidatos** para preposicionamiento, y  
+- $\mathcal{J}$: el conjunto de **zonas geográficas afectadas**.
 
-Sea
+Estos conjuntos son finitos, disjuntos en el sentido teórico ($\mathcal{I} \cap \mathcal{J} = \varnothing$), y sus elementos desempeñan roles distintos en el modelo: los índices en $\mathcal{I}$ corresponden a *fuentes* de suministro, mientras que los de $\mathcal{J}$ representan *destinos* de demanda.
 
-$$
-\mathcal{I} := \{1, 2, \dots, m\}, \quad m \in \mathbb{N},\; m \geq 1,
-$$
+La cardinalidad de $\mathcal{I}$, denotada $m = |\mathcal{I}|$, determina la dimensión del espacio de decisiones estratégicas. Dado que la apertura de cada almacén se modela mediante una variable binaria $x_i \in \{0,1\}$, el número total de configuraciones posibles de infraestructura es $2^m$. Esta **explosión combinatoria** implica que, incluso para tamaños modestos de $m$ (por ejemplo, $m = 30$), el espacio discreto contiene más de $10^9$ soluciones factibles. En consecuencia, métodos de enumeración exhaustiva son inviables, y se requieren algoritmos que exploten la **estructura matemática del problema**, es decir, su formulación como un problema de optimización con variables mixtas, función objetivo diferenciable y restricciones acopladas, para identificar soluciones óptimas o aproximadas en tiempo razonable.
 
-el conjunto finito y numerable de ubicaciones candidatas para la apertura de almacenes de preposicionamiento. Cada índice $i \in \mathcal{I}$ representa una localización geográfica factible donde podría instalarse una instalación de almacenamiento y distribución.
+La interacción entre $\mathcal{I}$ y $\mathcal{J}$ se modela mediante variables de flujo $y_{ij} \geq 0$, que cuantifican la asignación de suministros desde el almacén $i$ a la zona $j$. Esta relación define una matriz de conectividad cuya densidad depende de factores operativos como la distancia, accesibilidad y capacidades logísticas, y que condiciona tanto la factibilidad como la complejidad del subproblema continuo asociado a una configuración fija de almacenes.
 
-#### **Definición  (Conjunto de zonas de demanda).**
-
-Sea
-
-$$
-\mathcal{J} := \{1, 2, \dots, n\}, \quad n \in \mathbb{N},\; n \geq 1,
-$$
-
-el conjunto finito y numerable de zonas afectadas o potenciales de demanda. Cada índice $j \in \mathcal{J}$ denota una región geográfica donde se anticipa la necesidad de suministros humanitarios tras un evento disruptivo.
-
-> **Observación**  
-> Los conjuntos $\mathcal{I}$ y $\mathcal{J}$ se asumen disjuntos en función, aunque no necesariamente en localización física. Desde el punto de vista del modelo, los roles son distintos:  
-> - Los elementos de $\mathcal{I}$ son fuentes de suministro.  
-> - Los elementos de $\mathcal{J}$ son sumideros de demanda.
-
-La cardinalidad de estos conjuntos —es decir, $m = |\mathcal{I}|$ y $n = |\mathcal{J}|$— determina directamente la complejidad combinatoria del problema. En particular, el número de configuraciones posibles de apertura de almacenes es $2^m$, lo que implica que incluso para valores modestos (por ejemplo, $m = 30$), el espacio discreto es del orden de $10^9$. Esta explosión combinatoria subraya la necesidad de métodos de optimización estructurada.
 
 #### **Ejemplo ilustrativo**
 
@@ -339,10 +325,9 @@ Sobre estos conjuntos se definirán:
 - parámetros exógenos como $c_{ij}$ (costos), $f_i$ (costos fijos) y $d_j$ (demanda).
 
 > **Nota metodológica.**  
-> En modelado riguroso, los conjuntos índice deben definirse antes que las variables, dado que estas heredan su dominio directamente de aquellos.
+> En modelado riguroso, los conjuntos índice deben definirse antes que las variables, dado que estas heredan su dominio directamente de 
+> aquellos. 
 
-
-Los conjuntos $\mathcal{I}$ y $\mathcal{J}$ constituyen estructuras matemáticas esenciales que determinan la escala, la conectividad y la complejidad del modelo. Su correcta definición resulta crucial para la formalización posterior de variables, restricciones y dependencias del sistema.
 
 ###  Variables de decisión: binarias ($x_i$) y continuas ($y_{ij}$)
 
@@ -444,7 +429,7 @@ Las variables $x_i$ y $y_{ij}$ constituyen los grados de libertad fundamentales 
 
 ###  Parámetros del sistema: costos fijos, unitarios, demanda y capacidades
 
-En la formulación matemática de un problema de optimización, los **parámetros** constituyen los datos exógenos que estructuran el espacio factible y la función objetivo. Su correcta especificación es requisito previo a la definición de variables y restricciones; por tanto, deben presentarse con dominio y unidades explícitas (práctica recomendada por Lewis y colaboradores; Lewis, 2003). En el problema integrado de localización e inventario consideramos, de modo explícito, las cuatro familias de parámetros siguientes.
+En la formulación matemática de un problema de optimización, los **parámetros** constituyen los datos exógenos que estructuran el espacio factible y la función objetivo. Su correcta especificación es requisito previo a la definición de variables y restricciones; por tanto, deben presentarse con dominio y unidades explícitas (práctica recomendada por Lewis y colaboradores; @Lewis2003). En el problema integrado de localización e inventario consideramos, de modo explícito, las cuatro familias de parámetros siguientes.
 
 ####  Costos fijos de apertura
 
@@ -457,7 +442,7 @@ $$
 f_i \ge 0,\qquad \forall i\in\mathcal{I}.
 $$
 
-Observación práctica: cuando la apertura implica economías o penalizaciones no triviales (por ejemplo, coste creciente con la capacidad instalada o costes discretos adicionales por remoción), $f_i$ puede modelarse como función $f_i(x_i,s_i)$; sin embargo, para la formulación base se adopta linealidad en $x_i$ y se externalizan las no linealidades en extensiones (Shapiro et al., 2021).
+Observación práctica: cuando la apertura implica economías o penalizaciones no triviales (por ejemplo, coste creciente con la capacidad instalada o costes discretos adicionales por remoción), $f_i$ puede modelarse como función $f_i(x_i,s_i)$; sin embargo, para la formulación base se adopta linealidad en $x_i$ y se externalizan las no linealidades en extensiones (@ShapiroDentchevaRuszczynski2021).
 
 #### Costos unitarios de transporte
 
@@ -469,7 +454,7 @@ el **costo unitario de transportar** una unidad desde la instalación $i$ hasta 
 $$
 c_{ij}\ge 0,\quad \forall i,j,
 $$
-y denotamos la matriz $C:=[c_{ij}]_{i,j}\in\mathbb{R}_+^{m\times n}$. En contextos humanitarios $c_{ij}$ incorpora distancia, tiempo de acceso y penalizaciones por rutas inseguras; su estimación suele derivar de información geoespacial y modelos de capacidad vial (Daskin, 2013).
+y denotamos la matriz $C:=[c_{ij}]_{i,j}\in\mathbb{R}_+^{m\times n}$. En contextos humanitarios $c_{ij}$ incorpora distancia, tiempo de acceso y penalizaciones por rutas inseguras; su estimación suele derivar de información geoespacial y modelos de capacidad vial (@Daskin2013).
 
 #### Demanda esperada
 
@@ -477,7 +462,7 @@ Para cada $j\in\mathcal{J}$, sea
 $$
 d_j\in\mathbb{R}_{++}
 $$
-la **demanda esperada** en la zona $j$ durante el horizonte considerado. Adicionalmente definimos el vector $d=(d_j)_{j\in\mathcal{J}}$. En la formulación determinista de referencia usamos $d_j$ como estimador puntual (p. ej. esperanza), con la advertencia explícita de que su uso directo puede producir soluciones frágiles en colas de distribución (Snyder, 2006). Notación:
+la **demanda esperada** en la zona $j$ durante el horizonte considerado. Adicionalmente definimos el vector $d=(d_j)_{j\in\mathcal{J}}$. En la formulación determinista de referencia usamos $d_j$ como estimador puntual (p. ej. esperanza), con la advertencia explícita de que su uso directo puede producir soluciones frágiles en colas de distribución (@Snyder2006). Notación:
 
 $$
 d_j>0,\quad \forall j,\qquad d\in\mathbb{R}_{++}^n.
@@ -501,9 +486,9 @@ En ausencia de un tope operativo se toma $s_i^{\max}=+\infty$ (modelo no capacit
 
 #### Propiedades y observaciones formales
 
-1. **Dominios y no ambigüedad:** Todos los parámetros deben venir acompañados de su dominio y unidades. Esto evita ambigüedades en pruebas de existencia, estabilidad numérica y escalado de variables (Lewis, 2003).
+1. **Dominios y no ambigüedad:** Todos los parámetros deben venir acompañados de su dominio y unidades. Esto evita ambigüedades en pruebas de existencia, estabilidad numérica y escalado de variables (@LewisOverton2013).
 
-2. **Sensibilidad estructural:** Pequeñas variaciones en $f_i$, $c_{ij}$, $d_j$ o $s_i^{\max}$ pueden cambiar la estructura del óptimo (p. ej. la configuración $x^*$). Por ello, el análisis de sensibilidad y escenarios es parte inseparable de la modelación robusta (Snyder, 2006; Shapiro et al., 2021).
+2. **Sensibilidad estructural:** Pequeñas variaciones en $f_i$, $c_{ij}$, $d_j$ o $s_i^{\max}$ pueden cambiar la estructura del óptimo (p. ej. la configuración $x^*$). Por ello, el análisis de sensibilidad y escenarios es parte inseparable de la modelación robusta (@Snyder2006; @ShapiroDentchevaRuszczynski2021).
 
 3. **Elección de $M$ en big-M:** Si se usa la formulación $y_{ij}\le M x_i$ para acoplar variables (versus la formulación con $s_i^{\max}$), se recomienda elegir $M$ igual a una cota realista (ej. $\sum_j d_j$) para evitar degradación numérica; empero, la formulación (2.5) es preferible por su interpretación física y por estrechar el dominio factible.
 
@@ -585,7 +570,7 @@ $$
 Z = 550\ (\text{miles}) + 1.770\ (\text{miles}) = 2.320\ \text{miles USD}.
 $$
 
-**Interpretación:** la solución es factible y el costo cuantificado; variaciones en $d$, $c_{ij}$ o $f_i$ deben re-evaluarse mediante análisis de sensibilidad y, en contextos reales, mediante formulaciones estocásticas o robustas (Snyder, 2006; Shapiro et al., 2021).
+**Interpretación:** la solución es factible y el costo cuantificado; variaciones en $d$, $c_{ij}$ o $f_i$ deben re-evaluarse mediante análisis de sensibilidad y, en contextos reales, mediante formulaciones estocásticas o robustas (@Snyder2006; @ShapiroDentchevaRuszczynski2021).
 
 
 La especificación explícita de $f_i$, $c_{ij}$, $d_j$ y $s_i^{\max}$ permite no solo la construcción del problema determinista base sino también su extensión a modelos estocásticos (reemplazando $d_j$ por variables aleatorias $\tilde d_j$) o robustos (definiendo conjuntos de incertidumbre para $d_j$ y $c_{ij}$). La práctica recomendada (Lewis, 2003; Shapiro et al., 2021) es: (i) documentar fuentes y unidades de cada parámetro; (ii) fijar cotas realistas para $s_i^{\max}$ o $M$; y (iii) efectuar pruebas de sensibilidad sistemáticas antes de adoptar políticamente cualquier solución.
@@ -737,7 +722,7 @@ La función $Z$ es **afín en $y$** para $x$ fijo, y **lineal en $x$** cuando $y
 
 
 
-#### **Propiedades analíticas de $ Z $**
+#### **Propiedades analíticas de $Z$**
 
 #### **Proposición (Continuidad y acotación inferior)**
 
@@ -813,7 +798,7 @@ $$
 El valor mínimo se obtiene abriendo únicamente la instalación 1, con inventario despachado $12$ (mayor que la demanda), lo cual es admisible y económicamente óptimo bajo estos parámetros.
 
 
-La función objetivo $Z(x, y)$ formaliza el análisis de compromisos entre inversión en infraestructura, costos operativos e inventario preposicionado. Su estructura afín por partes y la no convexidad del dominio $\mathcal{X}$ definen un MILP clásico, aunque constituyen la base teórica necesaria para extensiones no lineales, robustas o estocásticas. La existencia garantizada de al menos una solución óptima justifica el enfoque algorítmico planteado en el Capítulo 3.
+La función objetivo $Z(x, y)$ formaliza el análisis de compromisos entre inversión en infraestructura, costos operativos e inventario preposicionado. Su estructura afín por partes y la no convexidad del dominio $\mathcal{X}$ definen un MILP clásico, aunque constituyen la base teórica necesaria para extensiones no lineales, robustas o estocásticas. La existencia garantizada de al menos una solución óptima justifica el enfoque algorítmico planteado en el Capítulo siguiente.
 
 
 

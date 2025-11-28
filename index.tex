@@ -266,7 +266,7 @@
 
 \title{Inundaciones}
 \author{Yulissa del Rocío Hernández Vázquez}
-\date{2025-11-27}
+\date{2025-11-28}
 \begin{document}
 \begin{titlepage}
 \hspace{-1.7cm} %Este comando es para mandar a la izquierda ;)
@@ -422,9 +422,9 @@ La logística humanitaria desempeña un papel fundamental en la respuesta
 a desastres, al coordinar la disponibilidad, distribución y acceso
 equitativo a bienes esenciales en entornos caracterizados por alta
 incertidumbre, infraestructura comprometida y recursos limitados (Balcik
-\& Beamon, 2008; Caunhye et al., 2012). A diferencia de los sistemas
-logísticos comerciales ---donde predominan criterios de eficiencia
-económica---, los contextos humanitarios priorizan objetivos de
+y Beamon (2008); Caunhye, Nie, y Pokharel (2012)). A diferencia de los
+sistemas logísticos comerciales, donde predominan criterios de
+eficiencia económica, los contextos humanitarios priorizan objetivos de
 \textbf{rapidez, cobertura universal y mitigación del riesgo}, lo que
 exige modelos matemáticos capaces de integrar decisiones estratégicas y
 tácticas bajo condiciones de información imperfecta.
@@ -444,16 +444,15 @@ planificación anticipada, ya que permite determinar, de manera conjunta:
 \end{enumerate}
 
 Ambas decisiones condicionan el desempeño global del sistema en términos
-de costo total, robustez operativa y equidad en la atención (Vanajakum
-\& Kachitvichyanukul, 2023). Su naturaleza híbrida ---estratégica
-(ubicación) y táctica (inventario)--- impone desafíos estructurales que
-no pueden abordarse mediante enfoques secuenciales o modelos clásicos
-aislados.
+de costo total, robustez operativa y equidad en la atención. Su
+naturaleza híbrida, estratégica (ubicación) y táctica (inventario),
+impone desafíos estructurales que no pueden abordarse mediante enfoques
+secuenciales o modelos clásicos aislados.
 
 Aunque la demanda en estos escenarios es inherentemente incierta, en
 este trabajo se adopta un \textbf{enfoque determinista robusto},
 ampliamente fundamentado en la teoría de inventarios bajo demanda
-aleatoria (Hadley \& Whitin, 1963). Este enfoque no modela la
+aleatoria (Hadley y Whitin (1 963)). Este enfoque no modela la
 incertidumbre mediante variables aleatorias ni formulaciones
 estocásticas, sino que la \textbf{incorpora de forma paramétrica}
 mediante un \textbf{stock de seguridad fijo}, derivado de estimaciones
@@ -483,14 +482,14 @@ cotas, como se discutirá en capítulos posteriores.
 no
 linealidad}\label{limitaciones-de-los-enfoques-cluxe1sicos-bajo-incertidumbre-y-no-linealidad}
 
-Los modelos clásicos de localización e inventario ---como el problema de
-localización sin capacidades (UFLP), el modelo de lote económico (EOQ) o
-sus variantes deterministas--- han sido ampliamente estudiados bajo el
-supuesto de \textbf{información perfecta y estructura lineal}, un
-enfoque cuya pertinencia disminuye notablemente en escenarios
+Los modelos clásicos de localización e inventario, como el Uncapacitated
+Facility Location Problem (UFLP) y el Economic Order Quantity (EOQ)
+model o sus variantes deterministas, han sido ampliamente estudiados
+bajo el supuesto de \textbf{información perfecta y estructura lineal},
+un enfoque cuya pertinencia disminuye notablemente en escenarios
 humanitarios caracterizados por \textbf{incertidumbre estructural} y
-\textbf{no linealidad inherente} en costos y restricciones (Hadley \&
-Whitin, 1963; Snyder, 2006).
+\textbf{no linealidad inherente} en costos y restricciones (Hadley y
+Whitin 1 963; Snyder 2006).
 
 \subsubsection{Supuestos restrictivos del modelo EOQ
 clásico}\label{supuestos-restrictivos-del-modelo-eoq-cluxe1sico}
@@ -508,8 +507,8 @@ El modelo EOQ se fundamenta en supuestos como:
   Costos lineales: costo de pedido \(S\), costo unitario de
   mantenimiento \(H\), sin faltantes.
 \item
-  Reposición instantánea y sin restricciones de capacidad (Hadley \&
-  Whitin, 1963).
+  Reposición instantánea y sin restricciones de capacidad (Hadley y
+  Whitin (1 963)).
 \end{enumerate}
 
 El costo total del modelo es:
@@ -538,7 +537,7 @@ Este resultado depende de la \textbf{deterministicidad} y la
   \(\beta>0\).
 \item
   Los costos pueden presentar economías de escala y no convexidades
-  (Porteus, 2002).
+  (Porteus (2002)).
 \end{itemize}
 
 \subsubsection{Incapacidad del EOQ para capturar
@@ -560,8 +559,8 @@ Z(Q)=\frac{D}{Q}S+\left(\frac{Q}{2}+Z_\alpha\sigma_L\right)H+DC+\frac{D}{Q}\beta
 
 Esta función \textbf{no es convexa globalmente} cuando \(\sigma_L\)
 depende de \(Q\), como ocurre cuando existe congestión en transporte o
-variabilidad dependiente del tamaño del pedido (Bertsimas \& Thiele,
-2006; Shapiro et al., 2021).
+variabilidad dependiente del tamaño del pedido (Bertsimas y Thiele
+(2006); Shapiro, Dentcheva, y Ruszczyński (2021)).
 
 \begin{quote}
 \textbf{Proposición (No linealidad estricta).}\\
@@ -599,7 +598,7 @@ bajo restricciones de asignación deterministas. Sin embargo:
 \end{itemize}
 
 Modelar \(d_j\) mediante \(\mathbb{E}[d_j]\) genera soluciones frágiles
-frente a escenarios adversos (Snyder, 2006).
+frente a escenarios adversos (Snyder (2006)).
 
 \subsubsection{Ejemplo ilustrativo: EOQ clásico vs.~EOQ extendido con
 stock de seguridad y
@@ -701,30 +700,43 @@ una clase fundamental denominada \emph{modelos híbridos} o
 discretas y continuas. Este tipo de modelos presenta una complejidad
 inherente debida a la ruptura topológica inducida por las variables
 binarias, lo cual conlleva dominios no convexos y no conexos, impidiendo
-la aplicación directa de técnicas clásicas basadas en convexidad
-(Wolsey, 1998; Grossmann, 2002; Daskin, 2013).
+la aplicación directa de técnicas clásicas basadas en convexidad (Wolsey
+(1998); Grossmann (2002); Daskin (2013)).
 
 \subsubsection{Formulación matemática del espacio de
 decisiones}\label{formulaciuxf3n-matemuxe1tica-del-espacio-de-decisiones}
 
-Sea: - \(\mathcal{I} = \{1,\ldots,m\}\) el conjunto de ubicaciones
-posibles para almacenes, - \(\mathcal{J} = \{1,\ldots,n\}\) las zonas de
-demanda, - \(x = (x_1,\dots,x_m)^\top \in \{0,1\}^m\) las decisiones
-binarias de apertura, - \(y = (y_{ij}) \in \mathbb{R}_+^{m\times n}\)
-los flujos desde almacenes a zonas, -
-\(s = (s_1,\dots,s_m)^\top \in \mathbb{R}_+^m\) el inventario
-preposicionado.
+Sea:
+
+\begin{itemize}
+\tightlist
+\item
+  \(\mathcal{I} = \{1,\ldots,m\}\) el conjunto de ubicaciones posibles
+  para almacenes,
+\item
+  \(\mathcal{J} = \{1,\ldots,n\}\) las zonas de demanda,
+\item
+  \(x = (x_1,\dots,x_m)^\top \in \{0,1\}^m\) las decisiones binarias de
+  apertura,
+\item
+  \(y = (y_{ij}) \in \mathbb{R}_+^{m\times n}\) los flujos desde
+  almacenes a zonas,
+\item
+  \(s = (s_1,\dots,s_m)^\top \in \mathbb{R}_+^m\) el inventario
+  preposicionado.
+\end{itemize}
 
 El espacio factible se define como:
 
 \[
-\mathcal{X} := 
-\left\{
-(x,y,s)\in \{0,1\}^m\times \mathbb{R}_+^{m\times n}\times \mathbb{R}_+^m \;\middle|\;
+\mathcal{X} := \left\{ (x, y, s) \;\middle|\;
 \begin{aligned}
-&\sum_{i\in\mathcal{I}} y_{ij} \ge d_j, &&\forall j\in\mathcal{J},\\
-&\sum_{j\in\mathcal{J}} y_{ij} \le s_i, &&\forall i\in\mathcal{I},\\
-&s_i \le M x_i, &&\forall i\in\mathcal{I}
+& x_i \in \{0,1\}, && \forall i \in \mathcal{I}, \\
+& y_{ij} \ge 0,    && \forall i \in \mathcal{I},\; \forall j \in \mathcal{J}, \\
+& s_i \ge 0,       && \forall i \in \mathcal{I}, \\
+& \sum_{i \in \mathcal{I}} y_{ij} \ge d_j, && \forall j \in \mathcal{J}, \\
+& \sum_{j \in \mathcal{J}} y_{ij} \le s_i, && \forall i \in \mathcal{I}, \\
+& s_i \le M x_i,   && \forall i \in \mathcal{I}
 \end{aligned}
 \right\}.
 \tag{2.2}
@@ -734,7 +746,7 @@ Aquí, \(d_j > 0\) representa la demanda de la zona \(j\) y \(M\) es un
 parámetro de gran magnitud. La tercera restricción describe un vínculo
 lógico: si \(x_i = 0\), entonces \(s_i = 0\) y, en consecuencia,
 \(y_{ij} = 0\). Este acoplamiento induce una \textbf{no convexidad
-estructural} (Bertsekas, 1999).
+estructural} (Bertsekas (1999)).
 
 \begin{quote}
 \textbf{Proposición (No convexidad).}\\
@@ -747,7 +759,7 @@ iguales a \(1/2\), lo cual viola la condición binaria. Luego,
 \end{quote}
 
 La consecuencia directa es que condiciones de optimalidad de tipo KKT
-\textbf{no garantizan} optimalidad global (Lewis \& Overton, 2013).
+\textbf{no garantizan} optimalidad global (Lewis y Overton (2013)).
 
 \subsubsection{Función objetivo y acoplamiento
 estructural}\label{funciuxf3n-objetivo-y-acoplamiento-estructural}
@@ -767,7 +779,9 @@ Aunque la parte en variables continuas es lineal, el término
 \(f_i(x_i)\) genera una \textbf{no linealidad discreta}; más aún, en la
 práctica humanitaria pueden existir economías de escala, accesibilidad
 variable o costos de apertura no lineales, reforzando la complejidad
-global (Grossmann, 2002).
+global del problema, entendida como la combinación de no convexidad,
+discreción y no linealidad que lo sitúa en la clase de problemas MINLP,
+de resolución computacionalmente exigente (Grossmann (2002)).
 
 El sistema presenta una jerarquía:
 
@@ -793,13 +807,31 @@ Para cualquier \(\bar{x} \in \{0,1\}^m\), el subproblema
 \min_{(y,s) \in \mathcal{X}(\bar{x})} Z(\bar{x}, y, s)
 \]
 
-es un programa lineal y, por tanto, convexo.\\
-\emph{Demostración.} Fijado \(\bar{x}\), todas las restricciones son
-lineales en \((y,s)\) y la función objetivo es afín. ∎
+es un problema de programación lineal y, por tanto, convexo.\\
+\emph{Demostración.} Al fijar \(\bar{x}\), los t\textquotesingle erminos
+\(f_i \bar{x}_i\) se convierten en constantes. La
+funci\textquotesingle on objetivo resultante es lineal en \((y,s)\), y
+todas las restricciones que definen \(\mathcal{X}(\bar{x})\) son
+lineales en estas variables. Por definici\textquotesingle on, esto
+constituye un problema de programación lineal, cuyo conjunto factible es
+un poliedro convexo. \(\blacksquare\)
 \end{quote}
 
-Esta propiedad respalda el uso de descomposición tipo Benders o esquemas
-maestro--subproblema (Wolsey, 1998).
+Esta propiedad, consistente en \emph{la convexidad del subproblema
+continuo para una configuración de apertura fija}, es fundamental para
+la aplicación de métodos de descomposición, tales como el algoritmo de
+Benders. En dichos enfoques, el problema original se divide en:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{problema maestro}, que maneja las variables enteras (\(x\)) y
+  genera configuraciones candidatas, y
+\item
+  un \textbf{subproblema}, que, para una configuración dada, resuelve el
+  problema continuo (aquí, lineal) y devuelve información (por ejemplo,
+  cortes de Benders) para refinar el problema maestro (Wolsey (1998)).
+\end{itemize}
 
 \subsubsection{Ejemplo ilustrativo: interacción
 discreto--continuo}\label{ejemplo-ilustrativo-interacciuxf3n-discretocontinuo}
@@ -829,17 +861,25 @@ Asignación eficiente, pero mayor costo fijo:\\
 Z = 300 + 400 + 3\cdot 100 + (8\cdot 50 + 7\cdot 50)=1750.
 \]
 
-Conclusión: es óptimo \textbf{abrir solo el almacén 2}.\\
-La solución cambiaría si los costos fijos disminuyeran, lo que evidencia
-la \emph{sensibilidad estructural} del diseño híbrido (Daskin, 2013).
+La mejor configuración es abrir únicamente el almacén 2. Este resultado
+ilustra una propiedad fundamental de los problemas que combinan
+variables discretas y continuas: \textbf{la solución óptima puede
+cambiar de manera discontinua ante pequeñas variaciones en los
+parámetros} (por ejemplo, si \(f_2\) disminuye a 350, sigue siendo
+óptimo; pero si \(f_1\) baja a 250, podría convenir abrir el almacén 1).
+Esta \textbf{sensibilidad discreta}, originada por la naturaleza
+combinatoria de las decisiones de apertura, es una característica
+distintiva de los modelos mixtos entero-continuos (Daskin (2013)).
 
-La integración simultánea de decisiones discretas y continuas induce
-dominios no convexos, dependencias lógicas y estructuras no separables
-que requieren marcos teóricos propios de la programación entera mixta,
-análisis no suave y descomposición matemática. Esta base establece los
-fundamentos del modelo propuesto en las siguientes secciones, donde se
-formaliza la integración bajo condiciones logísticas realistas y
-restricciones humanitarias.
+El conjunto factible de este tipo de problemas, definido por la
+combinación de variables binarias y continuas junto con restricciones de
+activación lógica, \textbf{no es convexo} (como se demostró en la
+Proposición\textasciitilde2.1.3.1). Esta no convexidad, junto con la
+interacción entre decisiones estratégicas y operativas, exige el uso de
+técnicas propias de la programación entera mixta y de la optimización
+combinatoria. Estas bases teóricas sustentan el modelo propuesto en las
+secciones siguientes, donde se integra esta estructura con un componente
+de inventario no lineal bajo incertidumbre parametrizada.
 
 \section{Marco general de modelado: variables, parámetros y espacio de
 decisión}\label{marco-general-de-modelado-variables-paruxe1metros-y-espacio-de-decisiuxf3n}
@@ -848,60 +888,48 @@ decisión}\label{marco-general-de-modelado-variables-paruxe1metros-y-espacio-de-
 potenciales \(\mathcal{I}\) y zonas de demanda
 \(\mathcal{J}\)}{Conjuntos de índices: instalaciones potenciales \textbackslash mathcal\{I\} y zonas de demanda \textbackslash mathcal\{J\}}}\label{conjuntos-de-uxedndices-instalaciones-potenciales-mathcali-y-zonas-de-demanda-mathcalj}
 
-La construcción rigurosa de un modelo de optimización comienza con la
-definición precisa de los conjuntos de índices, los cuales encapsulan la
-estructura topológica y semántica del sistema bajo estudio. En el
-contexto del problema integrado de localización e inventario para
-logística humanitaria, dos conjuntos indexados fundamentales determinan
-la arquitectura del modelo: el conjunto de instalaciones potenciales y
-el conjunto de zonas de demanda.
+En la formulación matemática del problema integrado de localización e
+inventario, los conjuntos de índices constituyen la base sobre la cual
+se definen las variables de decisión, los parámetros y las
+restricciones. Como se estableció en la Sección\textasciitilde2.1,
+denotamos por
 
-\subsubsection{\texorpdfstring{\textbf{Definición (Conjunto de
-instalaciones
-potenciales).}}{Definición (Conjunto de instalaciones potenciales).}}\label{definiciuxf3n-conjunto-de-instalaciones-potenciales.}
+\begin{itemize}
+\tightlist
+\item
+  \(\mathcal{I}\): el conjunto de \textbf{almacenes candidatos} para
+  preposicionamiento, y\\
+\item
+  \(\mathcal{J}\): el conjunto de \textbf{zonas geográficas afectadas}.
+\end{itemize}
 
-Sea
+Estos conjuntos son finitos, disjuntos en el sentido teórico
+(\(\mathcal{I} \cap \mathcal{J} = \varnothing\)), y sus elementos
+desempeñan roles distintos en el modelo: los índices en \(\mathcal{I}\)
+corresponden a \emph{fuentes} de suministro, mientras que los de
+\(\mathcal{J}\) representan \emph{destinos} de demanda.
 
-\[
-\mathcal{I} := \{1, 2, \dots, m\}, \quad m \in \mathbb{N},\; m \geq 1,
-\]
+La cardinalidad de \(\mathcal{I}\), denotada \(m = |\mathcal{I}|\),
+determina la dimensión del espacio de decisiones estratégicas. Dado que
+la apertura de cada almacén se modela mediante una variable binaria
+\(x_i \in \{0,1\}\), el número total de configuraciones posibles de
+infraestructura es \(2^m\). Esta \textbf{explosión combinatoria} implica
+que, incluso para tamaños modestos de \(m\) (por ejemplo, \(m = 30\)),
+el espacio discreto contiene más de \(10^9\) soluciones factibles. En
+consecuencia, métodos de enumeración exhaustiva son inviables, y se
+requieren algoritmos que exploten la \textbf{estructura matemática del
+problema}, es decir, su formulación como un problema de optimización con
+variables mixtas, función objetivo diferenciable y restricciones
+acopladas, para identificar soluciones óptimas o aproximadas en tiempo
+razonable.
 
-el conjunto finito y numerable de ubicaciones candidatas para la
-apertura de almacenes de preposicionamiento. Cada índice
-\(i \in \mathcal{I}\) representa una localización geográfica factible
-donde podría instalarse una instalación de almacenamiento y
-distribución.
-
-\subsubsection{\texorpdfstring{\textbf{Definición (Conjunto de zonas de
-demanda).}}{Definición (Conjunto de zonas de demanda).}}\label{definiciuxf3n-conjunto-de-zonas-de-demanda.}
-
-Sea
-
-\[
-\mathcal{J} := \{1, 2, \dots, n\}, \quad n \in \mathbb{N},\; n \geq 1,
-\]
-
-el conjunto finito y numerable de zonas afectadas o potenciales de
-demanda. Cada índice \(j \in \mathcal{J}\) denota una región geográfica
-donde se anticipa la necesidad de suministros humanitarios tras un
-evento disruptivo.
-
-\begin{quote}
-\textbf{Observación}\\
-Los conjuntos \(\mathcal{I}\) y \(\mathcal{J}\) se asumen disjuntos en
-función, aunque no necesariamente en localización física. Desde el punto
-de vista del modelo, los roles son distintos:\\
-- Los elementos de \(\mathcal{I}\) son fuentes de suministro.\\
-- Los elementos de \(\mathcal{J}\) son sumideros de demanda.
-\end{quote}
-
-La cardinalidad de estos conjuntos ---es decir, \(m = |\mathcal{I}|\) y
-\(n = |\mathcal{J}|\)--- determina directamente la complejidad
-combinatoria del problema. En particular, el número de configuraciones
-posibles de apertura de almacenes es \(2^m\), lo que implica que incluso
-para valores modestos (por ejemplo, \(m = 30\)), el espacio discreto es
-del orden de \(10^9\). Esta explosión combinatoria subraya la necesidad
-de métodos de optimización estructurada.
+La interacción entre \(\mathcal{I}\) y \(\mathcal{J}\) se modela
+mediante variables de flujo \(y_{ij} \geq 0\), que cuantifican la
+asignación de suministros desde el almacén \(i\) a la zona \(j\). Esta
+relación define una matriz de conectividad cuya densidad depende de
+factores operativos como la distancia, accesibilidad y capacidades
+logísticas, y que condiciona tanto la factibilidad como la complejidad
+del subproblema continuo asociado a una configuración fija de almacenes.
 
 \subsubsection{\texorpdfstring{\textbf{Ejemplo
 ilustrativo}}{Ejemplo ilustrativo}}\label{ejemplo-ilustrativo}
@@ -959,12 +987,6 @@ Sobre estos conjuntos se definirán:
 En modelado riguroso, los conjuntos índice deben definirse antes que las
 variables, dado que estas heredan su dominio directamente de aquellos.
 \end{quote}
-
-Los conjuntos \(\mathcal{I}\) y \(\mathcal{J}\) constituyen estructuras
-matemáticas esenciales que determinan la escala, la conectividad y la
-complejidad del modelo. Su correcta definición resulta crucial para la
-formalización posterior de variables, restricciones y dependencias del
-sistema.
 
 \subsection{\texorpdfstring{Variables de decisión: binarias (\(x_i\)) y
 continuas
@@ -1123,7 +1145,7 @@ En la formulación matemática de un problema de optimización, los
 espacio factible y la función objetivo. Su correcta especificación es
 requisito previo a la definición de variables y restricciones; por
 tanto, deben presentarse con dominio y unidades explícitas (práctica
-recomendada por Lewis y colaboradores; Lewis, 2003). En el problema
+recomendada por Lewis y colaboradores; Lewis (2003)). En el problema
 integrado de localización e inventario consideramos, de modo explícito,
 las cuatro familias de parámetros siguientes.
 
@@ -1143,7 +1165,8 @@ penalizaciones no triviales (por ejemplo, coste creciente con la
 capacidad instalada o costes discretos adicionales por remoción),
 \(f_i\) puede modelarse como función \(f_i(x_i,s_i)\); sin embargo, para
 la formulación base se adopta linealidad en \(x_i\) y se externalizan
-las no linealidades en extensiones (Shapiro et al., 2021).
+las no linealidades en extensiones (Shapiro, Dentcheva, y Ruszczyński
+(2021)).
 
 \subsubsection{Costos unitarios de
 transporte}\label{costos-unitarios-de-transporte}
@@ -1157,7 +1180,7 @@ c_{ij}\ge 0,\quad \forall i,j,
 \(C:=[c_{ij}]_{i,j}\in\mathbb{R}_+^{m\times n}\). En contextos
 humanitarios \(c_{ij}\) incorpora distancia, tiempo de acceso y
 penalizaciones por rutas inseguras; su estimación suele derivar de
-información geoespacial y modelos de capacidad vial (Daskin, 2013).
+información geoespacial y modelos de capacidad vial (Daskin (2013)).
 
 \subsubsection{Demanda esperada}\label{demanda-esperada}
 
@@ -1168,7 +1191,7 @@ considerado. Adicionalmente definimos el vector
 \(d=(d_j)_{j\in\mathcal{J}}\). En la formulación determinista de
 referencia usamos \(d_j\) como estimador puntual (p.~ej. esperanza), con
 la advertencia explícita de que su uso directo puede producir soluciones
-frágiles en colas de distribución (Snyder, 2006). Notación:
+frágiles en colas de distribución (Snyder (2006)). Notación:
 
 \[
 d_j>0,\quad \forall j,\qquad d\in\mathbb{R}_{++}^n.
@@ -1202,13 +1225,13 @@ formales}\label{propiedades-y-observaciones-formales}
   \textbf{Dominios y no ambigüedad:} Todos los parámetros deben venir
   acompañados de su dominio y unidades. Esto evita ambigüedades en
   pruebas de existencia, estabilidad numérica y escalado de variables
-  (Lewis, 2003).
+  ((\textbf{Lewis2013?})).
 \item
   \textbf{Sensibilidad estructural:} Pequeñas variaciones en \(f_i\),
   \(c_{ij}\), \(d_j\) o \(s_i^{\max}\) pueden cambiar la estructura del
   óptimo (p.~ej. la configuración \(x^*\)). Por ello, el análisis de
   sensibilidad y escenarios es parte inseparable de la modelación
-  robusta (Snyder, 2006; Shapiro et al., 2021).
+  robusta (Snyder (2006); Shapiro, Dentcheva, y Ruszczyński (2021)).
 \item
   \textbf{Elección de \(M\) en big-M:} Si se usa la formulación
   \(y_{ij}\le M x_i\) para acoplar variables (versus la formulación con
@@ -1324,8 +1347,8 @@ Z = 550\ (\text{miles}) + 1.770\ (\text{miles}) = 2.320\ \text{miles USD}.
 \textbf{Interpretación:} la solución es factible y el costo
 cuantificado; variaciones en \(d\), \(c_{ij}\) o \(f_i\) deben
 re-evaluarse mediante análisis de sensibilidad y, en contextos reales,
-mediante formulaciones estocásticas o robustas (Snyder, 2006; Shapiro et
-al., 2021).
+mediante formulaciones estocásticas o robustas (Snyder (2006); Shapiro,
+Dentcheva, y Ruszczyński (2021)).
 
 La especificación explícita de \(f_i\), \(c_{ij}\), \(d_j\) y
 \(s_i^{\max}\) permite no solo la construcción del problema determinista
@@ -1568,8 +1591,8 @@ incorporar factores no monetarios (tiempo, riesgo, deterioro, ética),
 siempre que estén normalizados en una métrica común.
 \end{quote}
 
-\subsubsection{\texorpdfstring{\textbf{Propiedades analíticas de \$ Z
-\$}}{Propiedades analíticas de \$ Z \$}}\label{propiedades-analuxedticas-de-z}
+\subsubsection{\texorpdfstring{\textbf{Propiedades analíticas de
+\(Z\)}}{Propiedades analíticas de Z}}\label{propiedades-analuxedticas-de-z}
 
 \subsubsection{\texorpdfstring{\textbf{Proposición (Continuidad y
 acotación
@@ -1677,7 +1700,7 @@ preposicionado. Su estructura afín por partes y la no convexidad del
 dominio \(\mathcal{X}\) definen un MILP clásico, aunque constituyen la
 base teórica necesaria para extensiones no lineales, robustas o
 estocásticas. La existencia garantizada de al menos una solución óptima
-justifica el enfoque algorítmico planteado en el Capítulo 3.
+justifica el enfoque algorítmico planteado en el Capítulo siguiente.
 
 \bookmarksetup{startatroot}
 
@@ -6216,15 +6239,30 @@ complejidad.
 
 \phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-BalcikBeamon2008}
+Balcik, Burcu, y Benita M. Beamon. 2008. {«Facility location in
+humanitarian relief»}. \emph{Journal of the Operational Research
+Society} 59 (8): 1005-16.
+\url{https://doi.org/10.1080/13675560701561789}.
+
 \bibitem[\citeproctext]{ref-BarojasPayan2021}
 Barojas-Payán, Eduardo et~al. 2021. {«Optimization model to locate
 pre-positioned warehouses»}. En \emph{Disaster Risk Reduction in
 Mexico}, editado por Daniel Sánchez-Partida, 169-98. Cham: Springer.
 \url{https://doi.org/10.1007/978-3-030-67295-9_8}.
 
+\bibitem[\citeproctext]{ref-Bertsekas1999}
+Bertsekas, Dimitri P. 1999. \emph{Nonlinear Programming}. Athena
+Scientific.
+
 \bibitem[\citeproctext]{ref-Bertsekas2016}
-Bertsekas, Dimitri P. 2016. \emph{Nonlinear Programming}. 3rd ed.
-Belmont, MA: Athena Scientific.
+---------. 2016. \emph{Nonlinear Programming}. 3rd ed. Belmont, MA:
+Athena Scientific.
+
+\bibitem[\citeproctext]{ref-BertsimasThiele2006}
+Bertsimas, Dimitris, y Aurélie Thiele. 2006. {«A robust optimization
+approach to inventory theory»}. \emph{Operations Research} 54 (1):
+150-68. \url{https://doi.org/10.1287/opre.1050.0238}.
 
 \bibitem[\citeproctext]{ref-Byrd1995}
 Byrd, Richard H., Peihuang Lu, Jorge Nocedal, y Ciyou Zhu. 1995. {«A
@@ -6232,10 +6270,21 @@ Limited Memory Algorithm for Bound Constrained Optimization»}.
 \emph{SIAM Journal on Scientific Computing} 16 (5): 1190-1208.
 https://doi.org/\url{https://doi.org/10.1137/0916069}.
 
+\bibitem[\citeproctext]{ref-CaunhyeNiePokharel2012}
+Caunhye, A. M., X. Nie, y S. Pokharel. 2012. {«Optimization models in
+emergency logistics: A literature review»}. \emph{Socio-Economic
+Planning Sciences} 46 (1): 4-13.
+\url{https://doi.org/10.1016/j.seps.2011.04.004}.
+
 \bibitem[\citeproctext]{ref-ConnGouldToint1991}
 Conn, A. R., N. I. M. Gould, y Ph. L. Toint. 1991. \emph{LANCELOT: A
 Fortran package for large-scale nonlinear optimization}. Berlin:
 Springer. \url{https://books.google.com/books?id=zff0CAAAQBAJ}.
+
+\bibitem[\citeproctext]{ref-Daskin2013}
+Daskin, Mark S. 2013. \emph{Network and Discrete Location: Models,
+Algorithms, and Applications}. 2nd ed. Hoboken, NJ: Wiley.
+\url{https://doi.org/10.1002/9781118537015}.
 
 \bibitem[\citeproctext]{ref-DennisMore1977}
 Dennis, John E., y Jorge J. Moré. 1977. {«Quasi-{N}ewton methods,
@@ -6252,11 +6301,32 @@ updates for large structured optimization problems»}. \emph{Numerische
 Mathematik} 39 (3): 325-47.
 https://doi.org/\url{https://doi.org/10.1007/BF01407876}.
 
+\bibitem[\citeproctext]{ref-Grossmann2002}
+Grossmann, Ignacio E. 2002. {«Review of nonlinear mixed-integer and
+disjunctive programming techniques»}. \emph{Computers \& Chemical
+Engineering} 26 (9): 1261-82.
+\url{https://doi.org/10.1023/A:1021039126272}.
+
+\bibitem[\citeproctext]{ref-HadleyWhitin1963}
+Hadley, G., y T. M. Whitin. 1 963. \emph{Analysis of Inventory Systems}.
+Englewood Cliffs, NJ: Prentice-Hall.
+\url{https://archive.org/details/AnalysisOfInventorySystems/page/n3/mode/2up}.
+
 \bibitem[\citeproctext]{ref-Insani2024}
 Insani, Muhammad, Agus Widodo, y A. Rahman. 2024. {«Mixed-Integer
 Programming Model for Evacuation and Relief Distribution in Flood
 Contexts»}. \emph{International Journal of Disaster Risk Reduction} 100:
 104342. \url{https://doi.org/10.1016/j.ijdrr.2024.104342}.
+
+\bibitem[\citeproctext]{ref-Lewis2003}
+Lewis, Adrian S. 2003. {«The Mathematics of Eigenvalue Optimization»}.
+\emph{Acta Numerica} 12: 1-58.
+\url{https://doi.org/10.1017/S0962492902000045}.
+
+\bibitem[\citeproctext]{ref-LewisOverton2013}
+Lewis, Adrian S., y Michael L. Overton. 2013. {«Nonsmooth optimization
+via quasi-Newton methods»}. \emph{Mathematical Programming} 141 (1--2):
+135-63. \url{https://doi.org/10.1007/s10107-012-0514-2}.
 
 \bibitem[\citeproctext]{ref-LiuNocedal1989}
 Liu, Dong C., y Jorge Nocedal. 1989. {«On the Limited Memory BFGS Method
@@ -6278,6 +6348,10 @@ Nocedal, Jorge, y Stephen J. Wright. 2006. \emph{Numerical
 Optimization}. 2nd ed. New York: Springer.
 https://doi.org/\url{https://doi.org/10.1007/978-0-387-40065-5}.
 
+\bibitem[\citeproctext]{ref-Porteus2002}
+Porteus, Evan L. 2002. \emph{Foundations of Stochastic Inventory
+Theory}. Stanford, CA: Stanford University Press.
+
 \bibitem[\citeproctext]{ref-Pujiana2020}
 Pujiana, R., D. Utama, y D. Rahmawati. 2020. {«Multi-depot vehicle
 routing problem for post-flood humanitarian distribution»}.
@@ -6297,11 +6371,26 @@ model for shelter allocation and relief distribution»}. \emph{Journal of
 Humanitarian Logistics and Supply Chain Management} 14 (2): 189-210.
 \url{https://doi.org/10.1108/JHLSCM-12-2023-0085}.
 
+\bibitem[\citeproctext]{ref-ShapiroDentchevaRuszczynski2021}
+Shapiro, Alexander, Darinka Dentcheva, y Andrzej Ruszczyński. 2021.
+\emph{Lectures on Stochastic Programming: Modeling and Theory}. 2nd ed.
+SIAM. \url{https://doi.org/10.1137/1.9781611976595}.
+
 \bibitem[\citeproctext]{ref-Sheikholeslami2022}
 Sheikholeslami, Reza, y Nima Zarrinpoor. 2022. {«Multi-period MILP under
 uncertainty for humanitarian logistics in flood response»}.
 \emph{Computers \& Industrial Engineering} 165: 107930.
 \url{https://doi.org/10.1016/j.cie.2022.107930}.
+
+\bibitem[\citeproctext]{ref-Snyder2006}
+Snyder, Lawrence V. 2006. {«Facility location under uncertainty: A
+review»}. \emph{IIE Transactions} 38 (7): 537-54.
+\url{https://doi.org/10.1080/07408170500216480}.
+
+\bibitem[\citeproctext]{ref-wolsey1998}
+Wolsey, L. A. 1998. \emph{Integer Programming}. Wiley Series en Discrete
+Mathematics y Optimization. Wiley.
+\url{https://books.google.com.mx/books?id=x7RvQgAACAAJ}.
 
 \bibitem[\citeproctext]{ref-Zhu1997}
 Zhu, C., R. H. Byrd, P. Lu, y J. Nocedal. 1997. {«Algorithm 778:
