@@ -1,18 +1,21 @@
 ---
-author: 
-  - name: Yulissa del Rocío Hernández Vázquez
+title: "Resumen"
+unnumbered: true
+
+author:
+  - name: "Yulissa del Rocío Hernández Vázquez"
     email: yulissa.hernndez42@unach.mx
     affiliations:
       - ref: unach
     corresponding: true
 
-affiliations:
-  - id: unach
-    name: Universidad Autónoma de Chiapas
-
-advisor:
-  - name: Dr. Yofre Hernán García Gómez
-    role: Asesor
+  - name: "Dr. Yofre Hernán García Gómez"
+    role: "Director de tesis"
+    email: yofre.garcia@unach.mx
     affiliations:
       - ref: unach
+
+affiliations:
+  - id: unach
+    name: "Universidad Autónoma de Chiapas"
 ---
