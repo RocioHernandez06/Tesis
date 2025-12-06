@@ -9,7 +9,7 @@ author:
       - ref: unach
     corresponding: true
 
-  - name: "Dr. Yofre Hernán García Gómez"
+  - name: "Asesor: Dr. Yofre Hernán García Gómez"
     role: "Director de tesis"
     email: yofre.garcia@unach.mx
     affiliations:
