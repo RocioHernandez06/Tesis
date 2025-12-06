@@ -253,7 +253,7 @@ Esto produce una dependencia en cascada que elimina la separabilidad global del 
 Esta propiedad, consistente en *la convexidad del subproblema continuo para una configuración de apertura fija*, es fundamental para la aplicación de métodos de descomposición, tales como el algoritmo de Benders. En dichos enfoques, el problema original se divide en:
 
 - **problema maestro**, que maneja las variables enteras ($x$) y genera configuraciones candidatas, y
-- un **subproblema**, que, para una configuración dada, resuelve el problema continuo (aquí, lineal) y devuelve información (por ejemplo, cortes de Benders) para refinar el problema maestro (@wolsey1998).
+- un **subproblema**, que, para una configuración dada, resuelve el problema continuo (aquí, lineal) y devuelve información (por ejemplo, cortes de Benders) para refinar el problema maestro (@Wolsey1998).
 
 #### Ejemplo ilustrativo: interacción discreto–continuo
 
@@ -1254,11 +1254,12 @@ Esto significa que, bajo la penalización cuadrática $\phi(z) = z^2$, la polít
 #### Generalización y conexión con medidas de riesgo
 
 El factor $z^\star$ no es una constante universal, sino una **variable de decisión endógena** que depende de:
+
 - La distribución de $\tilde{D}$ (especialmente sus colas),
 - Los parámetros de costo ($c$, $h$),
 - La forma funcional de $\phi(\cdot)$.
 
-En particular, si $\phi(z) = p z$ (lineal), la condición de optimalidad se reduce a:
+Es decir, si $\phi(z) = p z$ (lineal), la condición de optimalidad se reduce a:
 $$
 F_D(Q^\star) = \frac{p - c}{p + h - c},
 $$
