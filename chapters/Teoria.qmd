@@ -299,7 +299,7 @@ En la formulación matemática del problema integrado de localización e inventa
 - $\mathcal{I}$: el conjunto de **almacenes candidatos** para preposicionamiento, y  
 - $\mathcal{J}$: el conjunto de **zonas geográficas afectadas**.
 
-Estos conjuntos son finitos, disjuntos en el sentido teórico ($\mathcal{I} \cap \mathcal{J} = \varnothing$), y sus elementos desempeñan roles distintos en el modelo: los índices en $\mathcal{I}$ corresponden a *fuentes* de suministro, mientras que los de $\mathcal{J}$ representan *destinos* de demanda.
+Estos conjuntos son finitos, disjuntos, es decir, $\mathcal{I} \cap \mathcal{J} = \varnothing$, y sus elementos desempeñan roles distintos en el modelo: los índices en $\mathcal{I}$ corresponden a *fuentes* de suministro, mientras que los de $\mathcal{J}$ representan *destinos* de demanda.
 
 La cardinalidad de $\mathcal{I}$, denotada $m = |\mathcal{I}|$, determina la dimensión del espacio de decisiones estratégicas. Dado que la apertura de cada almacén se modela mediante una variable binaria $x_i \in \{0,1\}$, el número total de configuraciones posibles de infraestructura es $2^m$. Esta **explosión combinatoria** implica que, incluso para tamaños modestos de $m$ (por ejemplo, $m = 30$), el espacio discreto contiene más de $10^9$ soluciones factibles. En consecuencia, métodos de enumeración exhaustiva son inviables, y se requieren algoritmos que exploten la **estructura matemática del problema**, es decir, su formulación como un problema de optimización con variables mixtas, función objetivo diferenciable y restricciones acopladas, para identificar soluciones óptimas o aproximadas en tiempo razonable.
 
@@ -339,14 +339,20 @@ Sobre estos conjuntos se definirán:
 
 ###  Variables de decisión: binarias ($x_i$) y continuas ($y_{ij}$)
 
-Una vez establecida la estructura combinatoria del problema mediante los conjuntos índice $\mathcal{I}$ y $\mathcal{J}$, el siguiente paso en la formulación rigurosa de un modelo de optimización es la definición precisa del **espacio de decisiones**, mediante la especificación de las **variables de decisión**. En el problema integrado de localización e inventario, este espacio es híbrido, compuesto por dos tipos cualitativamente distintos de variables:
+Una vez establecida la estructura combinatoria del problema mediante los conjuntos índice $\mathcal{I}$ y $\mathcal{J}$, el siguiente paso en la formulación rigurosa de un modelo de optimización es la definición precisa del **espacio de decisiones**, mediante la especificación de las **variables de decisión**. En el **problema integrado de localización e inventario para logística humanitaria**, introducido en la Sección 2.1.1, este espacio de decisiones es híbrido, ya que combina variables binarias y continuas, compuesto por dos tipos cualitativamente distintos de variables:
 
 - Variables binarias, que modelan elecciones discretas de infraestructura,
 - Variables continuas, que representan flujos físicos de recursos.
 
-Esta dualidad refleja la naturaleza multinivel del problema: decisiones estratégicas (¿dónde construir?) y decisiones tácticas u operativas (¿cuánto enviar?).
+Esta dualidad refleja la **estructura mixta del problema**, que combina dos tipos de decisiones con roles y horizontes operativos distintos:
 
-#### **Definición  (Variables binarias de localización).**
+- **Decisiones estratégicas**, como la apertura de almacenes, que son irreversibles una vez implementadas y se modelan mediante variables binarias;
+- **Decisiones tácticas**, como la asignación de suministros o el preposicionamiento de inventario, que son ajustables en el corto plazo y se representan mediante variables continuas.
+
+Esta interacción entre decisiones de largo y corto plazo es una característica esencial de los modelos integrados en logística humanitaria.
+
+
+#### **Definición (Variables binarias de almacén).**
 
 Para cada $i \in \mathcal{I}$, se define la variable binaria
 
@@ -359,12 +365,12 @@ donde
 $$
 x_i =
 \begin{cases}
-1, & \text{si se decide abrir una instalación en la ubicación } i, \\
+1, & \text{si se decide abrir un almacén en la ubicación } i, \\
 0, & \text{en caso contrario}.
 \end{cases}
 $$
 
-El vector $x = (x_i)_{i \in \mathcal{I}} \in \{0,1\}^m$ codifica una **configuración de infraestructura** del sistema logístico. Estas variables pertenecen a un espacio discreto no convexo y finito cuya cardinalidad es $2^m$.
+El vector $x = (x_i)_{i \in \mathcal{I}} \in \{0,1\}^m$ codifica una **configuración de infraestructura** del sistema logístico. Este vector pertenece al conjunto discreto $\{0,1\}^m$, que es no convexo, finito y tiene cardinalidad $2^m$.
 
 #### **Definición  (Variables continuas de flujo).**
 
@@ -374,16 +380,16 @@ $$
 y_{ij} \in \mathbb{R}_+,
 $$
 
-que representa la cantidad de unidades asignadas desde la instalación $i$ a la zona de demanda $j$ en el período de planificación.
+que representa la cantidad de unidades asignadas desde la instalación $i$ a la zona de demanda $j$.
 
-El tensor $y = (y_{ij})_{(i,j) \in \mathcal{I} \times \mathcal{J}} \in \mathbb{R}_+^{m \times n}$ describe la estructura de asignación del sistema, y pertenece a un espacio vectorial convexo, cerrado y de dimensión finita.
+El tensor $y = (y_{ij})_{(i,j) \in \mathcal{I} \times \mathcal{J}} \in \mathbb{R}_+^{m \times n}$ describe la **estructura de asignación de suministros desde almacenes candidatos a zonas de demanda**, y pertenece a un espacio vectorial convexo, cerrado y de dimensión finita.
 
 > **Observación  (Naturaleza híbrida del espacio de decisiones).**  
 > El espacio total de decisiones es el producto cartesiano  
 > $$
 > \mathcal{D} = \{0,1\}^m \times \mathbb{R}_+^{m \times n},
 > $$
-> que es no convexo, no conexo y discontinuo en la dirección discreta. Esta estructura impide la aplicación directa de herramientas del análisis convexo clásico y exige métodos de optimización mixta.
+> que es tipo no convexo, no conexo y discontinuo en la dirección discreta. Esta estructura impide la aplicación directa de herramientas del análisis convexo clásico y exige métodos de optimización entera mixta.
 
 Las variables $x_i$ y $y_{ij}$ no son independientes. Su acoplamiento se establece mediante **restricciones de factibilidad**, que garantizan que no se asignen flujos desde instalaciones no abiertas. Para todo $i \in \mathcal{I}$ y $j \in \mathcal{J}$:
 
@@ -432,12 +438,15 @@ Si la demanda es $d = (40,20,40,25)$, esta asignación es factible y completa.
 Este ejemplo muestra que las variables binarias **activan o desactivan** subespacios del espacio continuo de flujos, generando una partición de $\mathcal{D}$ en $2^m$ subespacios convexos.
 
 
-Las variables $x_i$ y $y_{ij}$ constituyen los grados de libertad fundamentales del modelo. Su naturaleza híbrida —discreta y continua— refleja la dualidad entre planeación estratégica y operación táctica. El acoplamiento lógico mediante restricciones big-M introduce no convexidad, justificando el uso de técnicas de optimización entera y métodos especializados. Las siguientes secciones integrarán estas variables en la función objetivo y en las restricciones de balance de flujo.
+Las variables $x_i$ y $y_{ij}$ constituyen los grados de libertad fundamentales del modelo. Su naturaleza híbrida, discreta y continua, refleja la dualidad entre planeación estratégica (apertura de almacenes) y operación táctica (asignación de recursos). El acoplamiento lógico mediante restricciones big-M introduce no convexidad, justificando el uso de técnicas de optimización entera mixta. Las siguientes secciones integrarán estas variables en la función objetivo y en las **restricciones de balance de flujo**, es decir, en las condiciones que garantizan:
+
+(i) que la demanda en cada zona $j \in \mathcal{J}$ sea satisfecha y 
+(ii) que el flujo total enviado desde un almacén $i \in \mathcal{I}$ no exceda su inventario disponible.
 
 
 ###  Parámetros del sistema: costos fijos, unitarios, demanda y capacidades
 
-En la formulación matemática de un problema de optimización, los **parámetros** constituyen los datos exógenos que estructuran el espacio factible y la función objetivo. Su correcta especificación es requisito previo a la definición de variables y restricciones; por tanto, deben presentarse con dominio y unidades explícitas (práctica recomendada por Lewis y colaboradores; @Lewis2003). En el problema integrado de localización e inventario consideramos, de modo explícito, las cuatro familias de parámetros siguientes.
+En la formulación matemática de un problema de optimización, los **parámetros** constituyen los datos exógenos que estructuran el espacio factible y la función objetivo como señala @Bertsekas1999. Su correcta especificación es requisito previo a la definición de variables y restricciones; por tanto, deben presentarse con su dominio y unidades explícitas (práctica recomendada por @Lewis2003). En el problema integrado de localización e inventario consideramos, de modo explícito, las cuatro familias de parámetros (costos fijos de apertura, costos unitarios de transporte, demanda esperada y capacidad de almacenamiento) siguientes.
 
 ####  Costos fijos de apertura
 
@@ -445,12 +454,12 @@ Para cada $i\in\mathcal{I}$ definimos
 $$
 f_i \in \mathbb{R}_{+}
 $$
-como el **costo fijo de apertura** de la instalación en la localización $i$. En la formulación estándar el término contribuye a la función objetivo mediante $f_i x_i$ si $x_i$ es la variable binaria de apertura. Se exige
+como el **costo fijo de apertura** del almacén en la localización $i$. En la formulación base del modelo, presentada en la ecuación (2.3), este término contribuye a la función objetivo mediante el producto lineal $f_i x_i$, donde $x_i \in \{0,1\}$ es la variable binaria. Se exige  
 $$
-f_i \ge 0,\qquad \forall i\in\mathcal{I}.
+f_i \ge 0, \qquad \forall i \in \mathcal{I}.
 $$
 
-Observación práctica: cuando la apertura implica economías o penalizaciones no triviales (por ejemplo, coste creciente con la capacidad instalada o costes discretos adicionales por remoción), $f_i$ puede modelarse como función $f_i(x_i,s_i)$; sin embargo, para la formulación base se adopta linealidad en $x_i$ y se externalizan las no linealidades en extensiones (@ShapiroDentchevaRuszczynski2021).
+Observación práctica: cuando el costo de apertura implica economías o penalizaciones no triviales (por ejemplo, coste creciente con la capacidad instalada o costes discretos adicionales por remoción), $f_i$ puede modelarse como función $f_i(x_i,s_i)$; sin embargo, para la formulación base se adopta linealidad en $x_i$ y se externalizan las no linealidades como puede verse en el trabajo de (@ShapiroDentchevaRuszczynski2021).
 
 #### Costos unitarios de transporte
 
@@ -462,7 +471,7 @@ el **costo unitario de transportar** una unidad desde la instalación $i$ hasta 
 $$
 c_{ij}\ge 0,\quad \forall i,j,
 $$
-y denotamos la matriz $C:=[c_{ij}]_{i,j}\in\mathbb{R}_+^{m\times n}$. En contextos humanitarios $c_{ij}$ incorpora distancia, tiempo de acceso y penalizaciones por rutas inseguras; su estimación suele derivar de información geoespacial y modelos de capacidad vial (@Daskin2013).
+y denotamos la matriz $C:=[c_{ij}]_{i,j}\in\mathbb{R}_+^{m\times n}$. En contextos humanitarios $c_{ij}$ incorpora distancia, tiempo de acceso y penalizaciones por rutas inseguras; su estimación suele derivar de información geoespacial y modelos de capacidad vial como se presenta en @Daskin2013.
 
 #### Demanda esperada
 
@@ -470,7 +479,7 @@ Para cada $j\in\mathcal{J}$, sea
 $$
 d_j\in\mathbb{R}_{++}
 $$
-la **demanda esperada** en la zona $j$ durante el horizonte considerado. Adicionalmente definimos el vector $d=(d_j)_{j\in\mathcal{J}}$. En la formulación determinista de referencia usamos $d_j$ como estimador puntual (p. ej. esperanza), con la advertencia explícita de que su uso directo puede producir soluciones frágiles en colas de distribución (@Snyder2006). Notación:
+la **demanda esperada** en la zona $j$ durante el horizonte considerado. Adicionalmente definimos el vector $d=(d_j)_{j\in\mathcal{J}}$. En la formulación determinista de referencia usamos $d_j$ como estimador puntual (p. ej. esperanza), con la advertencia explícita de que su uso directo puede producir soluciones frágiles en colas de distribución como lo argumenta @Snyder2006. Notación:
 
 $$
 d_j>0,\quad \forall j,\qquad d\in\mathbb{R}_{++}^n.
@@ -494,9 +503,12 @@ En ausencia de un tope operativo se toma $s_i^{\max}=+\infty$ (modelo no capacit
 
 #### Propiedades y observaciones formales
 
-1. **Dominios y no ambigüedad:** Todos los parámetros deben venir acompañados de su dominio y unidades. Esto evita ambigüedades en pruebas de existencia, estabilidad numérica y escalado de variables (@LewisOverton2013).
+1. **Dominios y no ambigüedad:** Todos los parámetros deben venir acompañados de su dominio y unidades. Esto evita ambigüedades en pruebas de existencia, estabilidad numérica y escalado de variables de acuerdo con las recomendaciones de @LewisOverton2013.
 
-2. **Sensibilidad estructural:** Pequeñas variaciones en $f_i$, $c_{ij}$, $d_j$ o $s_i^{\max}$ pueden cambiar la estructura del óptimo (p. ej. la configuración $x^*$). Por ello, el análisis de sensibilidad y escenarios es parte inseparable de la modelación robusta (@Snyder2006; @ShapiroDentchevaRuszczynski2021).
+2. **Dependencia discontinua de la solución óptima respecto a los parámetros:**  
+Pequeñas variaciones en los parámetros del modelo, como los costos fijos $f_i$, los costos de transporte $c_{ij}$, la demanda $d_j$ o la capacidad máxima $s_i^{\max}$, pueden inducir cambios abruptos en la configuración óptima de apertura de almacenes $x^*$.  
+
+Dado que el modelo se basa en estimaciones de parámetros sujetos a incertidumbre (por ejemplo, la demanda esperada $d_j = \mathbb{E}[D_j]$), es esencial evaluar la solución obtenida bajo múltiples escenarios plausibles y analizar su sensibilidad a perturbaciones en los datos. Este tipo de evaluación permite identificar soluciones no solo óptimas, sino también **estables y robustas ante errores en las estimaciones**, un aspecto crítico en contextos humanitarios donde la calidad de la información es limitada (@Snyder2006; @ShapiroDentchevaRuszczynski2021).
 
 3. **Elección de $M$ en big-M:** Si se usa la formulación $y_{ij}\le M x_i$ para acoplar variables (versus la formulación con $s_i^{\max}$), se recomienda elegir $M$ igual a una cota realista (ej. $\sum_j d_j$) para evitar degradación numérica; empero, la formulación (2.5) es preferible por su interpretación física y por estrechar el dominio factible.
 
@@ -551,7 +563,7 @@ $$
 - $j=3$: $y_{33}=40 = d_3$,
 - $j=4$: $y_{34}=25 = d_4$.
 
-Cobertura completa $\Rightarrow$ factible.
+Cobertura completa lo que implica que es factible.
 
 **Paso 3 — Cálculo del costo total**
 
@@ -563,33 +575,33 @@ $$
 
 Sustituyendo:
 
-- Término fijo: $f_1 x_1 + f_3 x_3 = 300 + 250 = 550$ (miles USD).
-- Transporte (USD): calcular cada contribución
+- Término fijo: $f_1 x_1 + f_3 x_3 = 300 + 250 = 550$ (miles unidades monetarias ).
+- Transporte (unidades monetarias): calcular cada contribución
   $$
   \begin{aligned}
   &8\cdot 30 = 240,\quad 20\cdot 20 = 400,\quad 20\cdot 10 = 200,\\
   &12\cdot 40 = 480,\quad 18\cdot 25 = 450.
   \end{aligned}
   $$
-  Suma transporte = $240+400+200+480+450 = 1770$ USD.
+  Suma transporte = $240+400+200+480+450 = 1770$ unidades monetarias.
 
 Total (homogeneizando unidades a miles USD):
 $$
-Z = 550\ (\text{miles}) + 1.770\ (\text{miles}) = 2.320\ \text{miles USD}.
+Z = 550\ (\text{miles}) + 1.770\ (\text{miles}) = 2.320\ \text{miles unidades monetarias}.
 $$
 
-**Interpretación:** la solución es factible y el costo cuantificado; variaciones en $d$, $c_{ij}$ o $f_i$ deben re-evaluarse mediante análisis de sensibilidad y, en contextos reales, mediante formulaciones estocásticas o robustas (@Snyder2006; @ShapiroDentchevaRuszczynski2021).
+**Interpretación:** la solución es factible y el costo cuantificado; variaciones en $d$, $c_{ij}$ o $f_i$ deben reevaluarse mediante análisis de sensibilidad y, en contextos reales, mediante formulaciones estocásticas o robustas (@Snyder2006; @ShapiroDentchevaRuszczynski2021).
 
 
 La especificación explícita de $f_i$, $c_{ij}$, $d_j$ y $s_i^{\max}$ permite no solo la construcción del problema determinista base sino también su extensión a modelos estocásticos (reemplazando $d_j$ por variables aleatorias $\tilde d_j$) o robustos (definiendo conjuntos de incertidumbre para $d_j$ y $c_{ij}$). La práctica recomendada (Lewis, 2003; Shapiro et al., 2021) es: (i) documentar fuentes y unidades de cada parámetro; (ii) fijar cotas realistas para $s_i^{\max}$ o $M$; y (iii) efectuar pruebas de sensibilidad sistemáticas antes de adoptar políticamente cualquier solución.
 
 ### **Definición formal del espacio factible $\mathcal{X}$**
 
-En optimización matemática, la **estructura del conjunto factible** determina en gran medida la naturaleza del problema, su complejidad computacional y la aplicabilidad de métodos de solución. Para el problema integrado de localización e inventario, el espacio factible es un **subconjunto híbrido** del producto cartesiano entre un espacio discreto y uno continuo. A continuación se define formalmente este conjunto y se analizan sus propiedades estructurales clave.
+En optimización matemática, la **estructura del conjunto factible** determina en gran medida la naturaleza del problema, su complejidad computacional y la aplicabilidad de métodos de solución. Para el problema integrado de localización e inventario, el espacio factible es un **subconjunto híbrido** puesto que es producto cartesiano entre un espacio discreto y uno continuo. A continuación se define formalmente este conjunto y se analizan sus propiedades estructurales clave.
 
 #### **Definición (Espacio factible).**
 
-Dado el conjunto de instalaciones potenciales $\mathcal{I}$, el conjunto de zonas de demanda $\mathcal{J}$, y los parámetros exógenos $d_j > 0$, $s_i^{\max} \in \mathbb{R}_+ \cup \{+\infty\}$, y una constante $M > 0$ suficientemente grande (por ejemplo, $M = \sum_{j \in \mathcal{J}} d_j$), el **espacio factible** del modelo se define como:
+Dado el conjunto de almacenes potenciales $\mathcal{I}$, el conjunto de zonas de demanda $\mathcal{J}$, y los parámetros exógenos $d_j > 0$, $s_i^{\max} \in \mathbb{R}_+ \cup \{+\infty\}$, y una constante $M > 0$ suficientemente grande (por ejemplo, $M = \sum_{j \in \mathcal{J}} d_j$), el **espacio factible** del modelo se define como:
 
 $$
 \mathcal{X} := 
@@ -765,7 +777,7 @@ $$
 \right\}.
 $$
 
-Para cada $\bar{x}$ tal que $\mathcal{Y}(\bar{x}) \ne \emptyset$, el subproblema interno es un **programa lineal** definido sobre un poliedro no vacío y acotado (ya que existen cotas inferiores por demanda y los coeficientes son no negativos). Por el teorema de existencia de mínimo en poliedros, el subproblema posee solución. Como el número de posibles $\bar{x}$ es finito, el mínimo global existe. ∎
+Para cada $\bar{x}$ tal que $\mathcal{Y}(\bar{x}) \ne \emptyset$, el subproblema interno es un **problema de programación lineal** definido sobre un poliedro no vacío y acotado (ya que existen cotas inferiores por demanda y los coeficientes son no negativos). Por el teorema de existencia de mínimo en poliedros, el subproblema posee solución. Como el número de posibles $\bar{x}$ es finito, el mínimo global existe. ∎
 
 
 #### **Ejemplo ilustrativo: evaluación explícita de $Z(x, y)$**
@@ -806,7 +818,7 @@ $$
 El valor mínimo se obtiene abriendo únicamente la instalación 1, con inventario despachado $12$ (mayor que la demanda), lo cual es admisible y económicamente óptimo bajo estos parámetros.
 
 
-La función objetivo $Z(x, y)$ formaliza el análisis de compromisos entre inversión en infraestructura, costos operativos e inventario preposicionado. Su estructura afín por partes y la no convexidad del dominio $\mathcal{X}$ definen un MILP clásico, aunque constituyen la base teórica necesaria para extensiones no lineales, robustas o estocásticas. La existencia garantizada de al menos una solución óptima justifica el enfoque algorítmico planteado en el Capítulo siguiente.
+La función objetivo $Z(x, y)$ formaliza el análisis de compromisos entre inversión en infraestructura, costos operativos e inventario preposicionado. Su estructura afín por partes y la no convexidad del dominio $\mathcal{X}$ definen un Mixed Integer Linear Programming (MILP) clásico, aunque constituyen la base teórica necesaria para extensiones no lineales, robustas o estocásticas. La existencia garantizada de al menos una solución óptima justifica el enfoque algorítmico planteado en el Capítulo siguiente.
 
 ##  Modelo clásico de lote económico (EOQ): bases y limitaciones
 
@@ -890,7 +902,7 @@ Además, en el óptimo, los costos de pedido y mantenimiento son iguales:
 $$
 \frac{K d}{Q^*} = \frac{h Q^*}{2} = \frac{1}{2} \sqrt{2 K d h},
 $$
-lo cual refleja un equilibrio estructural entre los dos componentes del costo—una característica distintiva del modelo EOQ.
+lo cual refleja un equilibrio estructural entre los dos componentes del costo, una característica distintiva del modelo EOQ.
 
 #### Ejemplo numérico ilustrativo
 
@@ -908,7 +920,7 @@ La derivación presentada demuestra que, bajo supuestos deterministas estrictos,
 
 ### Inadecuación en contextos humanitarios: demanda incierta, faltantes costosos
 
-El modelo EOQ, aunque elegante desde el punto de vista analítico, se fundamenta en una representación idealizada del entorno operativo que resulta profundamente inadecuada para aplicaciones en logística humanitaria. En este contexto, dos características críticas invalidan los supuestos centrales del EOQ: **la incertidumbre inherente en la demanda** y **el alto costo—frecuentemente no monetario—de los faltantes**. A continuación, se analizan estas limitaciones y se ilustra, mediante un contraste formal.
+El modelo EOQ, aunque elegante desde el punto de vista analítico, se fundamenta en una representación idealizada del entorno operativo que resulta profundamente inadecuada para aplicaciones en logística humanitaria. En este contexto, dos características críticas invalidan los supuestos centrales del EOQ: **la incertidumbre inherente en la demanda** y **el alto costo, frecuentemente no monetario de los faltantes**. A continuación, se analizan estas limitaciones y se ilustra, mediante un contraste formal.
 
 #### Incertidumbre en la demanda
 
@@ -1456,7 +1468,7 @@ Reconocer y modelar ambas fuentes de no linealidad es esencial para formular mod
 
 ###  Comparación cuantitativa con EOQ clásico: efecto descendente en $Q^*$
 
-Una crítica frecuente a la aplicación directa del modelo EOQ en contextos de alta incertidumbre—como la logística humanitaria—es que, al ignorar la variabilidad de la demanda y el costo asimétrico de los faltantes, **subestima sistemáticamente** el nivel de inventario necesario para una respuesta efectiva. Sin embargo, en ciertos regímenes paramétricos, una observación menos intuitiva emerge: **cuando el costo fijo de pedido $K$ es muy pequeño o nulo**, la solución del modelo EOQ puede, paradójicamente, sobreestimar el tamaño óptimo de inventario en comparación con un modelo estocástico bien calibrado. Este fenómeno—al que denominamos *efecto descendente en $Q^*$*—surge de la interacción entre la estructura de costos del EOQ y la penalización convexa de faltantes, y tiene implicaciones importantes para la planificación humanitaria, donde los "costos fijos" de pre-posicionamiento pueden ser marginales frente al riesgo de insatisfacción.
+Una crítica frecuente a la aplicación directa del modelo EOQ en contextos de alta incertidumbre, como la logística humanitaria es que, al ignorar la variabilidad de la demanda y el costo asimétrico de los faltantes, **subestima sistemáticamente** el nivel de inventario necesario para una respuesta efectiva. Sin embargo, en ciertos regímenes paramétricos, una observación menos intuitiva emerge: **cuando el costo fijo de pedido $K$ es muy pequeño o nulo**, la solución del modelo EOQ puede, paradójicamente, sobreestimar el tamaño óptimo de inventario en comparación con un modelo estocástico bien calibrado. Este fenómeno, al que denominamos *efecto descendente en $Q^*$*, surge de la interacción entre la estructura de costos del EOQ y la penalización convexa de faltantes, y tiene implicaciones importantes para la planificación humanitaria, donde los "costos fijos" de pre-posicionamiento pueden ser marginales frente al riesgo de insatisfacción.
 
 En esta sección, se establece rigurosamente la comparación entre el tamaño de lote EOQ clásico, $Q^{\text{EOQ}}$, y el tamaño óptimo del modelo extendido no lineal con penalización, $Q^\star$, demostrando las condiciones bajo las cuales $Q^\star < Q^{\text{EOQ}}$, y se ilustra el fenómeno mediante un ejemplo controlado.
 
@@ -1477,7 +1489,7 @@ Recordemos las dos funciones objetivo:
   $$
   donde, a diferencia del EOQ, el costo de adquisición $c Q$ sí influye en la optimalidad si $c > 0$ y $\phi$ es no lineal.
 
-Para fines comparativos, suprimimos el término fijo $K$ (irrelevante para la optimización) y asumimos que el modelo extendido no incluye un costo fijo por "pedido", ya que en contextos humanitarios el pre-posicionamiento es una decisión única, no recurrente. Esto es coherente con la literatura de inventario de un solo periodo (*single-period*), en contraste con el horizonte infinito del EOQ.
+Para fines comparativos, suprimimos el término fijo $K$ (irrelevante para la optimización) y asumimos que el modelo extendido no incluye un costo fijo por "pedido", ya que en contextos humanitarios el preposicionamiento es una decisión única, no recurrente. Esto es coherente con la literatura de inventario de un solo periodo (*single-period*), en contraste con el horizonte infinito del EOQ.
 
 Bajo esta interpretación, el **modelo extendido relevante para comparación** es:
 $$
