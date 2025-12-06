@@ -24,7 +24,7 @@ Ambas decisiones condicionan el desempeño global del sistema en términos de co
 
 Aunque la demanda en estos escenarios es inherentemente incierta, en este trabajo se adopta un **enfoque determinista robusto**, ampliamente fundamentado en la teoría de inventarios bajo demanda aleatoria (@HadleyWhitin1963). Este enfoque no modela la incertidumbre mediante variables aleatorias ni formulaciones estocásticas, sino que la **incorpora de forma paramétrica** mediante un **stock de seguridad fijo**, derivado de estimaciones de la variabilidad de la demanda.
 
-Específicamente, se asume que la demanda en cada zona $j\in\mathcal{J}$ posee un valor esperado $d_j>0$ y una desviación estándar $\sigma_j\geq0$, ambos tratados como **parámetros exógenos conocidos**. Dado un tiempo de reposición $L>0$ y un nivel de servicio objetivo $\alpha\in(0,1)$, se define el **factor de seguridad** como $Z=\Phi^{-1}(\alpha)$, donde $\Phi^{-1}$ denota la inversa de la función de distribución acumulada de la normal estándar. Aunque esta construcción tiene raíces probabilísticas, en el modelo propuesto **todos los elementos son deterministas**, y el término $Z\sigma\sqrt{L}$ se incorpora como un parámetro de ajuste que refleja la magnitud de la incertidumbre.
+Específicamente, se asume que la demanda en cada localidad $j\in\mathcal{J}$ posee un valor esperado $d_j>0$ y una desviación estándar $\sigma_j\geq0$, ambos tratados como **parámetros exógenos conocidos**. Dado un tiempo de reposición $L>0$ y un nivel de servicio objetivo $\alpha\in(0,1)$, se define el **factor de seguridad** como $Z=\Phi^{-1}(\alpha)$, donde $\Phi^{-1}$ denota la inversa de la función de distribución acumulada de la normal estándar. Aunque esta construcción tiene raíces probabilísticas, en el modelo propuesto **todos los elementos son deterministas**, y el término $Z\sigma\sqrt{L}$ se incorpora como un parámetro de ajuste que refleja la magnitud de la incertidumbre.
 
 Este enfoque permite formular un **modelo de optimización no lineal determinista**, cuya estructura matemática se preserva intacta frente a la complejidad computacional inherente a los modelos estocásticos. La ausencia de esperanzas, escenarios o variables de segundo nivel garantiza trazabilidad analítica, estabilidad numérica y compatibilidad con métodos de optimización eficientes para problemas con cotas, como se discutirá en capítulos posteriores.
 
@@ -169,20 +169,20 @@ lo que representa un **8.4% más de costo** respecto a la política óptima del 
 
 Este contraste demuestra que los modelos deterministas que ignoran la variabilidad de la demanda y los costos de faltante pueden producir políticas subóptimas o inadmisibles en contextos humanitarios, donde la insatisfacción de la demanda tiene consecuencias operativas y éticas relevantes.
 
+### Estructura híbrida: decisiones discretas (ubicación) y continuas (inventario)
 
+Los problemas integrados de localización e inventario pertenecen a la clase de **modelos de optimización mixta**, en los que coexisten variables discretas (por ejemplo, decisiones binarias de apertura de almacenes) y variables continuas (como flujos de asignación o niveles de inventario). Esta combinación induce una **estructura no convexa y no conexa en el conjunto factible**, debido a la naturaleza combinatoria de las variables binarias.  
 
-###  Estructura híbrida: decisiones discretas (ubicación) y continuas (inventario)
-
-Los problemas integrados de localización e inventario forman parte de una clase fundamental denominada *modelos híbridos* o *problemas de decisión mixta*, en los que coexisten variables discretas y continuas. Este tipo de modelos presenta una complejidad inherente debida a la ruptura topológica inducida por las variables binarias, lo cual conlleva dominios no convexos y no conexos, impidiendo la aplicación directa de técnicas clásicas basadas en convexidad (@wolsey1998; @Grossmann2002; @Daskin2013).
+Como argumentan @Wolsey1998, @Grossmann2002 y @Daskin2013, esta pérdida de convexidad impide la aplicación directa de técnicas clásicas de optimización convexa, tales como las condiciones de Karush–Kuhn–Tucker(KKT) para garantizar optimalidad global, y exige el uso de métodos especializados para problemas mixtos entero-continuos.
 
 ####  Formulación matemática del espacio de decisiones
 
 Sea:
 
 - $\mathcal{I} = \{1,\ldots,m\}$ el conjunto de ubicaciones posibles para almacenes,
-- $\mathcal{J} = \{1,\ldots,n\}$ las zonas de demanda,
+- $\mathcal{J} = \{1,\ldots,n\}$ las localidades de demanda,
 - $x = (x_1,\dots,x_m)^\top \in \{0,1\}^m$ las decisiones binarias de apertura,
-- $y = (y_{ij}) \in \mathbb{R}_+^{m\times n}$ los flujos desde almacenes a zonas,
+- $y = (y_{ij}) \in \mathbb{R}_+^{m\times n}$ los flujos desde almacenes a localidades,
 - $s = (s_1,\dots,s_m)^\top \in \mathbb{R}_+^m$ el inventario preposicionado.
 
 El espacio factible se define como:
@@ -201,20 +201,15 @@ $$
 \tag{2.2}
 $$
 
-La consecuencia directa es que condiciones de optimalidad de tipo KKT **no garantizan** optimalidad global (@LewisOverton2013).
+Aquí, $d_j > 0$ representa la demanda de la localidad $j$ y $M$ es un parámetro de gran magnitud. La tercera restricción impone un vínculo lógico: si $x_i = 0$, entonces $s_i = 0$ y, en consecuencia, $y_{ij} = 0$ para todo $j \in \mathcal{J}$.
 
-
-Aquí, $d_j > 0$ representa la demanda de la zona $j$ y $M$ es un parámetro de gran magnitud. La tercera restricción impone un vínculo lógico: si $x_i = 0$, entonces $s_i = 0$ y, en consecuencia, $y_{ij} = 0$ para todo $j \in \mathcal{J}$.
-
-Este acoplamiento, combinado con la naturaleza **binaria** de las variables $x_i$, implica que el conjunto factible $\mathcal{X}$ **no es convexo** como subconjunto del espacio $\mathbb{R}^{m+mn+m}$, donde las componentes corresponden, respectivamente, a las variables de apertura ($x$), flujos ($y$) e inventario ($s$).
-
-La no convexidad se debe exclusivamente a la **discreción** de las variables $x_i$: el promedio de dos puntos factibles con configuraciones distintas de infraestructura no es factible, ya que viola la condición $x_i \in \{0,1\}$. Esta propiedad, la ausencia de convexidad en el conjunto factible debido a variables enteras, es bien conocida en la teoría de optimización mixta ver @Bertsekas1999.
+Este acoplamiento, combinado con la naturaleza **binaria** de las variables $x_i$, impide que el conjunto factible $\mathcal{X}$ sea convexo. La no convexidad se debe exclusivamente a la **discreción** de las variables $x_i$: el promedio de dos puntos factibles con configuraciones distintas de infraestructura no es factible, ya que viola la condición $x_i \in \{0,1\}$. Esta propiedad, la ausencia de convexidad en el conjunto factible debido a variables enteras, es bien conocida en la teoría de optimización mixta ver @Bertsekas1999.
 
 > **Proposición (No convexidad).**  
 > El conjunto $\mathcal{X}$ definido en (2.2) **no es convexo**.  
 > *Demostración.* Considérense las configuraciones factibles con $x^{(1)} = (1,0,\dots,0)$, $s^{(1)} = (d^\top \mathbf{1}, 0, \dots, 0)^\top$, $y^{(1)}$ asignando toda la demanda al almacén 1, y análogamente $x^{(2)} = (0,1,0,\dots,0)$ con asignación al almacén 2. Ambos puntos pertenecen a $\mathcal{X}$. Sin embargo, su punto medio tiene $x_i = 1/2$ para $i=1,2$, lo cual viola $x_i \in \{0,1\}$. Por lo tanto, $\mathcal{X}$ no es convexo. ∎
 
-Debido a esta no convexidad, el problema **no pertenece a la clase de optimización convexa**, y en consecuencia **no es posible garantizar optimalidad global mediante condiciones de optimalidad basadas en el análisis convexo clásico**. En particular, las condiciones de Karush–Kuhn–Tucker **no están definidas para el problema completo**, ya que presuponen un conjunto factible convexo y variables continuas.
+Debido a esta no convexidad, el problema **no pertenece a la clase de optimización convexa**, y en consecuencia **no es posible garantizar optimalidad global mediante condiciones de optimalidad basadas en el análisis convexo clásico**.
 
 
 ####  Función objetivo y acoplamiento estructural
@@ -230,7 +225,12 @@ Z(x,y,s)
 \tag{2.3}
 $$
 
-Aunque la parte en variables continuas es lineal, el término $f_i(x_i)$ genera una **no linealidad discreta**; más aún, en la práctica humanitaria pueden existir economías de escala, accesibilidad variable o costos de apertura no lineales, reforzando la complejidad global del problema, entendida como la combinación de no convexidad, discreción y no linealidad que lo sitúa en la clase de problemas MINLP, de resolución computacionalmente exigente (@Grossmann2002).
+Aunque la parte en variables continuas es lineal, el término $f_i(x_i)$ introduce una **no linealidad discreta**, ya que $x_i \in \{0,1\}$. Esta discontinuidad, combinada con el acoplamiento lógico $s_i \leq M x_i$, da lugar a un **espacio de decisiones no convexo y combinatorio**.
+
+La dificultad computacional del problema se debe a la interacción entre variables discretas y continuas, que genera una estructura no separable y no convexa, característica de los **programas mixtos-enteros no lineales (MINLP)**. Como señalan @Grossmann2002, esta clase de problemas es computacionalmente exigente porque:
+- no se puede aplicar directamente la optimización convexa,
+- los métodos de enumeración son inviables en problemas de tamaño moderado,
+- y la no linealidad impide el uso de técnicas eficientes basadas en planos de corte o relajaciones lineales exactas.
 
 El sistema presenta una jerarquía:
 
@@ -292,18 +292,18 @@ El conjunto factible de este tipo de problemas, definido por la combinación de 
 
 ## Marco general de modelado: variables, parámetros y espacio de decisión
 
-### Conjuntos de índices: instalaciones potenciales $\mathcal{I}$ y zonas de demanda $\mathcal{J}$
+### Conjuntos de índices: alamcenes potenciales $\mathcal{I}$ y localidades de demanda $\mathcal{J}$
 
 En la formulación matemática del problema integrado de localización e inventario, los conjuntos de índices constituyen la base sobre la cual se definen las variables de decisión, los parámetros y las restricciones. Como se estableció en la Sección~2.1, denotamos por  
 
 - $\mathcal{I}$: el conjunto de **almacenes candidatos** para preposicionamiento, y  
-- $\mathcal{J}$: el conjunto de **zonas geográficas afectadas**.
+- $\mathcal{J}$: el conjunto de **localidades geográficas afectadas**.
 
 Estos conjuntos son finitos, disjuntos, es decir, $\mathcal{I} \cap \mathcal{J} = \varnothing$, y sus elementos desempeñan roles distintos en el modelo: los índices en $\mathcal{I}$ corresponden a *fuentes* de suministro, mientras que los de $\mathcal{J}$ representan *destinos* de demanda.
 
-La cardinalidad de $\mathcal{I}$, denotada $m = |\mathcal{I}|$, determina la dimensión del espacio de decisiones estratégicas. Dado que la apertura de cada almacén se modela mediante una variable binaria $x_i \in \{0,1\}$, el número total de configuraciones posibles de infraestructura es $2^m$. Esta **explosión combinatoria** implica que, incluso para tamaños modestos de $m$ (por ejemplo, $m = 30$), el espacio discreto contiene más de $10^9$ soluciones factibles. En consecuencia, métodos de enumeración exhaustiva son inviables, y se requieren algoritmos que exploten la **estructura matemática del problema**, es decir, su formulación como un problema de optimización con variables mixtas, función objetivo diferenciable y restricciones acopladas, para identificar soluciones óptimas o aproximadas en tiempo razonable.
+La cardinalidad de $\mathcal{I}$, denotada $m = |\mathcal{I}|$, determina la dimensión del espacio de decisiones estratégicas. Dado que el costo de apertura de cada almacén se modela mediante una variable binaria $x_i \in \{0,1\}$, el número total de configuraciones posibles de infraestructura es $2^m$. Esta **explosión combinatoria** implica que, incluso para tamaños modestos de $m$ (por ejemplo, $m = 30$), el espacio discreto contiene más de $10^9$ soluciones factibles. En consecuencia, métodos de enumeración exhaustiva son inviables, y se requieren algoritmos que exploten la **estructura matemática del problema**, es decir, su formulación como un problema de optimización con variables mixtas, función objetivo diferenciable y restricciones acopladas, para identificar soluciones óptimas o aproximadas en tiempo razonable.
 
-La interacción entre $\mathcal{I}$ y $\mathcal{J}$ se modela mediante variables de flujo $y_{ij} \geq 0$, que cuantifican la asignación de suministros desde el almacén $i$ a la zona $j$. Esta relación define una matriz de conectividad cuya densidad depende de factores operativos como la distancia, accesibilidad y capacidades logísticas, y que condiciona tanto la factibilidad como la complejidad del subproblema continuo asociado a una configuración fija de almacenes.
+La interacción entre $\mathcal{I}$ y $\mathcal{J}$ se modela mediante variables de flujo $y_{ij} \geq 0$, que cuantifican la asignación de suministros desde el almacén $i$ a la localidad $j$. Esta relación define una matriz de conectividad cuya densidad depende de factores operativos como la distancia, accesibilidad y capacidades logísticas, y que condiciona tanto la factibilidad como la complejidad del subproblema continuo asociado a una configuración fija de almacenes.
 
 
 #### **Ejemplo ilustrativo**
@@ -370,7 +370,7 @@ x_i =
 \end{cases}
 $$
 
-El vector $x = (x_i)_{i \in \mathcal{I}} \in \{0,1\}^m$ codifica una **configuración de infraestructura** del sistema logístico. Este vector pertenece al conjunto discreto $\{0,1\}^m$, que es no convexo, finito y tiene cardinalidad $2^m$.
+El vector $x = (x_i)_{i \in \mathcal{I}} \in \{0,1\}^m$ codifica una **configuración de apertura de almacenes** en la red de respuesta humanitaria. Este vector pertenece al conjunto discreto $\{0,1\}^m$, que es no convexo, finito y tiene cardinalidad $2^m$.
 
 #### **Definición  (Variables continuas de flujo).**
 
@@ -380,9 +380,9 @@ $$
 y_{ij} \in \mathbb{R}_+,
 $$
 
-que representa la cantidad de unidades asignadas desde la instalación $i$ a la zona de demanda $j$.
+que representa la cantidad de unidades asignadas desde la instalación $i$ a la localidad de demanda $j$.
 
-El tensor $y = (y_{ij})_{(i,j) \in \mathcal{I} \times \mathcal{J}} \in \mathbb{R}_+^{m \times n}$ describe la **estructura de asignación de suministros desde almacenes candidatos a zonas de demanda**, y pertenece a un espacio vectorial convexo, cerrado y de dimensión finita.
+El tensor $y = (y_{ij})_{(i,j) \in \mathcal{I} \times \mathcal{J}} \in \mathbb{R}_+^{m \times n}$ describe la **estructura de asignación de suministros desde almacenes candidatos a localidades de demanda**, y pertenece a un espacio vectorial convexo, cerrado y de dimensión finita.
 
 > **Observación  (Naturaleza híbrida del espacio de decisiones).**  
 > El espacio total de decisiones es el producto cartesiano  
@@ -440,7 +440,7 @@ Este ejemplo muestra que las variables binarias **activan o desactivan** subespa
 
 Las variables $x_i$ y $y_{ij}$ constituyen los grados de libertad fundamentales del modelo. Su naturaleza híbrida, discreta y continua, refleja la dualidad entre planeación estratégica (apertura de almacenes) y operación táctica (asignación de recursos). El acoplamiento lógico mediante restricciones big-M introduce no convexidad, justificando el uso de técnicas de optimización entera mixta. Las siguientes secciones integrarán estas variables en la función objetivo y en las **restricciones de balance de flujo**, es decir, en las condiciones que garantizan:
 
-(i) que la demanda en cada zona $j \in \mathcal{J}$ sea satisfecha y 
+(i) que la demanda en cada localidad $j \in \mathcal{J}$ sea satisfecha y 
 (ii) que el flujo total enviado desde un almacén $i \in \mathcal{I}$ no exceda su inventario disponible.
 
 
@@ -467,7 +467,7 @@ Para cada par $(i,j)\in\mathcal{I}\times\mathcal{J}$ definimos
 $$
 c_{ij}\in\mathbb{R}_{+},
 $$
-el **costo unitario de transportar** una unidad desde la instalación $i$ hasta la zona de demanda $j$. Requerimos
+el **costo unitario de transportar** una unidad desde la instalación $i$ hasta la localidad de demanda $j$. Requerimos
 $$
 c_{ij}\ge 0,\quad \forall i,j,
 $$
@@ -477,13 +477,16 @@ y denotamos la matriz $C:=[c_{ij}]_{i,j}\in\mathbb{R}_+^{m\times n}$. En context
 
 Para cada $j\in\mathcal{J}$, sea
 $$
-d_j\in\mathbb{R}_{++}
+d_j\in\mathbb{R}_{+}-{0}
 $$
-la **demanda esperada** en la zona $j$ durante el horizonte considerado. Adicionalmente definimos el vector $d=(d_j)_{j\in\mathcal{J}}$. En la formulación determinista de referencia usamos $d_j$ como estimador puntual (p. ej. esperanza), con la advertencia explícita de que su uso directo puede producir soluciones frágiles en colas de distribución como lo argumenta @Snyder2006. Notación:
+la **demanda esperada** en la localidad $j$ durante el horizonte considerado. Adicionalmente definimos el vector $d=(d_j)_{j\in\mathcal{J}}$. En la formulación determinista de referencia usamos $d_j$ como estimador puntual (p. ej. esperanza), con la advertencia explícita de que su uso directo puede producir soluciones frágiles en colas de distribución como lo argumenta @Snyder2006.
+
+Por notación:
 
 $$
-d_j>0,\quad \forall j,\qquad d\in\mathbb{R}_{++}^n.
+d_j>0,\quad \forall j,\qquad d\in(\mathbb{R}_{+}-{0})^n.
 $$
+
 
 #### Capacidades de almacenamiento
 
@@ -518,8 +521,8 @@ Dado que el modelo se basa en estimaciones de parámetros sujetos a incertidumbr
 Tomemos la instancia didáctica ya utilizada en las secciones previas:
 
 - $\mathcal{I}=\{1,2,3\}$, $\mathcal{J}=\{1,2,3,4\}$.
-- Costos fijos (miles USD): $f=(300,400,250)$.
-- Matriz $C=[c_{ij}]$ (USD/unidad):
+- Costos fijos (miles unidades monetarias): $f=(300,400,250)$.
+- Matriz $C=[c_{ij}]$ (unidades monetarias/unidad):
 
 $$
 C=
@@ -541,7 +544,7 @@ $$
   \end{aligned}
   $$
 
-**Paso 1 — Verificación de capacidades (ecuación (2.5)):**
+**Paso 1 — Comprobación de que se cumple la restricción de capacidades (ecuación (2.5)):**
 
 - Para $i=1$:
   $$
@@ -556,7 +559,7 @@ $$
   \sum_j y_{3j}=10+0+40+25=75 \le 90\cdot 1 = 90\quad\checkmark.
   $$
 
-**Paso 2 — Verificación de cobertura de demanda:**
+**Paso 2 — Comprobación de que se cumple la cobertura de la demanda:**
 
 - $j=1$: $y_{11}+y_{31}=30+10=40 = d_1$,
 - $j=2$: $y_{12}=20 = d_2$,
@@ -585,7 +588,7 @@ Sustituyendo:
   $$
   Suma transporte = $240+400+200+480+450 = 1770$ unidades monetarias.
 
-Total (homogeneizando unidades a miles USD):
+Total (homogeneizando unidades a miles unidades monetarias):
 $$
 Z = 550\ (\text{miles}) + 1.770\ (\text{miles}) = 2.320\ \text{miles unidades monetarias}.
 $$
@@ -601,7 +604,7 @@ En optimización matemática, la **estructura del conjunto factible** determina 
 
 #### **Definición (Espacio factible).**
 
-Dado el conjunto de almacenes potenciales $\mathcal{I}$, el conjunto de zonas de demanda $\mathcal{J}$, y los parámetros exógenos $d_j > 0$, $s_i^{\max} \in \mathbb{R}_+ \cup \{+\infty\}$, y una constante $M > 0$ suficientemente grande (por ejemplo, $M = \sum_{j \in \mathcal{J}} d_j$), el **espacio factible** del modelo se define como:
+Dado el conjunto de almacenes potenciales $\mathcal{I}$, el conjunto de localidades de demanda $\mathcal{J}$, y los parámetros exógenos $d_j > 0$, $s_i^{\max} \in \mathbb{R}_+ \cup \{+\infty\}$, y una constante $M > 0$ suficientemente grande (por ejemplo, $M = \sum_{j \in \mathcal{J}} d_j$), el **espacio factible** del modelo se define como:
 
 $$
 \mathcal{X} := 
@@ -618,7 +621,7 @@ $$
 
 Las tres familias de restricciones tienen interpretaciones operativas precisas:
 
-- **(i) Cobertura de demanda**: cada zona $j$ debe recibir al menos su demanda esperada $d_j$.
+- **(i) Cobertura de demanda**: cada localidad $j$ debe recibir al menos su demanda esperada $d_j$.
 - **(ii) Capacidad condicionada**: el flujo total saliente de la instalación $i$ no puede exceder su capacidad máxima si está abierta ($x_i = 1$).  
 - **(iii) Activación lógica fuerte**: garantiza $y_{ij}=0$ cuando $x_i=0$, fortaleciendo las relajaciones lineales.
 
@@ -843,7 +846,7 @@ El modelo EOQ se fundamenta en los siguientes supuestos deterministas, los cuale
 
 6. **Reposición instantánea y lote único**: Cada vez que el inventario llega a cero, se emite un pedido de tamaño fijo $Q > 0$, el cual es recibido íntegramente y de forma inmediata, restableciendo el inventario al nivel $Q$.
 
-Dado este conjunto de hipótesis, la evolución del inventario $x(t)$ en el tiempo sigue una trayectoria determinista en forma de diente de sierra: decrece linealmente desde $Q$ hasta $0$ a una tasa constante $d$, y luego se reabastece instantáneamente a $Q$. El periodo del ciclo es entonces $T = Q/d$. Estos supuestos, si bien facilitan el análisis matemático, imponen una estructura rígida que limita severamente la aplicabilidad del modelo en contextos donde la demanda es estocástica, los tiempos de entrega son inciertos o los faltantes son inevitables—situaciones comunes en operaciones humanitarias.
+Dado este conjunto de hipótesis, la evolución del inventario $x(t)$ en el tiempo sigue una trayectoria determinista en forma de diente de sierra: decrece linealmente desde $Q$ hasta $0$ a una tasa constante $d$, y luego se reabastece instantáneamente a $Q$. El periodo del ciclo es entonces $T = Q/d$. Estos supuestos, si bien facilitan el análisis matemático, imponen una estructura rígida que limita severamente la aplicabilidad del modelo en contextos donde la demanda es estocástica, los tiempos de entrega son inciertos o los faltantes son inevitables, situaciones comunes en operaciones humanitarias.
 
 La formulación matemática del modelo EOQ se deriva directamente de estos supuestos, como se detalla en la sección siguiente. No obstante, ya en este punto es pertinente señalar que la idealización determinista del EOQ contrasta fuertemente con las condiciones operativas en logística humanitaria, donde la incertidumbre en la demanda y la criticidad de los faltantes exigen modelos más robustos y flexibles.
 
@@ -906,13 +909,13 @@ lo cual refleja un equilibrio estructural entre los dos componentes del costo, u
 
 #### Ejemplo numérico ilustrativo
 
-Consideremos un producto con los siguientes parámetros: demanda anual $d = 1200$ unidades/año, costo fijo de pedido $K = 100$ USD/pedido, y costo unitario de mantenimiento $h = 5$ MXN/unidad/año. El tamaño óptimo de pedido es:
+Consideremos un producto con los siguientes parámetros: demanda anual $d = 1200$ unidades/año, costo fijo de pedido $K = 100$ unidades monetarias/pedido, y costo unitario de mantenimiento $h = 5$ unidades monetarias/unidad/año. El tamaño óptimo de pedido es:
 $$
 Q^* = \sqrt{\frac{2 \cdot 100 \cdot 1200}{5}} = \sqrt{48\,000} \approx 219.09 \text{ unidades}.
 $$
 El número óptimo de pedidos anuales es $d / Q^* \approx 5.48$, y el costo total anual mínimo es:
 $$
-C(Q^*) = \sqrt{2 \cdot 100 \cdot 1200 \cdot 5} = \sqrt{1\,200\,000} \approx 1095.45 \text{ MXN/año}.
+C(Q^*) = \sqrt{2 \cdot 100 \cdot 1200 \cdot 5} = \sqrt{1\,200\,000} \approx 1095.45 \text{ unidades monetarias/año}.
 $$
 Este ejemplo, aunque sencillo, ilustra la sensibilidad del modelo a los parámetros de entrada y su dependencia crítica en la exactitud de las estimaciones de $d$, $K$ y $h$—un aspecto que se vuelve problemático cuando dichos parámetros son inciertos, como ocurre en entornos humanitarios.
 
@@ -955,7 +958,7 @@ Esta formulación rompe la linealidad que subyace tanto al EOQ como al modelo de
 
 #### Ejemplo ilustrativo: EOQ vs. realidad humanitaria
 
-Supongamos que un organismo humanitario debe pre-posicionar kits de emergencia antes de la temporada de huracanes en una región costera. Se estima que la demanda $\tilde{D}$ sigue una distribución log-normal con media $\mu_D = 1200$ y desviación estándar $\sigma_D = 600$ (coeficiente de variación = 0.5). Si se aplicara ingenuamente el EOQ con $d = \mu_D = 1200$, $K = 100~\text{MXN}$, $h = 5~\text{MXN/unidad/año}$, se obtendría:
+Supongamos que un organismo humanitario debe pre-posicionar kits de emergencia antes de la temporada de huracanes en una región costera. Se estima que la demanda $\tilde{D}$ sigue una distribución log-normal con media $\mu_D = 1200$ y desviación estándar $\sigma_D = 600$ (coeficiente de variación = 0.5). Si se aplicara ingenuamente el EOQ con $d = \mu_D = 1200$, $K = 100~\text{unidades monetarias}$, $h = 5~\text{unidades monetarias/unidad/año}$, se obtendría:
 $$
 Q^{\text{EOQ}} = \sqrt{\frac{2 \cdot 100 \cdot 1200}{5}} \approx 219 \text{ unidades}.
 $$
@@ -963,7 +966,7 @@ Sin embargo, la probabilidad de faltante bajo este nivel de inventario es:
 $$
 \mathbb{P}(\tilde{D} > 219) \approx 1 - F_D(219) \approx 0.97,
 $$
-es decir, **el 97 % de los escenarios conducen a faltantes severos**. Si, en cambio, se adopta un enfoque de *newsvendor* con un costo de faltante conservador $p = 100~\text{MXN/unidad}$ (reflejando impacto indirecto), se obtiene:
+es decir, **el 97 % de los escenarios conducen a faltantes severos**. Si, en cambio, se adopta un enfoque de *newsvendor* con un costo de faltante conservador $p = 100~\text{unidades monetarias/unidad}$ (reflejando impacto indirecto), se obtiene:
 $$
 F_D(Q^{\text{NV}}) = \frac{p}{p + h} \approx \frac{100}{105} \approx 0.952,
 $$
@@ -987,7 +990,7 @@ Esta sección motiva la necesidad de una extensión no lineal del modelo clásic
 
 #### Formulación estocástica con penalización no lineal
 
-Sea $\tilde{D}$ una variable aleatoria no negativa que representa la demanda durante el periodo de planificación, definida sobre un espacio de probabilidad $(\Omega, \mathcal{F}, \mathbb{P})$. Denotemos por $Q \geq 0$ la cantidad de inventario pre-posicionado (decisión de primer estadio). El costo total asociado a $Q$ se descompone en:
+Sea $\tilde{D}$ una variable aleatoria no negativa que representa la **demanda que se observa tras un desastre**, definida sobre un espacio de probabilidad $(\Omega, \mathcal{F}, \mathbb{P})$. Denotemos por $Q \geq 0$ la cantidad de inventario preposicionado (decisión de primer estadio). El costo total asociado a $Q$ se descompone en:
 
 - Costo fijo de preparación: $K$ (independiente de $Q$),  
 - Costo de adquisición: $c Q$,  
@@ -1029,7 +1032,7 @@ Esta formulación no solo penaliza los faltantes de forma no lineal, sino que ta
 
 #### Ejemplo numérico: impacto de la aversión al riesgo
 
-Supongamos $\tilde{D} \sim \text{Lognormal}(\mu = 6.8, \sigma = 0.6)$, lo que implica $\mathbb{E}[\tilde{D}] \approx 1200$, $\text{Desv. estándar} \approx 800$. Considérese $\phi(z) = z^{1.5}$, $c = 10~\text{MXN/unidad}$, $h = 2~\text{MXN/unidad}$, y $\beta = 0.95$.
+Supongamos $\tilde{D} \sim \text{Lognormal}(\mu = 6.8, \sigma = 0.6)$, lo que implica $\mathbb{E}[\tilde{D}] \approx 1200$, $\text{Desv. estándar} \approx 800$. Considérese $\phi(z) = z^{1.5}$, $c = 10~\text{unidades monetarias/unidad}$, $h = 2~\text{unidades monetarias/unidad}$, y $\beta = 0.95$.
 
 1. **Solución basada en valor esperado**:  
    Se resuelve $\min_Q \mathbb{E}[C(Q, \tilde{D})]$ numéricamente (por integración Monte Carlo o cuadratura). Supongamos que el óptimo es $Q^{\text{E}} \approx 1850$.
@@ -1114,9 +1117,9 @@ Esta ecuación no admite, en general, una solución cerrada, pero su estructura 
 Consideremos un caso concreto para ilustrar el cálculo de $Z(Q)$ y su minimización. Supongamos:
 
 - $\tilde{D} \sim \text{Uniforme}(a=800, b=1600)$,
-- $K = 200~\text{MXN}$,
-- $c = 15~\text{MXN/unidad}$,
-- $h = 3~\text{MXN/unidad}$,
+- $K = 200~\text{unidades monetarias}$,
+- $c = 15~\text{unidades monetarias/unidad}$,
+- $h = 3~\text{unidades monetarias/unidad}$,
 - $\phi(z) = z^2$ (penalización cuadrática, convexa, $\phi'(z) = 2z$).
 
 **Paso 1: Expresar $Z(Q)$ por tramos**
@@ -1341,7 +1344,7 @@ $$
 
 Esto no es un objetivo de optimización, sino una **restricción de desempeño**. Para incorporarla en el modelo, se puede usar el método de penalización de Lagrange: minimizar $Z_{\beta_C}(Q)$ equivale a resolver el problema restringido para un $\beta_C$ que actúa como multiplicador de Lagrange.
 
-Sea $\tilde{D} \sim \text{Uniforme}(1000, 2000)$, $c = 12~\text{MXN/unidad}$, $h = 4~\text{MXN/unidad}$, y $\psi(z) = z^2$. Entonces:
+Sea $\tilde{D} \sim \text{Uniforme}(1000, 2000)$, $c = 12~\text{unidades monetarias/unidad}$, $h = 4~\text{unidades monetarias/unidad}$, y $\psi(z) = z^2$. Entonces:
 $$
 Z_{\beta_C}(Q) = K + 12Q + 4 \int_{1000}^Q (Q - d) \frac{1}{1000} \, dd + \beta_C \int_Q^{2000} (d - Q)^2 \frac{1}{1000} \, dd,
 $$
@@ -1524,10 +1527,10 @@ El caso más revelador ocurre cuando **$K \to 0$**: entonces $Q^{\text{EOQ}} \to
 
 Consideremos los siguientes parámetros:
 - $\tilde{D} \sim \text{Normal}(\mu_D = 1000, \sigma_D = 300)$,
-- $c = 20~\text{MXN/unidad}$,
-- $h = 2~\text{MXN/unidad}$,
-- $p = 25~\text{MXN/unidad}$ (penalización lineal),
-- $K = 1000~\text{MXN}$ (costo fijo "administrativo" asignado arbitrariamente).
+- $c = 20~\text{unidades monetarias/unidad}$,
+- $h = 2~\text{unidades monetarias/unidad}$,
+- $p = 25~\text{unidades monetarias/unidad}$ (penalización lineal),
+- $K = 1000~\text{unidades monetarias}$ (costo fijo "administrativo" asignado arbitrariamente).
 
 **Paso 1: Solución EOQ**
 $$
@@ -1548,9 +1551,9 @@ Aquí, $Q^\star > Q^{\text{EOQ}}$, como se esperaría.
 **Paso 3: Modificación para inducir el efecto descendente**
 
 Ahora supongamos que el costo unitario es más alto, y la penalización más baja:
-- $c = 24~\text{MXN/unidad}$,
-- $p = 25~\text{MXN/unidad}$ (penalización marginal apenas positiva),
-- $K = 5000~\text{MXN}$ (costo fijo inflado por burocracia percibida).
+- $c = 24~\text{unidades monetarias/unidad}$,
+- $p = 25~\text{unidades monetarias/unidad}$ (penalización marginal apenas positiva),
+- $K = 5000~\text{unidades monetarias}$ (costo fijo inflado por burocracia percibida).
 
 EOQ:
 $$
