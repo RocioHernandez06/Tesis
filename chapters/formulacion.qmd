@@ -76,27 +76,27 @@ $$ {#eq-PBHE_completa}
 **1. Balance de inventario:**
 $$
 \sum_j x_{ij} \leq I_i \quad \forall i 
-$${#eq-PBHE_completa}
+$${#eq-1b}
 
 **2. Cobertura de la demanda:**
 $$
 \sum_i x_{ij} + z_j = s_j \quad \forall j 
-$${#eq-PBHE_completa}
+$${#eq-2c}
 
 **3. Activación condicional de almacenes:**
 $$
 x_{ij} \leq M \cdot y_i \quad \forall i,j 
-$${#eq-PBHE_completa}
+$${#eq-3a}
 
 **4. Capacidad máxima de almacenamiento:**
 $$
 I_i \leq C_i \cdot y_i \quad \forall i 
-$${#eq-PBHE_completa}
+$${#eq-4c}
 
 **5. Fill rate por zona:**
 $$
 FR_j = \frac{\sum_i x_{ij}}{s_j} \quad \forall j 
-$${#eq-PBHE_completa}
+$${#eq-5f}
 
 
 
@@ -106,7 +106,7 @@ Para estimar el riesgo de escasez, se utiliza la función de pérdida asociada a
 
 $$
 E_{z_i}^p = z \big( \Phi(z)-1 \big) + \phi(z) 
-$${#eq-PBHE_completa}
+$${#eq-E_z}
 
 donde:
 
@@ -125,19 +125,19 @@ Esta función es ampliamente utilizada en modelos de localización–inventario 
 La convexidad estricta de la función de pérdida,
 $$
 \frac{\partial^2 E_z^p}{\partial z^2} = \phi(z) > 0,
-$${#eq-PBHE_completa}
+$${#eq-phi}
 garantiza la unicidad del minimizador en problemas de optimización bajo incertidumbre. 
 
 Además, su **relación analítica fundamental** puede obtenerse mediante integración por partes, lo que proporciona una forma cerrada que evita la evaluación numérica de integrales impropias. Su comportamiento asintótico satisface:
 $$
 E_z^p \sim \frac{\phi(z)}{z}, \quad z \to \infty,
-$${#eq-PBHE_completa}
+$${#eq-E_phi}
 mostrando decaimiento superexponencial pero manteniendo sensibilidad a eventos extremos.
 
 **Aplicación en el modelo propuesto:** se minimiza la pérdida esperada total
 $$
 \sum_i w_i E_{z_i}^p, \quad z_i = \frac{\mu_i - d_i}{\sigma_i},
-$${#eq-PBHE_completa}
+$${#eq-perdida}
 transformando el problema de cobertura en un programa estocástico con penalización asimétrica. Esta no linealidad refleja que las consecuencias humanitarias aumentan de manera más que proporcional cuando la cobertura es insuficiente.
 
 
@@ -190,7 +190,7 @@ El inventario recomendado para cada almacén se determina mediante la siguiente 
 
 $$
 I_i = \mu_i + z_{\alpha} \cdot \sigma_i 
-$${#eq-PBHE_completa}
+$${#eq-inv}
 
 donde:
 
@@ -208,7 +208,7 @@ Para optimizar la reposición de inventario y equilibrar el costo de ordenar ($K
 
 $$
 Q = \sqrt{\frac{2DK}{h}} 
-$${#eq-PBHE_completa}
+$${#eq-EOQ}
 
 donde:
 
@@ -226,7 +226,7 @@ Dado que los desastres suelen generar retrasos en la reposición y alteraciones 
 
 $$
 R = dL + z_{\alpha} \cdot \sigma_L 
-$${#eq-PBHE_completa}
+$${#eq-pr}
 
 donde $\sigma_L$ representa la desviación estándar de la demanda durante el tiempo de entrega.
 
@@ -240,7 +240,7 @@ El nivel de servicio global mide la proporción de la demanda total que fue efec
 
 $$
 FR = \frac{\sum_{j} \sum_i x_{ij}}{\sum_j s_j} 
-$${#eq-PBHE_completa}
+$${#eq-FR}
 
 Un *fill rate* elevado indica una mayor cobertura de las necesidades, mientras que valores bajos sugieren fallas en la asignación de recursos o limitaciones estructurales de la red.
 

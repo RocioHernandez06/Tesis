@@ -1,10 +1,11 @@
 project:
   type: book
-  output-dir: _book 
-execute: 
+  output-dir: _book
+
+execute:
   freeze: auto
 
-website: 
+website:
   favicon: FCFMLOGO.png
   reader-mode: true
   search:
@@ -28,7 +29,7 @@ book:
     border: true
     search: true
   repo-url: https://github.com/RocioHernandez06/Tesis
-  page-navigation: true 
+  page-navigation: true
   chapters:
     - index.qmd
     - chapters/Introduccion.qmd
@@ -39,20 +40,23 @@ book:
     - chapters/chiapas.qmd
     - referencias.qmd
 
-comments: 
+comments:
   hypothesis: true
 
 bibliography: references.bib
 
 number-sections: true
+
 crossref:
   chapters: true
   fig-prefix: "Figura"
   tbl-prefix: "Tabla"
+
 fig-cap-location: bottom
 tbl-cap-location: top
 
 format:
+
   html:
     theme:
       light: flatly
@@ -60,7 +64,7 @@ format:
     highlight-style: a11y
     lang: es
     html-math-method: mathjax
-    include-in-header: mathjax-config.html 
+    include-in-header: mathjax-config.html
     grid:
       sidebar-width: 300px
       body-width: 950px
@@ -71,6 +75,7 @@ format:
     toc: true
     toc-location: right
     toc-expand: true
+
   pdf:
     lang: es
     include-in-header:
@@ -79,8 +84,7 @@ format:
           \usepackage{graphicx}
           \usepackage{float}
           \usepackage{amsmath}
-    template-partials:
-      - before-body.tex
+    include-before-body: portada.tex  
     documentclass: scrreprt
     papersize: us-letter
     titlegraphic: FCFMLOGO.png
@@ -92,6 +96,7 @@ format:
     code-fold: true
     fig-align: center
     fig-cap-location: bottom
+    template: default
 
   epub:
     cover-image: FCFMLOGO.png

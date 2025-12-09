@@ -1,15 +1,28 @@
-\usepackage{amsmath}
-\numberwithin{equation}{chapter} % reinicia numeración por sección/capítulo
-\renewcommand{\theequation}{\thesection.\arabic{equation}}
-\usepackage{upgreek}
+% Paquetes matemáticos
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{upgreek}
+
+% Cargar TikZ correctamente
+\usepackage{tikz}
+
+% Numeración de ecuaciones compatible con scrreprt
+\numberwithin{equation}{section}
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+
+% Caja punteada
 \newcommand{\dashedbox}[1]{
   \begin{tikzpicture}
-    \node[draw, dashed, rounded corners=5pt, inner sep=10pt] {
-      \begin{minipage}{0.8\textwidth} % Establece el ancho del minipage
+    \node[
+      draw,
+      dashed,
+      rounded corners=5pt,
+      inner sep=10pt
+    ]{
+      \begin{minipage}{0.9\textwidth}
         #1
       \end{minipage}
     };
   \end{tikzpicture}
 }
+
