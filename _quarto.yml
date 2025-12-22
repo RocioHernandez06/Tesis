@@ -76,7 +76,7 @@ format:
     toc-location: right
     toc-expand: true
 
-  pdf:
+  pdf: 
     lang: es
     include-in-header:
       - packa.tex
@@ -84,7 +84,8 @@ format:
           \usepackage{graphicx}
           \usepackage{float}
           \usepackage{amsmath}
-    include-before-body: portada.tex  
+    template-partials:
+      - before-body.tex  
     documentclass: scrreprt
     papersize: us-letter
     titlegraphic: FCFMLOGO.png
@@ -96,7 +97,6 @@ format:
     code-fold: true
     fig-align: center
     fig-cap-location: bottom
-    template: default
 
   epub:
     cover-image: FCFMLOGO.png

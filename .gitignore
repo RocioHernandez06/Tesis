@@ -14,3 +14,5 @@ venv/
 chapters/cache/
 
 /.quarto/
+
+**/*.quarto_ipynb

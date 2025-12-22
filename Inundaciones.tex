@@ -187,21 +187,34 @@
  
 
 
-\usepackage{amsmath}
-\numberwithin{equation}{chapter} % reinicia numeración por sección/capítulo
-\renewcommand{\theequation}{\thesection.\arabic{equation}}
-\usepackage{upgreek}
+% Paquetes matemáticos
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{upgreek}
+
+% Cargar TikZ correctamente
+\usepackage{tikz}
+
+% Numeración de ecuaciones compatible con scrreprt
+\numberwithin{equation}{section}
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+
+% Caja punteada
 \newcommand{\dashedbox}[1]{
   \begin{tikzpicture}
-    \node[draw, dashed, rounded corners=5pt, inner sep=10pt] {
-      \begin{minipage}{0.8\textwidth} % Establece el ancho del minipage
+    \node[
+      draw,
+      dashed,
+      rounded corners=5pt,
+      inner sep=10pt
+    ]{
+      \begin{minipage}{0.9\textwidth}
         #1
       \end{minipage}
     };
   \end{tikzpicture}
 }
+
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{amsmath}
@@ -267,7 +280,7 @@
 \title{Inundaciones}
 \author{Yulissa del Rocío Hernández Vázquez \and Asesor: Dr.~Yofre
 Hernán García Gómez}
-\date{2025-12-05}
+\date{2025-12-22}
 \begin{document}
 \begin{titlepage}
 \hspace{-1.7cm} %Este comando es para mandar a la izquierda ;)
@@ -302,7 +315,7 @@ Hernán García Gómez}
 \begin{minipage}[t][0.95\textheight][c]{0.76\textwidth}
 
             \begin{center}
-                {\Large\bfseries Ubicacion de almacenes preposicionados e inventario humanitario}\\[2cm]
+                {\Large\bfseries Ubicación de almacenes preposicionados e inventario humanitario}\\[2cm]
                 \textsc{\huge \textbf{T\, E\, S\, I\, S}}\\[1.5cm]
                 \textsc{\large QUE PARA OBTENER EL TÍTULO DE:}\\[0.3cm]
                 \textbf{\textsc{LICENCIADA EN MATEMATICAS APLICADAS}}\\[1.5cm]
@@ -544,19 +557,31 @@ Este resultado depende de la \textbf{deterministicidad} y la
 \subsubsection{Incapacidad del EOQ para capturar
 riesgo}\label{incapacidad-del-eoq-para-capturar-riesgo}
 
-Si la demanda durante el tiempo de entrega es
-\(D_L\sim\mathcal{N}(\mu_L,\sigma_L^2)\), el inventario de seguridad
-requiere:
+Aunque la demanda en contextos humanitarios es inherentemente
+estocástica, en este trabajo se adopta un enfoque determinista robusto,
+ampliamente utilizado en la teoría de inventarios bajo incertidumbre
+(Porteus (2002), Zipkin (2000)). Bajo los supuestos clásicos de demanda
+normal durante el tiempo de entrega, política de revisión continua y
+costo lineal por faltante, el costo total esperado puede aproximarse
+mediante una función determinista del tamaño de lote \(Q\). Esta
+aproximación incorpora los efectos de la incertidumbre a través del
+inventario de seguridad \(Z_\alpha \sigma_L\) y la penalización esperada
+por faltantes, pero su optimización se realiza como un problema
+determinista.
 
-\[
-\mathbb{P}(D_L\leq Q/2 + Z_\alpha\sigma_L)\geq \alpha.
+Si la demanda durante el tiempo de entrega se modela como
+\(D_L \sim \mathcal{N}(\mu_L, \sigma_L^2)\), el nivel de inventario debe
+satisfacer: \[
+\mathbb{P}(D_L \leq Q/2 + Z_\alpha \sigma_L) \geq \alpha,
 \]
 
-Con ello, la función de costo extendida se vuelve:
+lo que justifica la inclusión del término \(Z_\alpha \sigma_L\) en la
+función de costo. Con ello, la función de costo extendida adopta la
+forma: Con ello, la función de costo extendida se vuelve:
 
-\[
-Z(Q)=\frac{D}{Q}S+\left(\frac{Q}{2}+Z_\alpha\sigma_L\right)H+DC+\frac{D}{Q}\beta C. \tag{2.1}
-\]
+\begin{equation}\phantomsection\label{eq-Zux28qux29}{
+Z(Q)=\frac{D}{Q}S+\left(\frac{Q}{2}+Z_\alpha\sigma_L\right)H+DC+\frac{D}{Q}\beta C. 
+}\end{equation}
 
 Esta función \textbf{no es convexa globalmente} cuando \(\sigma_L\)
 depende de \(Q\), como ocurre cuando existe congestión en transporte o
@@ -734,7 +759,7 @@ Sea:
 
 El espacio factible se define como:
 
-\[
+\begin{equation}\phantomsection\label{eq-EF}{
 \mathcal{X} := \left\{ (x, y, s) \;\middle|\;
 \begin{aligned}
 & x_i \in \{0,1\}, && \forall i \in \mathcal{I}, \\
@@ -745,8 +770,7 @@ El espacio factible se define como:
 & s_i \le M x_i,   && \forall i \in \mathcal{I}
 \end{aligned}
 \right\}.
-\tag{2.2}
-\]
+}\end{equation}
 
 Aquí, \(d_j > 0\) representa la demanda de la localidad \(j\) y \(M\) es
 un parámetro de gran magnitud. La tercera restricción impone un vínculo
@@ -786,14 +810,13 @@ estructural}\label{funciuxf3n-objetivo-y-acoplamiento-estructural}
 
 El costo total del sistema se modela como:
 
-\[
+\begin{equation}\phantomsection\label{eq-Zux28xysux29}{
 Z(x,y,s) 
 = 
 \underbrace{\sum_{i\in\mathcal{I}} f_i(x_i)}_{\text{Costos fijos}}
 + \underbrace{\sum_{i\in\mathcal{I}} h_i s_i}_{\text{Costos de inventario}}
 + \underbrace{\sum_{i\in\mathcal{I}}\sum_{j\in\mathcal{J}} c_{ij} y_{ij}}_{\text{Costos de transporte}}.
-\tag{2.3}
-\]
+}\end{equation}
 
 Aunque la parte en variables continuas es lineal, el término
 \(f_i(x_i)\) introduce una \textbf{no linealidad discreta}, ya que
@@ -1137,9 +1160,9 @@ factibilidad}, que garantizan que no se asignen flujos desde
 instalaciones no abiertas. Para todo \(i \in \mathcal{I}\) y
 \(j \in \mathcal{J}\):
 
-\[
-y_{ij} \le M x_i, \tag{2.4}
-\]
+\begin{equation}\phantomsection\label{eq-y_ij}{
+y_{ij} \le M x_i,
+}\end{equation}
 
 donde \(M > 0\) es una constante suficientemente grande (por ejemplo,
 \(M = \sum_{j \in \mathcal{J}} d_j\)). La restricción (2.4) es una
@@ -1292,9 +1315,9 @@ s_i^{\max}\in\mathbb{R}_{+}\cup\{+\infty\}.
 La restricción de capacidad se escribe, asociada a la lógica de
 activación \(x_i\):
 
-\[
-\sum_{j\in\mathcal{J}} y_{ij} \le s_i^{\max} x_i,\qquad \forall i\in\mathcal{I}. \tag{2.5}
-\]
+\begin{equation}\phantomsection\label{eq-restriccion}{
+\sum_{j\in\mathcal{J}} y_{ij} \le s_i^{\max} x_i,\qquad \forall i\in\mathcal{I}.
+}\end{equation}
 
 En ausencia de un tope operativo se toma \(s_i^{\max}=+\infty\) (modelo
 no capacitado); en práctica real \(s_i^{\max}\) suele venir de
@@ -1524,7 +1547,7 @@ simplemente por \(y_{ij} \le M x_i\). La estructura analítica permanece
 intacta.
 \end{quote}
 
-\subsubsection{\texorpdfstring{\textbf{Propiedades estructurales del
+\subsection{\texorpdfstring{\textbf{Propiedades estructurales del
 espacio
 \(\mathcal{X}\)}}{Propiedades estructurales del espacio \textbackslash mathcal\{X\}}}\label{propiedades-estructurales-del-espacio-mathcalx}
 
@@ -1697,7 +1720,7 @@ incorporar factores no monetarios (tiempo, riesgo, deterioro, ética),
 siempre que estén normalizados en una métrica común.
 \end{quote}
 
-\subsubsection{\texorpdfstring{\textbf{Propiedades analíticas de
+\subsection{\texorpdfstring{\textbf{Propiedades analíticas de
 \(Z\)}}{Propiedades analíticas de Z}}\label{propiedades-analuxedticas-de-z}
 
 \subsubsection{\texorpdfstring{\textbf{Proposición (Continuidad y
@@ -2389,8 +2412,8 @@ por la sensibilidad creciente \(\phi'\)), mientras que el lado derecho
 refleja el ahorro marginal en adquisición y mantenimiento al aumentar
 \(Q\).
 
-\subsubsection{\texorpdfstring{Ejemplo paso a paso: caso con
-\(\phi(z) = z^2\)}{Ejemplo paso a paso: caso con \textbackslash phi(z) = z\^{}2}}\label{ejemplo-paso-a-paso-caso-con-phiz-z2}
+\subsubsection{\texorpdfstring{Ejemplo del caso con
+\(\phi(z) = z^2\)}{Ejemplo del caso con \textbackslash phi(z) = z\^{}2}}\label{ejemplo-del-caso-con-phiz-z2}
 
 Consideremos un caso concreto para ilustrar el cálculo de \(Z(Q)\) y su
 minimización. Supongamos:
@@ -2696,10 +2719,10 @@ convexa y diferenciable en \(\mathbb{R}_{>0}\). Su derivada es: \[
 Z_{\beta_C}'(Q) = c + h F_D(Q) - \beta_C \int_0^\infty \psi'(z) f_D(Q + z) \, dz.
 \]
 
-El óptimo \(Q^\star(\beta_C)\) satisface: \[
+El óptimo \(Q^\star(\beta_C)\) satisface:
+\begin{equation}\phantomsection\label{eq-optimo_Q}{
 c + h F_D\big(Q^\star(\beta_C)\big) = \beta_C \int_0^\infty \psi'(z) f_D\big(Q^\star(\beta_C) + z\big) \, dz.
-\tag{2.12}
-\]
+}\end{equation}
 
 Esta ecuación revela una relación \textbf{monótona creciente}: a mayor
 \(\beta_C\), mayor \(Q^\star(\beta_C)\). Formalmente, derivando
@@ -2748,9 +2771,9 @@ En logística humanitaria, la forma exponencial o cuadrática son más
 apropiadas, ya que reflejan que el costo marginal de faltantes crece
 rápidamente con su magnitud.
 
-\subsubsection{\texorpdfstring{Ejemplo paso a paso: calibración de
-\(\beta_C\) bajo
-\(\psi(z) = z^2\)}{Ejemplo paso a paso: calibración de \textbackslash beta\_C bajo \textbackslash psi(z) = z\^{}2}}\label{ejemplo-paso-a-paso-calibraciuxf3n-de-beta_c-bajo-psiz-z2}
+\subsubsection{\texorpdfstring{Ejemplo de calibración de \(\beta_C\)
+bajo
+\(\psi(z) = z^2\)}{Ejemplo de calibración de \textbackslash beta\_C bajo \textbackslash psi(z) = z\^{}2}}\label{ejemplo-de-calibraciuxf3n-de-beta_c-bajo-psiz-z2}
 
 Supongamos que un organismo humanitario desea que la política de
 inventario garantice que el \textbf{valor esperado del faltante
@@ -2776,10 +2799,9 @@ Derivando e igualando a cero: \[
 12 + 4 \cdot \frac{Q - 1000}{1000} = \beta_C \cdot \frac{(2000 - Q)^2}{1000}.
 \]
 
-Reorganizando: \[
+Reorganizando: \begin{equation}\phantomsection\label{eq-reo}{
 \beta_C = \frac{12\,000 + 4(Q - 1000)}{(2000 - Q)^2}.
-\tag{2.13}
-\]
+}\end{equation}
 
 Por otro lado, el faltante cuadrático esperado es: \[
 \mathbb{E}\big[((\tilde{D} - Q)^+)^2\big] = \frac{1}{1000} \int_Q^{2000} (d - Q)^2 \, dd = \frac{(2000 - Q)^3}{3000}.
@@ -2925,9 +2947,9 @@ función \textbf{no separable y altamente no lineal} en el vector de
 decisiones \((Q_i, y_i)\), donde \(y_i\) indica si se abre la localidad
 \(i\).
 
-\subsubsection{\texorpdfstring{Ejemplo paso a paso: impacto no lineal de
-\(L\) en la varianza de la
-demanda}{Ejemplo paso a paso: impacto no lineal de L en la varianza de la demanda}}\label{ejemplo-paso-a-paso-impacto-no-lineal-de-l-en-la-varianza-de-la-demanda}
+\subsubsection{\texorpdfstring{Ejemplo de impacto no lineal de \(L\) en
+la varianza de la
+demanda}{Ejemplo de impacto no lineal de L en la varianza de la demanda}}\label{ejemplo-de-impacto-no-lineal-de-l-en-la-varianza-de-la-demanda}
 
 Supongamos que la demanda diaria \(\tilde{d} \sim \text{Normal}(10, 4)\)
 (media 10 unidades/día, varianza 4). El tiempo de entrega efectivo \(L\)
@@ -3109,8 +3131,8 @@ costo fijo, el EOQ pierde sentido; el modelo correcto es el de un solo
 periodo, y \(Q^\star\) permanece positivo. La comparación sólo es
 significativa cuando \(K\) se interpreta como un parámetro de ajuste.
 
-\subsubsection{Ejemplo paso a paso: demostración del efecto
-descendente}\label{ejemplo-paso-a-paso-demostraciuxf3n-del-efecto-descendente}
+\subsubsection{Ejemplo de demostración del efecto
+descendente}\label{ejemplo-de-demostraciuxf3n-del-efecto-descendente}
 
 Consideremos los siguientes parámetros: -
 \(\tilde{D} \sim \text{Normal}(\mu_D = 1000, \sigma_D = 300)\), -
@@ -3207,6 +3229,1042 @@ estocásticas rigurosas como la propuesta en las secciones anteriores que
 derivan \(Q^\star\) de principios de equilibrio marginal bajo
 incertidumbre, no de analogías mecánicas con modelos deterministas de
 horizonte infinito.
+
+\section{Propiedades analíticas del problema
+unidimensional}\label{propiedades-analuxedticas-del-problema-unidimensional}
+
+Tras formular la función de costo total extendida en la Sección 2.4 y
+derivar su expresión determinista efectiva en la Sección 2.6.1, es
+necesario establecer las propiedades analíticas fundamentales del
+problema de optimización unidimensional resultante. En esta sección, se
+analiza rigurosamente el problema \(\min_{Q \geq 1} f(Q)\), demostrando
+la existencia y unicidad del minimizador, así como el comportamiento
+asintótico de la función objetivo en los extremos del dominio. Estas
+propiedades son esenciales para justificar la aplicabilidad de las
+condiciones de optimalidad clásicas y para garantizar la estabilidad de
+los métodos numéricos empleados en la resolución.
+
+\subsection{\texorpdfstring{Formulación del problema de optimización:
+minimización de \(f(Q)\) sujeto a
+\(Q \geq 1\)}{Formulación del problema de optimización: minimización de f(Q) sujeto a Q \textbackslash geq 1}}\label{formulaciuxf3n-del-problema-de-optimizaciuxf3n-minimizaciuxf3n-de-fq-sujeto-a-q-geq-1}
+
+En el contexto del modelo de inventario extendido presentado en la
+Sección 2.1.2, la determinación del tamaño óptimo de lote se reduce a un
+problema de optimización escalar en la variable continua \(Q > 0\). Tras
+aislar los términos que dependen explícitamente de \(Q\) en la función
+de costo total extendida (2.1), se obtiene la función objetivo efectiva:
+
+\begin{equation}\phantomsection\label{eq-fQ_25}{
+f(Q) := \frac{K}{Q} + a Q, \quad Q > 0,
+}\end{equation}
+
+donde los parámetros están definidos como: -
+\(K := D(S + \beta C) > 0\), - \(a := H/2 > 0\).
+
+Estos parámetros son estrictamente positivos bajo las hipótesis
+operativas estándar (demanda positiva, costos no negativos, penalización
+estrictamente positiva), lo cual garantiza que \(f(Q)\) esté bien
+definida y sea diferenciable en \((0, \infty)\).
+
+En logística humanitaria, la decisión de preposicionar inventario tiene
+sentido únicamente si se almacena \textbf{al menos una unidad} del bien
+esencial, lo que impone la restricción natural:
+
+\[
+Q \geq 1.
+\]
+
+Esta cota inferior no es meramente técnica: refleja la
+\textbf{discreción física de los bienes humanitarios} (no se puede
+distribuir una fracción arbitrariamente pequeña de un kit de emergencia)
+y evita singularidades en el análisis asintótico cuando \(Q \to 0^+\),
+las cuales carecen de interpretación operativa.
+
+En consecuencia, el problema de optimización unidimensional que se
+analiza en esta sección se formula como:
+
+\begin{equation}\phantomsection\label{eq-pou}{
+\min_{Q \in [1, \infty)} f(Q) = \min_{Q \geq 1} \left( \frac{K}{Q} + a Q \right).
+}\end{equation}
+
+Este problema es un caso particular de minimización de una función real
+sobre un conjunto cerrado y no acotado. Su análisis requiere establecer:
+1. \textbf{Existencia} de un mínimo global (garantizada por la
+coercividad y continuidad de \(f\)), 2. \textbf{Unicidad} del
+minimizador (derivada de la estricta convexidad local en el dominio
+relevante), 3. \textbf{Comportamiento asintótico} en los extremos del
+dominio (\(Q \to 1^+\) y \(Q \to \infty\)).
+
+Estas propiedades se desarrollan en las subsecciones siguientes,
+sustentadas en resultados clásicos del análisis no lineal (Bazaraa,
+Sherali, y Shetty (2013); Boyd y Vandenberghe (2004)).
+
+\subsubsection{Ejemplo ilustrativo: formulación explícita del
+problema}\label{ejemplo-ilustrativo-formulaciuxf3n-expluxedcita-del-problema}
+
+Retomando los parámetros del ejemplo de la Sección 2.1.2: -
+\(D = 1000\), - \(S = 100\), - \(H = 5\), - \(C = 10\), -
+\(\beta = 50\),
+
+calculamos: \[
+K = D(S + \beta C) = 1000(100 + 50 \cdot 10) = 600\,000, \quad
+a = \frac{H}{2} = 2.5.
+\]
+
+La función objetivo efectiva es: \[
+f(Q) = \frac{600\,000}{Q} + 2.5 Q,
+\] y el problema de optimización se escribe como:
+
+\begin{equation}\phantomsection\label{eq-po}{
+\min_{Q \geq 1} \left( \frac{600\,000}{Q} + 2.5 Q \right).
+}\end{equation}
+
+Este problema es bien planteado: la función \(f\) es continua en
+\([1, \infty)\), tiende a infinito cuando \(Q \to \infty\) y tiene un
+valor finito (aunque elevado) en \(Q=1\) (\(f(1) = 600\,002.5\)), y
+posee un único punto crítico en \((1, \infty)\), como se demostrará en
+las secciones siguientes.
+
+La formulación Ecuación~\ref{eq-pou} constituye la base analítica para
+el estudio riguroso de las propiedades del modelo de inventario
+extendido. Al restringir el dominio a \(Q \geq 1\), se garantiza la
+relevancia práctica de las soluciones, al tiempo que se preserva la
+trazabilidad matemática necesaria para el análisis de optimalidad y
+sensibilidad que se desarrollará en las secciones posteriores.
+
+\subsection{Continuidad y coercividad: garantía de existencia del
+mínimo}\label{continuidad-y-coercividad-garantuxeda-de-existencia-del-muxednimo}
+
+En la Sección 2.5.1 se formuló el problema de optimización
+unidimensional como:
+
+\begin{equation}\phantomsection\label{eq-prob_25_1}{
+\min_{Q \geq 1} f(Q) = \min_{Q \geq 1} \left( \frac{K}{Q} + a Q \right),
+}\end{equation}
+
+donde \(K = D(S + \beta C) > 0\) y \(a = H/2 > 0\). Dado que el dominio
+\([1, \infty)\) es no acotado, la existencia de un minimizador global no
+es automática y requiere condiciones analíticas adicionales. En
+particular, se requiere que la función objetivo sea \textbf{continua} y
+\textbf{coerciva} en su dominio. A continuación, se establecen
+formalmente estas propiedades.
+
+\begin{quote}
+\textbf{Lema (Existencia del mínimo global).}\\
+La función \(f : [1, \infty) \to \mathbb{R}\), definida por\\
+\[
+f(Q) = \frac{K}{Q} + a Q,
+\]\\
+con \(K > 0\) y \(a > 0\), es continua y coerciva en \([1, \infty)\). En
+consecuencia, el problema \(\min_{Q \geq 1} f(Q)\) admite al menos un
+minimizador global \(Q^* \in [1, \infty)\).
+\end{quote}
+
+\textbf{Demostración.}\\
+\textbf{1. Continuidad.} La función \(f\) es la suma de
+\(Q \mapsto K/Q\) y \(Q \mapsto aQ\), ambas continuas en
+\((0, \infty)\), y por tanto en \([1, \infty)\).\\
+\textbf{2. Coercividad.} Se verifica que
+\begin{equation}\phantomsection\label{eq-lim_coercivo}{
+\lim_{Q \to \infty} f(Q) = \lim_{Q \to \infty} \left( \frac{K}{Q} + a Q \right) = +\infty,
+}\end{equation} ya que \(a > 0\). Además, \(f(1) = K + a < \infty\), por
+lo que \(f\) está acotada inferiormente en \([1, \infty)\).\\
+\textbf{3. Existencia.} El conjunto \([1, \infty)\) es cerrado y no
+vacío. Dado que \(f\) es continua y coerciva, el teorema de Weierstrass
+garantiza que \(f\) alcanza su mínimo global en dicho conjunto. ∎
+
+Este lema asegura que, bajo los parámetros operativos estándar de
+logística humanitaria, el problema bien planteado
+\(\min_{Q \geq 1} f(Q)\) \textbf{siempre admite una solución óptima}, lo
+cual justifica el uso posterior de condiciones de optimalidad clásicas y
+el análisis de sensibilidad.
+
+\subsubsection{Ejemplo ilustrativo}\label{ejemplo-ilustrativo-1}
+
+Considérense los parámetros del ejemplo de la Sección 2.1.2: -
+\(D = 1000\), - \(S = 100\), - \(H = 5\), - \(C = 10\), -
+\(\beta = 50\).
+
+Entonces: \[
+K = D(S + \beta C) = 1000(100 + 50 \cdot 10) = 600\,000, \quad
+a = \frac{H}{2} = 2.5.
+\]
+
+La función objetivo es: \[
+f(Q) = \frac{600\,000}{Q} + 2.5 Q, \quad Q \geq 1.
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Continuidad}: Ambos términos son continuos en
+  \([1, \infty)\).\\
+\item
+  \textbf{Coercividad}: Por Ecuación~\ref{eq-lim_coercivo},
+  \(\lim_{Q \to \infty} f(Q) = \infty\).\\
+\item
+  \textbf{Valor en el borde}: \(f(1) = 600\,002.5\).
+\end{itemize}
+
+Por el Lema (Existencia del mínimo global), existe al menos un
+\(Q^* \in [1, \infty)\) que minimiza \(f(Q)\). En la Sección 2.5.3 se
+demostrará que este minimizador es único y se encuentra en el interior
+del dominio, ya que \(Q^* \approx 489.9 > 1\).
+
+Este ejemplo confirma que, bajo parámetros realistas, el problema
+satisface las condiciones del lema y, por tanto, es \textbf{bien
+planteado en el sentido de Hadamard}: admite solución, que además es
+estable y única (propiedades que se desarrollarán a continuación).
+
+\subsection{Análisis de convexidad local y unicidad del
+óptimo}\label{anuxe1lisis-de-convexidad-local-y-unicidad-del-uxf3ptimo}
+
+En la Sección 2.5.2 se demostró que el problema de optimización
+unidimensional
+
+\begin{equation}\phantomsection\label{eq-prob_25_2}{
+\min_{Q \geq 1} f(Q) = \min_{Q \geq 1} \left( \frac{K}{Q} + a Q \right),
+}\end{equation}
+
+con \(K = D(S + \beta C) > 0\) y \(a = H/2 > 0\), admite al menos un
+minimizador global. A continuación, se analiza la \textbf{estructura
+local de la función objetivo} para establecer la \textbf{unicidad} de
+dicho minimizador. Esta propiedad es fundamental para garantizar que las
+condiciones de optimalidad de primer orden identifiquen un único
+candidato a solución óptima.
+
+\subsubsection{\texorpdfstring{Convexidad local de
+\(f(Q)\)}{Convexidad local de f(Q)}}\label{convexidad-local-de-fq}
+
+La función \(f : (0, \infty) \to \mathbb{R}\), definida por
+
+\begin{equation}\phantomsection\label{eq-fQ_25_3}{
+f(Q) = \frac{K}{Q} + a Q,
+}\end{equation}
+
+es infinitamente diferenciable en su dominio. Sus derivadas de primer y
+segundo orden son:
+
+\begin{equation}\phantomsection\label{eq-fpp_25_3}{
+f'(Q) = -\frac{K}{Q^2} + a,
+\quad
+f''(Q) = \frac{2K}{Q^3}.
+}\end{equation}
+
+Dado que \(K > 0\) y \(Q > 0\), se tiene \(f''(Q) > 0\) para todo
+\(Q \in (0, \infty)\). Por lo tanto, \(f(Q)\) es \textbf{estrictamente
+convexa} en todo su dominio.
+
+La estricta convexidad de \(f\) implica que cualquier punto estacionario
+de \(f\) en \((0, \infty)\) es el \textbf{único minimizador global} de
+\(f\) en ese intervalo.
+
+\subsubsection{\texorpdfstring{Unicidad del minimizador en el dominio
+restringido
+\([1, \infty)\)}{Unicidad del minimizador en el dominio restringido {[}1, \textbackslash infty)}}\label{unicidad-del-minimizador-en-el-dominio-restringido-1-infty}
+
+Aunque \(f\) es estrictamente convexa en \((0, \infty)\), el problema de
+interés está restringido a \(Q \geq 1\). Para analizar la unicidad en
+este dominio, consideramos dos casos exclusivos:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Caso interior}: si el punto crítico \(Q^c = \sqrt{K/a}\)
+  satisface \(Q^c > 1\), entonces \(Q^c \in (1, \infty)\) y, por la
+  estricta convexidad, es el \textbf{único minimizador} de \(f\) en
+  \([1, \infty)\).
+\item
+  \textbf{Caso de frontera}: si \(Q^c \leq 1\), entonces \(f'(Q) > 0\)
+  para todo \(Q \geq 1\), lo que implica que \(f\) es estrictamente
+  creciente en \([1, \infty)\), y el \textbf{único minimizador} es
+  \(Q^* = 1\).
+\end{enumerate}
+
+En ambos casos, el minimizador global en \([1, \infty)\) \textbf{existe
+y es único}.
+
+Este resultado puede resumirse en la siguiente proposición.
+
+\begin{quote}
+\textbf{Proposición (Unicidad del minimizador).}\\
+La función \(f(Q) = \frac{K}{Q} + a Q\), con \(K > 0\) y \(a > 0\),
+posee un \textbf{único minimizador global} en el conjunto
+\([1, \infty)\), dado por:
+\begin{equation}\phantomsection\label{eq-Qstar_unica}{
+Q^* = \max\left\{ 1,\ \sqrt{\frac{K}{a}} \right\}.
+}\end{equation}
+\end{quote}
+
+La unicidad garantiza que el problema Ecuación~\ref{eq-Qstar_unica} es
+\textbf{bien planteado en el sentido de Hadamard} y que cualquier método
+de optimización que converja a un punto estacionario o a la frontera del
+dominio identificará la solución óptima.
+
+\subsubsection{Ejemplo ilustrativo}\label{ejemplo-ilustrativo-2}
+
+Retomamos los parámetros del ejemplo de la Sección 2.1.2: -
+\(D = 1000\), - \(S = 100\), - \(H = 5\), - \(C = 10\), -
+\(\beta = 50\).
+
+Calculamos: \[
+K = D(S + \beta C) = 1000(100 + 50 \cdot 10) = 600\,000,
+\quad
+a = \frac{H}{2} = 2.5.
+\]
+
+El punto crítico no restringido es: \[
+Q^c = \sqrt{\frac{K}{a}} = \sqrt{\frac{600\,000}{2.5}} = \sqrt{240\,000} \approx 489.90.
+\]
+
+Dado que \(Q^c \approx 489.90 > 1\), el minimizador en \([1, \infty)\)
+es: \[
+Q^* = Q^c \approx 489.90.
+\]
+
+\textbf{Verificación de convexidad local}:\\
+La segunda derivada en \(Q^*\) es: \[
+f''(Q^*) = \frac{2K}{(Q^*)^3} = \frac{2 \cdot 600\,000}{(489.90)^3} \approx \frac{1\,200\,000}{117\,577\,000} \approx 0.0102 > 0,
+\] lo que confirma que \(Q^*\) es un mínimo local estricto. Por la
+convexidad global de \(f\), también es el mínimo global.
+
+\textbf{Interpretación}: En este caso realista, el tamaño óptimo de lote
+es significativamente mayor que 1, lo que justifica que el mínimo ocurra
+en el interior del dominio. La unicidad asegura que no existen otras
+políticas alternativas con el mismo costo óptimo, lo cual es deseable
+desde una perspectiva de implementación operativa.
+
+Este análisis demuestra que, bajo los supuestos operativos estándar de
+logística humanitaria, el problema de optimización unidimensional no
+solo admite solución, sino que dicha solución es \textbf{única y
+estable}, propiedades esenciales para la robustez del modelo y la
+confiabilidad de los métodos numéricos empleados en su resolución.
+
+\subsection{\texorpdfstring{Comportamiento asintótico de \(f(Q)\) cuando
+\(Q \to 1^+\) y
+\(Q \to \infty\)}{Comportamiento asintótico de f(Q) cuando Q \textbackslash to 1\^{}+ y Q \textbackslash to \textbackslash infty}}\label{comportamiento-asintuxf3tico-de-fq-cuando-q-to-1-y-q-to-infty}
+
+El análisis del comportamiento asintótico de la función objetivo
+\(f(Q)\) en los extremos del dominio \([1, \infty)\) es fundamental para
+comprender la estructura global del problema de optimización y para
+justificar propiedades como \textbf{coercividad}, \textbf{acotación
+inferior}, y la \textbf{localización del minimizador} en el interior o
+la frontera del dominio. En esta sección, se estudian rigurosamente los
+límites de \(f(Q)\) y sus derivadas cuando \(Q\) tiende al borde
+inferior \(1^+\) y al infinito.
+
+Recordemos que la función objetivo efectiva, definida en la Sección
+2.5.1, es:
+
+\begin{equation}\phantomsection\label{eq-fQ_25_4}{
+f(Q) = \frac{K}{Q} + a Q,
+\quad
+Q \geq 1,
+}\end{equation}
+
+con \(K = D(S + \beta C) > 0\) y \(a = H/2 > 0\). Esta función es suave
+en \((1, \infty)\) y continua en \([1, \infty)\).
+
+\subsubsection{\texorpdfstring{Comportamiento cuando
+\(Q \to 1^+\)}{Comportamiento cuando Q \textbackslash to 1\^{}+}}\label{comportamiento-cuando-q-to-1}
+
+Al aproximarse al borde inferior del dominio, la función \(f(Q)\)
+converge a un valor finito:
+
+\begin{equation}\phantomsection\label{eq-lim_Q1}{
+\lim_{Q \to 1^+} f(Q) = f(1) = K + a.
+}\end{equation}
+
+Dado que \(K, a > 0\), este límite es \textbf{estrictamente positivo y
+finito}. La derivada de primer orden en este punto es:
+
+\begin{equation}\phantomsection\label{eq-fp_Q1}{
+f'(1) = -\frac{K}{1^2} + a = a - K.
+}\end{equation}
+
+Este valor determina si la función es creciente o decreciente
+inmediatamente a la derecha de \(Q = 1\): - Si \(K > a\), entonces
+\(f'(1) < 0\): la función \textbf{decrece} al salir de la frontera, lo
+que implica que el minimizador \textbf{no está en la frontera}, sino en
+el interior \((1, \infty)\). - Si \(K \leq a\), entonces
+\(f'(1) \geq 0\): la función es no decreciente en \([1, \infty)\), y el
+\textbf{mínimo global ocurre en \(Q^* = 1\)}.
+
+\subsubsection{\texorpdfstring{Comportamiento cuando
+\(Q \to \infty\)}{Comportamiento cuando Q \textbackslash to \textbackslash infty}}\label{comportamiento-cuando-q-to-infty}
+
+Cuando \(Q\) crece sin cota, el comportamiento de \(f(Q)\) está dominado
+por el término lineal \(a Q\), ya que el término \(K/Q\) tiende a cero:
+
+\begin{equation}\phantomsection\label{eq-lim_Qinf}{
+\lim_{Q \to \infty} f(Q) = \lim_{Q \to \infty} \left( \frac{K}{Q} + a Q \right) = +\infty.
+}\end{equation}
+
+Este comportamiento garantiza que la función es \textbf{coerciva} en
+\([1, \infty)\), lo cual, combinado con su continuidad, asegura (junto
+con el teorema de Weierstrass) la \textbf{existencia de un mínimo
+global}, como se demostró en la Sección 2.5.2.
+
+La derivada de primer orden también diverge positivamente:
+
+\begin{equation}\phantomsection\label{eq-fp_Qinf}{
+\lim_{Q \to \infty} f'(Q) = \lim_{Q \to \infty} \left( -\frac{K}{Q^2} + a \right) = a > 0,
+}\end{equation}
+
+lo que confirma que \(f(Q)\) es \textbf{estrictamente creciente} para
+\(Q\) suficientemente grande.
+
+\subsubsection{Ejemplo ilustrativo}\label{ejemplo-ilustrativo-3}
+
+Retomamos los parámetros del ejemplo de la Sección 2.1.2: -
+\(D = 1000\), - \(S = 100\), - \(H = 5\), - \(C = 10\), -
+\(\beta = 50\).
+
+Entonces: \[
+K = D(S + \beta C) = 1000(100 + 50 \cdot 10) = 600\,000,
+\quad
+a = \frac{H}{2} = 2.5.
+\]
+
+\textbf{1. Comportamiento en \(Q \to 1^+\):}
+
+\begin{itemize}
+\tightlist
+\item
+  \(f(1) = 600\,000 + 2.5 = 600\,002.5\),
+\item
+  \(f'(1) = 2.5 - 600\,000 = -599\,997.5 < 0\).
+\end{itemize}
+
+\textbf{Interpretación}: la función \textbf{decrece abruptamente} al
+salir de \(Q = 1\), lo que confirma que el mínimo no puede estar en la
+frontera.
+
+\textbf{2. Comportamiento en \(Q \to \infty\):}
+
+\begin{itemize}
+\tightlist
+\item
+  \(\lim_{Q \to \infty} f(Q) = \infty\),
+\item
+  \(\lim_{Q \to \infty} f'(Q) = 2.5 > 0\).
+\end{itemize}
+
+\textbf{Interpretación}: para valores grandes de \(Q\) (por ejemplo,
+\(Q > 10\,000\)), el costo de mantenimiento domina, y la función crece
+linealmente con pendiente \(2.5\).
+
+\textbf{3. Localización del mínimo:}
+
+El punto crítico es \(Q^c = \sqrt{K/a} \approx 489.9\), como se calculó
+anteriormente. Dado que \(f'(1) < 0\) y \(f'(Q) \to a > 0\), la función
+\textbf{decrece hasta \(Q^c\) y luego crece}, confirmando que \(Q^c\) es
+el \textbf{único mínimo global} en \((1, \infty)\).
+
+Este análisis asintótico no solo valida las propiedades de existencia y
+unicidad, sino que también \textbf{informa el diseño de algoritmos
+numéricos}: por ejemplo, un método de búsqueda unidimensional puede
+iniciar en \(Q = 1\) y expandirse hasta que \(f'(Q) > 0\), garantizando
+que el mínimo ya fue cruzado.
+
+\section{Condiciones de optimalidad y solución cerrada
+aproximada}\label{condiciones-de-optimalidad-y-soluciuxf3n-cerrada-aproximada}
+
+A partir de las propiedades analíticas establecidas en la Sección 2.5,
+este apartado deriva formalmente las condiciones de optimalidad de
+primer orden para el problema unidimensional\\
+\[
+\min_{Q \geq 1} Z(Q).
+\]\\
+Se obtiene una solución cerrada aproximada para \(Q^*\), se discute la
+proyección del óptimo ante la restricción \(Q \geq 1\), y se analiza la
+sensibilidad de la solución respecto a los parámetros críticos del
+modelo.
+
+\subsection{\texorpdfstring{Derivación formal de
+\(\frac{dZ}{dQ}\)}{Derivación formal de \textbackslash frac\{dZ\}\{dQ\}}}\label{derivaciuxf3n-formal-de-fracdzdq}
+
+Consideramos la función de costo total extendida introducida en la
+Sección 2.1.2:
+
+\begin{equation}\phantomsection\label{eq-ZQ_extendida}{
+Z(Q) = \frac{D}{Q} S + \left( \frac{Q}{2} + Z_\alpha \sigma_L \right) H + D C + \frac{D}{Q} \beta C,
+}\end{equation}
+
+que corresponde a la ecuación (2.1) en este documento. Aunque los
+parámetros \(Z_\alpha\) y \(\sigma_L\) se derivan de un análisis
+estocástico (stock de seguridad bajo demanda aleatoria), \textbf{el
+modelo de optimización es determinista}, conforme al enfoque robusto
+adoptado en este trabajo (ver Sección 2.1.1). En consecuencia, \(Z(Q)\)
+se trata como una función real diferenciable en \((0,\infty)\), cuyos
+parámetros reflejan una parametrización de la incertidumbre, pero no su
+modelación explícita.
+
+En el análisis que sigue, suponemos que \(\sigma_L\) es constante (es
+decir, independiente de \(Q\)). Esta hipótesis es común en formulaciones
+iniciales de inventario bajo incertidumbre y permite preservar cierto
+grado de tratabilidad analítica, aun cuando se incorporen penalizaciones
+explícitas por faltante. Bajo esta condición, la función \(Z(Q)\) es
+diferenciable en \((0, \infty)\) y su derivada puede obtenerse aplicando
+reglas elementales del cálculo.
+
+Agrupando los términos proporcionales a \(1/Q\), reescribimos la parte
+no constante de la ecuación (2.1) como:
+
+\begin{equation}\phantomsection\label{eq-fQ_no_constante}{
+f(Q) := \frac{D(S + \beta C)}{Q} + \frac{H}{2} Q,
+}\end{equation}
+
+donde los términos \(Z_\alpha \sigma_L H + D C\) son independientes de
+\(Q\) y, por tanto, no influyen en la localización del mínimo. Definimos
+por conveniencia: \[
+K := D(S + \beta C) > 0, \qquad a := \frac{H}{2} > 0,
+\] de modo que \(f(Q) = \frac{K}{Q} + a Q\).
+
+La derivada de \(Z(Q)\) con respecto a \(Q\) coincide con la derivada de
+\(f(Q)\). Aplicando la regla de derivación para potencias, obtenemos:
+
+\begin{equation}\phantomsection\label{eq-dZ_dQ}{
+\frac{dZ}{dQ}(Q) = -\frac{D(S + \beta C)}{Q^2} + \frac{H}{2}.
+}\end{equation}
+
+Esta expresión es válida para todo \(Q > 0\) y constituye la derivada
+primera de la función de costo total extendida bajo las hipótesis
+establecidas.
+
+\subsubsection{Ejemplo ilustrativo}\label{ejemplo-ilustrativo-4}
+
+Para ilustrar la derivación anterior, consideremos los siguientes
+parámetros numéricos tomados de la Sección 2.1.2:
+
+\begin{itemize}
+\tightlist
+\item
+  \(D = 1000\),
+\item
+  \(S = 100\),
+\item
+  \(H = 5\),
+\item
+  \(C = 10\),
+\item
+  \(\beta = 50\),
+\item
+  \(Z_\alpha \sigma_L H + D C = 10025.99\) (constante, no relevante para
+  la derivada).
+\end{itemize}
+
+\textbf{Paso 1.} Calcular
+\(K = D(S + \beta C) = 1000(100 + 50 \cdot 10) = 600\,000\).
+
+\textbf{Paso 2.} Calcular \(a = H/2 = 5/2 = 2.5\).
+
+\textbf{Paso 3.} Escribir la función objetivo no constante: \[
+f(Q) = \frac{600\,000}{Q} + 2.5 Q.
+\]
+
+\textbf{Paso 4.} Derivar:
+
+\begin{equation}\phantomsection\label{eq-df_dQ_ejemplo}{
+\frac{df}{dQ}(Q) = -\frac{600\,000}{Q^2} + 2.5.
+}\end{equation}
+
+Este resultado coincide con la fórmula general Ecuación~\ref{eq-dZ_dQ} y
+será utilizado en la siguiente sección para determinar el punto crítico
+\(Q^*\).
+
+\subsection{\texorpdfstring{Condición de primer orden:
+\(\frac{dZ}{dQ}(Q^*) = 0\)}{Condición de primer orden: \textbackslash frac\{dZ\}\{dQ\}(Q\^{}*) = 0}}\label{condiciuxf3n-de-primer-orden-fracdzdqq-0}
+
+En la Sección 2.6.1 se estableció que la función de costo total
+extendida, bajo el enfoque determinista robusto adoptado en este
+trabajo, puede expresarse como
+
+\begin{equation}\phantomsection\label{eq-ZQ_total_26_2}{
+Z(Q) = \frac{D(S + \beta C)}{Q} + \frac{H}{2} Q + Z_\alpha \sigma_L H + D C,
+}\end{equation}
+
+donde (Q \textgreater{} 0) es la variable de decisión continua que
+representa el tamaño del lote de inventario. Los dos últimos términos de
+la ecuación anterior son constantes con respecto a \(Q\) y, por tanto,
+no influyen en la localización del mínimo. Denotando nuevamente
+
+\[
+K := D(S + \beta C) > 0, \qquad a := \frac{H}{2} > 0,
+\]
+
+la parte relevante de la función objetivo se reduce a
+
+\begin{equation}\phantomsection\label{eq-fQ_26_2}{
+f(Q) = \frac{K}{Q} + a Q, \quad Q > 0.
+}\end{equation}
+
+Como se demostró en la Sección 2.5.3, \(f(Q)\) es estrictamente convexa
+en \((0, \infty)\). En consecuencia, posee un único minimizador global
+en cualquier subconjunto convexo de su dominio. En particular, en el
+dominio restringido \([1, \infty)\), el minimizador existe y es único
+(Secciones 2.5.2--2.5.3).
+
+Dado que \(f\) es diferenciable en \((0, \infty)\), una
+\textbf{condición necesaria y suficiente} para que
+\(Q^* \in (1, \infty)\) sea el minimizador global es que anule la
+derivada de primer orden:
+
+\begin{equation}\phantomsection\label{eq-cond_primer_orden_26}{
+\frac{dZ}{dQ}(Q^*) = f'(Q^*) = 0.
+}\end{equation}
+
+Sustituyendo la expresión de la derivada obtenida en la Sección 2.6.1,
+esta condición se escribe explícitamente como:
+
+\begin{equation}\phantomsection\label{eq-ecuacion_criticidad_26}{
+-\frac{D(S + \beta C)}{(Q^*)^2} + \frac{H}{2} = 0.
+}\end{equation}
+
+Esta ecuación constituye la \textbf{condición de primer orden} del
+problema de optimización unidimensional. Su resolución proporciona el
+punto crítico que, por la estricta convexidad de \(f\), corresponde al
+único minimizador global del problema en el interior del dominio.
+
+\subsubsection{Ejemplo ilustrativo}\label{ejemplo-ilustrativo-5}
+
+Retomamos los parámetros numéricos del ejemplo de la Sección 2.1.2: -
+\(D = 1000\), - \(S = 100\), - \(H = 5\), - \(C = 10\), -
+\(\beta = 50\).
+
+\textbf{Paso 1.} Calcular los parámetros efectivos: \[
+K = D(S + \beta C) = 1000(100 + 50 \cdot 10) = 600\,000, \quad
+a = \frac{H}{2} = 2.5.
+\]
+
+\textbf{Paso 2.} Escribir la condición de primer orden: \[
+-\frac{600\,000}{(Q^*)^2} + 2.5 = 0.
+\]
+
+\textbf{Paso 3.} Resolver algebraicamente para \(Q^*\): \[
+\frac{600\,000}{(Q^*)^2} = 2.5
+\quad\Longrightarrow\quad
+(Q^*)^2 = \frac{600\,000}{2.5} = 240\,000
+\quad\Longrightarrow\quad
+Q^* = \sqrt{240\,000} \approx 489.90.
+\]
+
+\textbf{Paso 4.} Verificación: La derivada de la función objetivo es \[
+\frac{dZ}{dQ}(Q) = -\frac{600\,000}{Q^2} + 2.5.
+\] Evaluando en \(Q^* \approx 489.90\): \[
+\frac{dZ}{dQ}(489.90) \approx -\frac{600\,000}{(489.90)^2} + 2.5 \approx -\frac{600\,000}{240\,000} + 2.5 = -2.5 + 2.5 = 0.
+\]
+
+\textbf{Paso 5.} Interpretación: El punto \(Q^* \approx 489.90\) es el
+\textbf{único valor} que equilibra marginalmente el costo decreciente de
+emitir menos pedidos (incluyendo la penalización esperada por faltante)
+con el costo creciente de mantener inventario adicional. Dado que
+\(Q^* > 1\), la solución óptima reside en el \textbf{interior del
+dominio}, y la restricción \(Q \geq 1\) no es activa.
+
+Este resultado numérico refuerza la conclusión teórica: bajo los
+supuestos operativos estándar en logística humanitaria, el óptimo del
+modelo extendido se alcanza en el interior del dominio y puede
+identificarse de forma analítica mediante la condición de primer orden
+Ecuación~\ref{eq-ecuacion_criticidad_26}. La unicidad y existencia
+garantizadas en la Sección 2.5 aseguran que este punto crítico es, de
+hecho, el \textbf{único minimizador global} del problema.
+
+\subsection{\texorpdfstring{Expresión explícita de \(Q^*\) sin
+restricción de
+caja}{Expresión explícita de Q\^{}* sin restricción de caja}}\label{expresiuxf3n-expluxedcita-de-q-sin-restricciuxf3n-de-caja}
+
+En las secciones anteriores se estableció que, bajo el enfoque
+determinista robusto adoptado en este trabajo, la función de costo total
+extendida se reduce a una función escalar de la forma
+
+\begin{equation}\phantomsection\label{eq-ZQ_sin_caja}{
+Z(Q) = \frac{K}{Q} + a Q + \text{constante},
+}\end{equation}
+
+donde \(K = D(S + \beta C) > 0\) y \(a = H/2 > 0\). El problema de
+optimización asociado, en ausencia de la restricción de caja
+\(Q \geq 1\), se formula como:
+
+\[
+\min_{Q > 0} f(Q) = \min_{Q > 0} \left( \frac{K}{Q} + a Q \right).
+\]
+
+Este problema es un caso clásico de optimización unidimensional con
+solución cerrada, ampliamente estudiado en la teoría de inventarios y en
+textos de programación no lineal (ver Boyd y Vandenberghe (2004);
+Bazaraa, Sherali, y Shetty (2013)).
+
+Dado que \(f(Q)\) es \textbf{estrictamente convexa} en \((0, \infty)\)
+(pues \(f''(Q) = 2K/Q^3 > 0\) para todo \(Q > 0\)), el único punto
+estacionario que satisface la condición de primer orden \(f'(Q^*) = 0\)
+corresponde al \textbf{mínimo global} del problema no restringido.
+
+La derivada de primer orden, obtenida en la Sección 2.6.1, es: \[
+f'(Q) = -\frac{K}{Q^2} + a.
+\]
+
+Igualando a cero y resolviendo para \(Q\), obtenemos: \[
+-\frac{K}{(Q^*)^2} + a = 0
+\quad\Longrightarrow\quad
+(Q^*)^2 = \frac{K}{a}
+\quad\Longrightarrow\quad
+Q^* = \sqrt{\frac{K}{a}}.
+\]
+
+Sustituyendo los valores de \(K\) y \(a\), la \textbf{expresión
+explícita del tamaño óptimo de lote sin restricción de caja} es:
+
+\begin{equation}\phantomsection\label{eq-Qstar_sin_caja}{
+Q^* = \sqrt{\frac{2 D (S + \beta C)}{H}}.
+}\end{equation}
+
+Esta expresión generaliza la clásica fórmula del modelo EOQ, ya que el
+término \(S + \beta C\) incorpora explícitamente el \textbf{costo fijo
+efectivo por ciclo}, que ahora incluye tanto el costo administrativo de
+emisión de un pedido (\(S\)) como la \textbf{penalización esperada por
+faltante} (\(\beta C\)). Este ajuste refleja la internalización del
+riesgo en la estructura de costos, una característica esencial en
+contextos humanitarios donde la insatisfacción de la demanda tiene
+consecuencias operativas no despreciables.
+
+La existencia de \(Q^* > 0\) está garantizada por la positividad de
+todos los parámetros del modelo. Además, la \textbf{unicidad} se deriva
+directamente de la estricta convexidad de \(f(Q)\), como se demostró en
+la Sección 2.5.3.
+
+\subsubsection{Ejemplo ilustrativo}\label{ejemplo-ilustrativo-6}
+
+Retomamos los parámetros del ejemplo de la Sección 2.1.2: - Demanda
+esperada: \(D = 1000\), - Costo fijo de pedido: \(S = 100\), - Costo de
+mantenimiento: \(H = 5\), - Costo unitario de adquisición: \(C = 10\), -
+Penalización por faltante: \(\beta = 50\).
+
+\textbf{Paso 1.} Calcular el costo fijo efectivo: \[
+S + \beta C = 100 + 50 \cdot 10 = 600.
+\]
+
+\textbf{Paso 2.} Sustituir en la expresión
+(Ecuación~\ref{eq-Qstar_sin_caja}): \[
+Q^* = \sqrt{\frac{2 \cdot 1000 \cdot 600}{5}} = \sqrt{\frac{1\,200\,000}{5}} = \sqrt{240\,000} \approx 489.90.
+\]
+
+\textbf{Paso 3.} Comparación con el EOQ clásico: El modelo EOQ
+tradicional (ignorando penalización) daría: \[
+Q^{\text{EOQ}} = \sqrt{\frac{2 D S}{H}} = \sqrt{\frac{2 \cdot 1000 \cdot 100}{5}} = \sqrt{40\,000} = 200.
+\]
+
+\textbf{Paso 4.} Interpretación: El tamaño óptimo en el modelo extendido
+(\(Q^* \approx 490\)) es \textbf{más del doble} que el del EOQ clásico.
+Esta diferencia cuantifica el impacto de incorporar la penalización por
+faltante en la política de inventario: el modelo responde a la aversión
+al riesgo aumentando el lote de preposicionamiento, lo cual reduce la
+frecuencia de exposición a escenarios de desabastecimiento.
+
+Este ejemplo confirma que, en ausencia de restricciones de caja, el
+problema admite una \textbf{solución cerrada analítica}, cuya estructura
+es directamente interpretable en términos de los parámetros operativos
+del sistema. Esta propiedad es fundamental para el análisis de
+sensibilidad y para la validación de algoritmos numéricos en secciones
+posteriores.
+
+\subsection{\texorpdfstring{Tratamiento de la restricción \(Q \geq 1\):
+proyección del
+óptimo}{Tratamiento de la restricción Q \textbackslash geq 1: proyección del óptimo}}\label{tratamiento-de-la-restricciuxf3n-q-geq-1-proyecciuxf3n-del-uxf3ptimo}
+
+En las secciones anteriores se obtuvo la expresión explícita del tamaño
+óptimo de lote en ausencia de restricciones de caja:
+
+\begin{equation}\phantomsection\label{eq-Qstar_sin_caja_26_4}{
+Q^{\text{nc}} = \sqrt{\frac{2 D (S + \beta C)}{H}},
+}\end{equation}
+
+donde el superíndice ``nc'' denota ``sin caja'' (\emph{no constraint}).
+Sin embargo, en contextos de logística humanitaria, la decisión de
+preposicionar inventario solo tiene sentido si se almacena \textbf{al
+menos una unidad} del bien esencial, lo que impone la restricción
+natural:
+
+\[
+Q \geq 1.
+\]
+
+Este límite inferior, aunque aparentemente técnico, refleja una
+\textbf{discreción física operativa}: no es factible ni significativo
+preposicionar una fracción arbitrariamente pequeña de un kit de
+emergencia. Matemáticamente, esta restricción convierte el dominio de
+optimización en el conjunto cerrado \([1, \infty)\), lo que requiere
+ajustar la solución no restringida mediante una \textbf{proyección
+ortogonal} sobre dicho conjunto.
+
+Dado que la función objetivo \(f(Q) = \frac{K}{Q} + a Q\) (con
+\(K = D(S + \beta C) > 0\), \(a = H/2 > 0\)) es estrictamente convexa y
+diferenciable en \((0, \infty)\), y el conjunto \([1, \infty)\) es
+convexo y cerrado, el \textbf{minimizador restringido} \(Q^*\) se
+obtiene mediante la proyección euclidiana de \(Q^{\text{nc}}\) sobre
+\([1, \infty)\):
+
+\begin{equation}\phantomsection\label{eq-Qstar_proyectado}{
+Q^* = \Pi_{[1, \infty)}(Q^{\text{nc}}) = \max\left\{ 1,\ Q^{\text{nc}} \right\}.
+}\end{equation}
+
+Esta fórmula establece dos casos mutuamente excluyentes: 1. \textbf{Caso
+interior}: si \(Q^{\text{nc}} > 1\), entonces \(Q^* = Q^{\text{nc}}\), y
+la restricción no es activa. La condición de primer orden
+\(f'(Q^*) = 0\) se satisface con igualdad. 2. \textbf{Caso de frontera}:
+si \(Q^{\text{nc}} \leq 1\), entonces \(Q^* = 1\), y la restricción es
+activa. En este caso, \(f'(Q^*) = f'(1) \geq 0\), lo que confirma que la
+función es no decreciente en \([1, \infty)\), y el mínimo global ocurre
+en el borde del dominio.
+
+La proyección (Ecuación~\ref{eq-Qstar_proyectado}) garantiza que la
+solución óptima sea \textbf{factible y única}, preservando las
+propiedades de existencia y unicidad demostradas en la Sección 2.5.
+
+\subsubsection{Ejemplo ilustrativo}\label{ejemplo-ilustrativo-7}
+
+Retomamos los parámetros del ejemplo de la Sección 2.1.2: - Demanda
+esperada: \(D = 1000\), - Costo fijo de pedido: \(S = 100\), - Costo de
+mantenimiento: \(H = 5\), - Costo unitario de adquisición: \(C = 10\), -
+Penalización por faltante: \(\beta = 50\).
+
+\textbf{Paso 1.} Calcular el óptimo no restringido: \[
+Q^{\text{nc}} = \sqrt{\frac{2 \cdot 1000 \cdot (100 + 50 \cdot 10)}{5}} = \sqrt{\frac{2 \cdot 1000 \cdot 600}{5}} = \sqrt{240\,000} \approx 489.90.
+\]
+
+\textbf{Paso 2.} Aplicar la proyección: \[
+Q^* = \max\{1,\ 489.90\} = 489.90.
+\]
+
+\textbf{Interpretación}: dado que \(Q^{\text{nc}} \gg 1\), la
+restricción \(Q \geq 1\) no es activa, y la solución restringida
+coincide con la no restringida. Este resultado es típico en contextos
+humanitarios, donde los costos de faltante y la magnitud de la demanda
+inducen niveles de inventario significativamente mayores que una unidad.
+
+\textbf{Paso 3.} Escenario hipotético con demanda extremadamente baja:
+Supongamos ahora \(D = 0.1\), manteniendo los demás parámetros.
+Entonces: \[
+Q^{\text{nc}} = \sqrt{\frac{2 \cdot 0.1 \cdot 600}{5}} = \sqrt{24} \approx 4.90 > 1 \quad \Rightarrow \quad Q^* = 4.90.
+\] Incluso con demanda muy baja, el óptimo sigue siendo mayor que 1.
+
+\textbf{Paso 4.} Escenario límite: Para que \(Q^{\text{nc}} \leq 1\), se
+requiere: \[
+\sqrt{\frac{2 D (S + \beta C)}{H}} \leq 1
+\quad \Longrightarrow \quad
+D \leq \frac{H}{2(S + \beta C)} = \frac{5}{2 \cdot 600} \approx 0.00417.
+\] Solo si la demanda esperada es inferior a 0.0042 unidades, el óptimo
+restringido sería \(Q^* = 1\). En la práctica humanitaria, este caso es
+irreal, ya que la demanda mínima razonable supera con creces una unidad.
+
+Este análisis confirma que, bajo parámetros operativos realistas, la
+restricción \(Q \geq 1\) actúa como una \textbf{garantía de factibilidad
+teórica} más que como una limitación activa en la solución. No obstante,
+su inclusión es esencial para el rigor matemático del modelo, ya que
+asegura que el dominio de optimización sea cerrado y que el problema
+esté bien planteado en el sentido de Hadamard.
+
+La expresión (Ecuación~\ref{eq-Qstar_proyectado}) constituye la
+\textbf{solución cerrada aproximada} del problema restringido, y será
+utilizada en la siguiente sección para analizar la sensibilidad del
+óptimo respecto a los parámetros del sistema.
+
+\subsection{\texorpdfstring{Sensibilidad del óptimo respecto a
+\(\beta\), \(Z_\alpha\), \(H\), y
+\(S\)}{Sensibilidad del óptimo respecto a \textbackslash beta, Z\_\textbackslash alpha, H, y S}}\label{sensibilidad-del-uxf3ptimo-respecto-a-beta-z_alpha-h-y-s}
+
+En las secciones anteriores se obtuvo la expresión cerrada del tamaño
+óptimo de lote bajo la restricción \(Q \geq 1\):
+
+\begin{equation}\phantomsection\label{eq-Qstar_final}{
+Q^* = \max\left\{ 1,\ \sqrt{\frac{2 D (S + \beta C)}{H}} \right\}.
+}\end{equation}
+
+Esta fórmula explicita la dependencia funcional del óptimo respecto a
+cuatro parámetros críticos del modelo:\\
+- \(\beta > 0\): coeficiente de penalización por faltante,\\
+- \(S > 0\): costo fijo de pedido,\\
+- \(H > 0\): costo unitario de mantenimiento de inventario,\\
+- y, de forma indirecta, \(Z_\alpha \sigma_L\): parámetro que determina
+el inventario de seguridad, aunque \textbf{no influye en \(Q^*\)} cuando
+\(\sigma_L\) es constante (pues no aparece en la derivada de primer
+orden).
+
+El análisis de sensibilidad consiste en estudiar cómo varía \(Q^*\) ante
+perturbaciones en estos parámetros. Dado que \(Q^*\) es una función
+compuesta de funciones elementales, su diferenciabilidad y monotonía
+pueden analizarse rigurosamente mediante cálculo diferencial.
+
+\subsubsection{Derivadas parciales y
+elasticidades}\label{derivadas-parciales-y-elasticidades}
+
+Supongamos que \(Q^{\text{nc}} = \sqrt{2 D (S + \beta C)/H} > 1\), de
+modo que \(Q^* = Q^{\text{nc}}\) (caso interior, válido en contextos
+humanitarios realistas). Definimos:
+
+\[
+Q^*(\beta, S, H) = \left( \frac{2 D}{H} \right)^{1/2} (S + \beta C)^{1/2}.
+\]
+
+Las derivadas parciales de primer orden son:
+
+\begin{equation}\phantomsection\label{eq-dQ_dBeta}{
+\frac{\partial Q^*}{\partial \beta} = \frac{1}{2} \left( \frac{2 D}{H} \right)^{1/2} \frac{C}{(S + \beta C)^{1/2}} = \frac{C D}{H Q^*} > 0,
+}\end{equation}
+
+\begin{equation}\phantomsection\label{eq-dQ_dS}{
+\frac{\partial Q^*}{\partial S} = \frac{1}{2} \left( \frac{2 D}{H} \right)^{1/2} \frac{1}{(S + \beta C)^{1/2}} = \frac{D}{H Q^*} > 0,
+}\end{equation}
+
+\begin{equation}\phantomsection\label{eq-dQ_dH}{
+\frac{\partial Q^*}{\partial H} = -\frac{1}{2} \left( \frac{2 D (S + \beta C)}{H^3} \right)^{1/2} = -\frac{Q^*}{2 H} < 0.
+}\end{equation}
+
+Estas expresiones confirman las siguientes propiedades:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Monotonía creciente en \(\beta\) y \(S\)}: un aumento en la
+  penalización por faltante o en el costo fijo de pedido induce al
+  modelo a incrementar el tamaño del lote, ya que se vuelve más costoso
+  emitir pedidos frecuentes o sufrir faltantes.
+\item
+  \textbf{Monotonía decreciente en \(H\)}: un mayor costo de
+  mantenimiento desincentiva el almacenamiento, reduciendo el lote
+  óptimo.
+\item
+  \textbf{Independencia de \(Z_\alpha\)}: en el modelo presentado, el
+  inventario de seguridad \(Z_\alpha \sigma_L\) es un \textbf{término
+  aditivo constante} en la función de costo, y por tanto \textbf{no
+  afecta la localización del mínimo}. Solo influye en el \textbf{valor
+  óptimo del costo total}, no en la \textbf{decisión de inventario}
+  \(Q^*\). Esta propiedad depende críticamente del supuesto de que
+  \(\sigma_L\) es independiente de \(Q\).
+\end{enumerate}
+
+\subsubsection{Elasticidades de
+sensibilidad}\label{elasticidades-de-sensibilidad}
+
+Para cuantificar el impacto relativo, definimos las
+\textbf{elasticidades} de \(Q^*\) respecto a cada parámetro:
+
+\[
+\varepsilon_{Q^*, \beta} = \frac{\partial Q^*}{\partial \beta} \cdot \frac{\beta}{Q^*} = \frac{\beta C}{2(S + \beta C)} \in \left(0, \frac{1}{2}\right),
+\]
+
+\[
+\varepsilon_{Q^*, S} = \frac{\partial Q^*}{\partial S} \cdot \frac{S}{Q^*} = \frac{S}{2(S + \beta C)} \in \left(0, \frac{1}{2}\right),
+\]
+
+\[
+\varepsilon_{Q^*, H} = \frac{\partial Q^*}{\partial H} \cdot \frac{H}{Q^*} = -\frac{1}{2}.
+\]
+
+Estas elasticidades son \textbf{constantes en signo}, pero
+\textbf{dependen del balance relativo} entre \(S\) y \(\beta C\). En
+contextos humanitarios, donde \(\beta C \gg S\), se cumple
+\(\varepsilon_{Q^*, \beta} \to 1/2\) y \(\varepsilon_{Q^*, S} \to 0\),
+lo que indica que el óptimo es \textbf{altamente sensible a la
+penalización por faltante} e \textbf{insensible al costo fijo de
+pedido}.
+
+\subsubsection{Ejemplo ilustrativo paso a
+paso}\label{ejemplo-ilustrativo-paso-a-paso}
+
+Retomamos los parámetros del ejemplo de la Sección 2.1.2: -
+\(D = 1000\), - \(S = 100\), - \(H = 5\), - \(C = 10\), -
+\(\beta = 50\).
+
+\textbf{Paso 1.} Óptimo base: \[
+Q^* = \sqrt{\frac{2 \cdot 1000 \cdot (100 + 50 \cdot 10)}{5}} = \sqrt{240\,000} \approx 489.90.
+\]
+
+\textbf{Paso 2.} Sensibilidad respecto a \(\beta\):\\
+Aumentamos \(\beta\) en un 10 \%: \(\beta' = 55\).\\
+Nuevo óptimo: \[
+Q'^* = \sqrt{\frac{2 \cdot 1000 \cdot (100 + 55 \cdot 10)}{5}} = \sqrt{\frac{2 \cdot 1000 \cdot 650}{5}} = \sqrt{260\,000} \approx 509.90.
+\] Variación relativa:
+\(\frac{509.90 - 489.90}{489.90} \approx 4.08\%\).\\
+Elasticidad empírica: \(\frac{4.08\%}{10\%} = 0.408\), cercana al valor
+teórico: \[
+\varepsilon_{Q^*, \beta} = \frac{50 \cdot 10}{2(100 + 500)} = \frac{500}{1200} \approx 0.417.
+\]
+
+\textbf{Paso 3.} Sensibilidad respecto a \(H\):\\
+Aumentamos \(H\) en un 20 \%: \(H' = 6\).\\
+Nuevo óptimo: \[
+Q'^* = \sqrt{\frac{2 \cdot 1000 \cdot 600}{6}} = \sqrt{200\,000} \approx 447.21.
+\] Variación relativa:
+\(\frac{447.21 - 489.90}{489.90} \approx -8.71\%\).\\
+Elasticidad empírica: \(\frac{-8.71\%}{20\%} = -0.436\), cercana al
+valor teórico \(-0.5\) (la discrepancia se debe a que la elasticidad es
+local, y el cambio es finito).
+
+\textbf{Paso 4.} Independencia de \(Z_\alpha\):\\
+Si cambiamos \(Z_\alpha\) de 1.645 a 2.33 (pasando de 95 \% a 99 \% de
+nivel de servicio), el término \(Z_\alpha \sigma_L H\) en \(Z(Q)\)
+cambia, pero la derivada \(\frac{dZ}{dQ}\) \textbf{no se ve afectada},
+por lo que \(Q^*\) permanece en \textbf{489.90}.
+
+\textbf{Interpretación}: En logística humanitaria, donde los costos de
+faltante son dominantes, el tamaño óptimo de inventario es \textbf{más
+sensible a la penalización \(\beta\) que a los costos operativos
+tradicionales}. Esto implica que la \textbf{calibración precisa de
+\(\beta\)} es crítica para la calidad de la solución, mientras que
+errores en \(S\) o \(H\) tienen impacto relativamente menor. Por otro
+lado, el diseño del nivel de servicio (vía \(Z_\alpha\)) afecta el
+\textbf{costo total}, pero \textbf{no la política de inventario}, lo que
+permite una separación clara entre decisiones de magnitud (\(Q^*\)) y
+decisiones de robustez (inventario de seguridad).
+
+Este análisis de sensibilidad no solo valida la robustez del modelo,
+sino que también proporciona \textbf{directrices operativas} para la
+recolección de datos y la toma de decisiones: es prioritario estimar con
+precisión \(\beta\) y \(D\), mientras que \(S\) y \(H\) pueden
+aproximarse con mayor tolerancia. Además, confirma que el parámetro
+\(Z_\alpha\) puede ajustarse \textbf{a posteriori} para satisfacer
+requisitos de nivel de servicio sin alterar la solución óptima de
+\(Q^*\), siempre que \(\sigma_L\) sea independiente de \(Q\).
+
+En conjunto, las secciones 2.6.1--2.6.5 establecen que, bajo el enfoque
+determinista robusto adoptado en este trabajo, el problema de
+optimización unidimensional \(\min_{Q \geq 1} Z(Q)\) admite una
+\textbf{solución cerrada explícita}, dada por la proyección
+\(Q^* = \max\{1, \sqrt{2D(S + \beta C)/H}\}\). Esta solución es
+\textbf{única, estable y sensible} a los parámetros críticos del modelo,
+especialmente a la penalización por faltante \(\beta\). El análisis de
+sensibilidad confirma que, en contextos humanitarios, el tamaño óptimo
+de lote está dominado por la aversión al riesgo, lo que justifica el
+abandono del modelo EOQ clásico en favor de formulaciones que
+internalicen explícitamente la incertidumbre mediante parámetros de
+penalización y servicio. Estos resultados teóricos sientan las bases
+para la integración del componente de inventario en el modelo híbrido de
+localización-inventario.
+
+\section{Conclusiones del capítulo}\label{conclusiones-del-capuxedtulo}
+
+Este capítulo ha presentado un modelo matemático determinista robusto
+para el problema integrado de localización e inventario en contextos
+humanitarios, caracterizado por la interacción entre decisiones binarias
+(ubicación de almacenes) y continuas (niveles de inventario y asignación
+de flujos). La formulación incorpora de forma paramétrica la
+incertidumbre en la demanda mediante un stock de seguridad y una
+penalización explícita por faltantes, lo que introduce no linealidad y
+rompe la convexidad global del problema, aun cuando la función de costo
+sea convexa condicionalmente para configuraciones fijas de
+infraestructura. Esta estructura híbrida, que combina no convexidad
+combinatoria, no linealidad inducida por la incertidumbre y una
+formulación de riesgo implícita a través de la penalización, constituye
+una contribución teórica que extiende los modelos clásicos de EOQ y
+localización, haciéndolos pertinentes para entornos donde la
+insatisfacción de la demanda tiene consecuencias éticas y operativas
+críticas. Al establecer propiedades analíticas fundamentales
+(existencia, unicidad y sensibilidad del óptimo en el subproblema de
+inventario) y al caracterizar formalmente el espacio factible mixto, el
+capítulo sienta las bases para el desarrollo de métodos de solución
+especializados.
 
 \bookmarksetup{startatroot}
 
@@ -3322,7 +4380,7 @@ entonces la sucesión \(\{x_k\}\) converge linealmente al minimizador
   \|x_{k+1} - x^\star\| \le \rho \|x_k - x^\star\|, \quad \rho \in (0,1).
 \]
 
-\subsubsection{Ejemplo ilustrativo}\label{ejemplo-ilustrativo-1}
+\subsubsection{Ejemplo ilustrativo}\label{ejemplo-ilustrativo-8}
 
 Consideremos \(f(x) = \tfrac{1}{2}x^\top A x - b^\top x\), con
 
@@ -3481,7 +4539,7 @@ cuyo minimizador es \(x^\star = A^{-1}b = (1, 1)^\top\).
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{chapters/metodos_files/figure-pdf/cell-2-output-1.png}}
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{chapters/metodos_files/figure-pdf/cell-2-output-1.pdf}}
 
 }
 
@@ -4538,10 +5596,10 @@ existencia y unicidad de \(Q^* \ge 1\) tal que
 En el contexto del modelo propuesto, el problema de optimización adopta
 la forma
 
-\[
+\begin{equation}\phantomsection\label{eq-min_Q_restriccion}{
 \min_{Q \in \mathbb{R}^n} f(Q)
-\quad \text{sujeto a} \quad Q \ge \mathbf{1}, \tag{3.75}
-\]
+\quad \text{sujeto a} \quad Q \ge \mathbf{1}
+}\end{equation}
 
 donde \(\mathbf{1} \in \mathbb{R}^n\) es el vector de unos, y
 \(f : \mathbb{R}^n \to \mathbb{R}\) representa un funcional
@@ -6476,27 +7534,27 @@ La formulación es:
 \section{Restricciones del modelo}\label{restricciones-del-modelo}
 
 \textbf{1. Balance de inventario:}
-\begin{equation}\phantomsection\label{eq-PBHE_completa}{
+\begin{equation}\phantomsection\label{eq-1b}{
 \sum_j x_{ij} \leq I_i \quad \forall i 
 }\end{equation}
 
 \textbf{2. Cobertura de la demanda:}
-\begin{equation}\phantomsection\label{eq-PBHE_completa}{
+\begin{equation}\phantomsection\label{eq-2c}{
 \sum_i x_{ij} + z_j = s_j \quad \forall j 
 }\end{equation}
 
 \textbf{3. Activación condicional de almacenes:}
-\begin{equation}\phantomsection\label{eq-PBHE_completa}{
+\begin{equation}\phantomsection\label{eq-3a}{
 x_{ij} \leq M \cdot y_i \quad \forall i,j 
 }\end{equation}
 
 \textbf{4. Capacidad máxima de almacenamiento:}
-\begin{equation}\phantomsection\label{eq-PBHE_completa}{
+\begin{equation}\phantomsection\label{eq-4c}{
 I_i \leq C_i \cdot y_i \quad \forall i 
 }\end{equation}
 
 \textbf{5. Fill rate por zona:}
-\begin{equation}\phantomsection\label{eq-PBHE_completa}{
+\begin{equation}\phantomsection\label{eq-5f}{
 FR_j = \frac{\sum_i x_{ij}}{s_j} \quad \forall j 
 }\end{equation}
 
@@ -6509,7 +7567,7 @@ por unidad de inventario insuficiente. Esta función surge de la teoría
 de inventarios bajo incertidumbre y permite ponderar no solo la magnitud
 de la demanda no cubierta, sino también su probabilidad de ocurrencia.
 
-\begin{equation}\phantomsection\label{eq-PBHE_completa}{
+\begin{equation}\phantomsection\label{eq-E_z}{
 E_{z_i}^p = z \big( \Phi(z)-1 \big) + \phi(z) 
 }\end{equation}
 
@@ -6553,7 +7611,7 @@ de seguridad} necesaria en cada almacén, de manera que se minimice el
 impacto humanitario de la falta de suministros en escenarios críticos.
 
 La convexidad estricta de la función de pérdida,
-\begin{equation}\phantomsection\label{eq-PBHE_completa}{
+\begin{equation}\phantomsection\label{eq-phi}{
 \frac{\partial^2 E_z^p}{\partial z^2} = \phi(z) > 0,
 }\end{equation} garantiza la unicidad del minimizador en problemas de
 optimización bajo incertidumbre.
@@ -6562,13 +7620,13 @@ Además, su \textbf{relación analítica fundamental} puede obtenerse
 mediante integración por partes, lo que proporciona una forma cerrada
 que evita la evaluación numérica de integrales impropias. Su
 comportamiento asintótico satisface:
-\begin{equation}\phantomsection\label{eq-PBHE_completa}{
+\begin{equation}\phantomsection\label{eq-E_phi}{
 E_z^p \sim \frac{\phi(z)}{z}, \quad z \to \infty,
 }\end{equation} mostrando decaimiento superexponencial pero manteniendo
 sensibilidad a eventos extremos.
 
 \textbf{Aplicación en el modelo propuesto:} se minimiza la pérdida
-esperada total \begin{equation}\phantomsection\label{eq-PBHE_completa}{
+esperada total \begin{equation}\phantomsection\label{eq-perdida}{
 \sum_i w_i E_{z_i}^p, \quad z_i = \frac{\mu_i - d_i}{\sigma_i},
 }\end{equation} transformando el problema de cobertura en un programa
 estocástico con penalización asimétrica. Esta no linealidad refleja que
@@ -6639,7 +7697,7 @@ cadena de suministro.
 El inventario recomendado para cada almacén se determina mediante la
 siguiente relación:
 
-\begin{equation}\phantomsection\label{eq-PBHE_completa}{
+\begin{equation}\phantomsection\label{eq-inv}{
 I_i = \mu_i + z_{\alpha} \cdot \sigma_i 
 }\end{equation}
 
@@ -6669,7 +7727,7 @@ Para optimizar la reposición de inventario y equilibrar el costo de
 ordenar (\(K\)) con el costo de mantener inventario (\(h\)), se emplea
 la fórmula clásica de la cantidad económica de pedido:
 
-\begin{equation}\phantomsection\label{eq-PBHE_completa}{
+\begin{equation}\phantomsection\label{eq-EOQ}{
 Q = \sqrt{\frac{2DK}{h}} 
 }\end{equation}
 
@@ -6695,7 +7753,7 @@ alteraciones en los tiempos de entrega, se establece un punto de reorden
 que considera tanto la demanda esperada durante el tiempo de entrega
 (\(dL\)) como la variabilidad asociada:
 
-\begin{equation}\phantomsection\label{eq-PBHE_completa}{
+\begin{equation}\phantomsection\label{eq-pr}{
 R = dL + z_{\alpha} \cdot \sigma_L 
 }\end{equation}
 
@@ -6714,7 +7772,7 @@ clave para evaluar el desempeño humanitario del sistema, ya que refleja
 la capacidad de respuesta frente a la necesidad total de la población
 afectada:
 
-\begin{equation}\phantomsection\label{eq-PBHE_completa}{
+\begin{equation}\phantomsection\label{eq-FR}{
 FR = \frac{\sum_{j} \sum_i x_{ij}}{\sum_j s_j} 
 }\end{equation}
 
@@ -7757,6 +8815,11 @@ pre-positioned warehouses»}. En \emph{Disaster Risk Reduction in
 Mexico}, editado por Daniel Sánchez-Partida, 169-98. Cham: Springer.
 \url{https://doi.org/10.1007/978-3-030-67295-9_8}.
 
+\bibitem[\citeproctext]{ref-BazaraaSheraliShetty2013}
+Bazaraa, Mokhtar S., Hanif D. Sherali, y C. M. Shetty. 2013.
+\emph{Nonlinear Programming: Theory and Algorithms}. 3.ª ed. Wiley.
+\url{https://doi.org/10.1002/9781118762371}.
+
 \bibitem[\citeproctext]{ref-Bertsekas1999}
 Bertsekas, Dimitri P. 1999. \emph{Nonlinear Programming}. Athena
 Scientific.
@@ -7769,6 +8832,11 @@ Athena Scientific.
 Bertsimas, Dimitris, y Aurélie Thiele. 2006. {«A robust optimization
 approach to inventory theory»}. \emph{Operations Research} 54 (1):
 150-68. \url{https://doi.org/10.1287/opre.1050.0238}.
+
+\bibitem[\citeproctext]{ref-BoydVandenberghe2004}
+Boyd, Stephen, y Lieven Vandenberghe. 2004. \emph{Convex Optimization}.
+Cambridge University Press.
+\url{https://doi.org/10.1017/CBO9780511804441}.
 
 \bibitem[\citeproctext]{ref-Byrd1995}
 Byrd, Richard H., Peihuang Lu, Jorge Nocedal, y Ciyou Zhu. 1995. {«A
@@ -7903,6 +8971,10 @@ Zhu, C., R. H. Byrd, P. Lu, y J. Nocedal. 1997. {«Algorithm 778:
 L-BFGS-B: Fortran subroutines for large-scale bound-constrained
 optimization»}. \emph{ACM Transactions on Mathematical Software} 23 (4):
 550-60. https://doi.org/\url{https://doi.org/10.1145/279232.279236}.
+
+\bibitem[\citeproctext]{ref-Zipkin2000}
+Zipkin, Paul H. 2000. \emph{Foundations of Inventory Management}.
+McGraw-Hill.
 
 \bibitem[\citeproctext]{ref-Zoutendijk1970}
 Zoutendijk, G. 1970. {«Nonlinear programming, computational methods»}.

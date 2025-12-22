@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -35,18 +35,19 @@ ul.task-list li input[type="checkbox"] {
 <link href="../FCFMLOGO.png" rel="icon" type="image/png">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-b6e6edf6cb1293d7f667c2f39c143ab5.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-c3c2c9e745155556954bc4da23476b10.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-b6e6edf6cb1293d7f667c2f39c143ab5.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-d640c705e8c17715bca3574aa719063f.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d6a2ae2cb249da1580f0a11f71b8f854.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-d640c705e8c17715bca3574aa719063f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-8214a2def84fb786748306236f71585f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-dedc67fb57f33d5f39d2824a25da7f7f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-8214a2def84fb786748306236f71585f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-10823eed696f315f81b4c50da6877034.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-5eaa1124f48225b1c9248949fa6ad723.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-10823eed696f315f81b4c50da6877034.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -61,7 +62,7 @@ ul.task-list li input[type="checkbox"] {
   ],
   "show-item-context": false,
   "language": {
-    "search-no-results-text": "Sin resultados",
+    "search-no-results-text": "No se han encontrado resultados",
     "search-matching-documents-text": "documentos encontrados",
     "search-copy-link-title": "Copiar el enlace en la búsqueda",
     "search-hide-matches-text": "Ocultar resultados adicionales",
@@ -115,7 +116,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -319,7 +320,8 @@ window.Quarto = {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="../index.html" class="sidebar-logo-link">
-      <img src="../LOGO.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      <img src="../LOGO.png" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none">
+      <img src="../LOGO.png" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
       <a href="../">Inundaciones</a> 
@@ -533,7 +535,7 @@ w_j &amp;= 0.20 \times DICONSA_j + 0.20 \times AccesoVial_j + 0.20 \times Escuel
 <h2 data-number="7.3" class="anchored" data-anchor-id="resultados-del-cálculo-de-pesos-posicionales"><span class="header-section-number">7.3</span> Resultados del cálculo de pesos posicionales</h2>
 <section id="ranking-de-localidades-estratégicas" class="level3" data-number="7.3.1">
 <h3 data-number="7.3.1" class="anchored" data-anchor-id="ranking-de-localidades-estratégicas"><span class="header-section-number">7.3.1</span> Ranking de localidades estratégicas</h3>
-<p>El análisis multicriterio identificó las localidades con mayor potencial logístico en Cacahoatán, como se muestra en la <a href="#tbl-top10-cacahoatan" class="quarto-xref">Tabla&nbsp;<span class="quarto-unresolved-ref">tbl-top10-cacahoatan</span></a>.</p>
+<p>El análisis multicriterio identificó las localidades con mayor potencial logístico en Cacahoatán, como se muestra en la <a href="#tbl-top10-cacahoatan" class="quarto-xref">Tabla&nbsp;<span>7.1</span></a>.</p>
 <div id="tbl-top10-cacahoatan" class="tbl-caption quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl quarto-uncaptioned" id="tbl-top10-cacahoatan-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -1334,7 +1336,7 @@ Figura&nbsp;7.3: Distribución de la población afectada por grupos de edad en C
 <h2 data-number="7.5" class="anchored" data-anchor-id="resultados-de-la-optimización-del-sistema"><span class="header-section-number">7.5</span> Resultados de la optimización del sistema</h2>
 <section id="eficiencia-del-sistema-logístico-implementado" class="level3" data-number="7.5.1">
 <h3 data-number="7.5.1" class="anchored" data-anchor-id="eficiencia-del-sistema-logístico-implementado"><span class="header-section-number">7.5.1</span> Eficiencia del sistema logístico implementado</h3>
-<p>La configuración con un almacén primario demostró capacidad para atender al <span class="math inline">\(100\%\)</span> de la población afectada. Los resultados de la optimización se resumen en la Tabla <a href="#tbl-optimizacion-cacahoatan" class="quarto-xref">Tabla&nbsp;<span class="quarto-unresolved-ref">tbl-optimizacion-cacahoatan</span></a>.</p>
+<p>La configuración con un almacén primario demostró capacidad para atender al <span class="math inline">\(100\%\)</span> de la población afectada. Los resultados de la optimización se resumen en la Tabla <a href="#tbl-optimizacion-cacahoatan" class="quarto-xref">Tabla&nbsp;<span>7.4</span></a>.</p>
 <div id="tbl-optimizacion-cacahoatan" class="tbl-caption quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl quarto-uncaptioned" id="tbl-optimizacion-cacahoatan-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -1735,13 +1737,14 @@ Figura&nbsp;7.5: Distribución de los costos totales según el tipo de producto 
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

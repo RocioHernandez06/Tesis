@@ -961,8 +961,8 @@ En el contexto del modelo propuesto, el problema de optimización adopta la form
 
 $$
 \min_{Q \in \mathbb{R}^n} f(Q)
-\quad \text{sujeto a} \quad Q \ge \mathbf{1}, \tag{3.75}
-$$
+\quad \text{sujeto a} \quad Q \geq \mathbf{1}
+$$ {#eq-min_Q_restriccion}
 
 donde $\mathbf{1} \in \mathbb{R}^n$ es el vector de unos, y $f : \mathbb{R}^n \to \mathbb{R}$ representa un funcional diferenciable derivado de la formulación teórica del modelo (por ejemplo, una energía libre regularizada, un potencial penalizado o un costo de control con barrera logarítmica).  
 

@@ -630,7 +630,7 @@ Las tres familias de restricciones tienen interpretaciones operativas precisas:
 
 
 
-#### **Propiedades estructurales del espacio $\mathcal{X}$**
+### **Propiedades estructurales del espacio $\mathcal{X}$**
 
 #### **Proposición (No convexidad y no conexidad).**
 
@@ -745,7 +745,7 @@ La función $Z$ es **afín en $y$** para $x$ fijo, y **lineal en $x$** cuando $y
 
 
 
-#### **Propiedades analíticas de $Z$**
+### **Propiedades analíticas de $Z$**
 
 #### **Proposición (Continuidad y acotación inferior)**
 
@@ -1592,7 +1592,7 @@ Este análisis refuerza la necesidad de adoptar formulaciones estocásticas rigu
 Tras formular la función de costo total extendida en la Sección 2.4 y derivar su expresión determinista efectiva en la Sección 2.6.1, es necesario establecer las propiedades analíticas fundamentales del problema de optimización unidimensional resultante. En esta sección, se analiza rigurosamente el problema $\min_{Q \geq 1} f(Q)$, demostrando la existencia y unicidad del minimizador, así como el comportamiento asintótico de la función objetivo en los extremos del dominio. Estas propiedades son esenciales para justificar la aplicabilidad de las condiciones de optimalidad clásicas y para garantizar la estabilidad de los métodos numéricos empleados en la resolución.
 
 
-### Formulación del problema de optimización: $\min_{Q \geq 1} f(Q)$
+### Formulación del problema de optimización: minimización de $f(Q)$ sujeto a $Q \geq 1$
 
 En el contexto del modelo de inventario extendido presentado en la Sección 2.1.2, la determinación del tamaño óptimo de lote se reduce a un problema de optimización escalar en la variable continua $Q > 0$. Tras aislar los términos que dependen explícitamente de $Q$ en la función de costo total extendida (2.1), se obtiene la función objetivo efectiva:
 
