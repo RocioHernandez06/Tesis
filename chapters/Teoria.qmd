@@ -22,7 +22,7 @@ En este marco, el **problema integrado de localización e inventario** se ha con
 
 Ambas decisiones condicionan el desempeño global del sistema en términos de costo total, robustez operativa y equidad en la atención. Su naturaleza híbrida, estratégica (ubicación) y táctica (inventario), impone desafíos estructurales que no pueden abordarse mediante enfoques secuenciales o modelos clásicos aislados.
 
-Aunque la demanda en estos escenarios es inherentemente incierta, en este trabajo se adopta un **enfoque determinista robusto**, ampliamente fundamentado en la teoría de inventarios bajo demanda aleatoria (@HadleyWhitin1963). Este enfoque no modela la incertidumbre mediante variables aleatorias ni formulaciones estocásticas, sino que la **incorpora de forma paramétrica** mediante un **stock de seguridad fijo**, derivado de estimaciones de la variabilidad de la demanda.
+Aunque la demanda en estos escenarios es inherentemente incierta, en este trabajo se adopta un **enfoque determinista robusto**, ampliamente fundamentado en la teoría de inventarios bajo demanda aleatoria del artículo seminal @HadleyWhitin1963. Este enfoque no modela la incertidumbre mediante variables aleatorias ni formulaciones estocásticas, sino que la **incorpora de forma paramétrica** mediante un **stock de seguridad fijo**, derivado de estimaciones de la variabilidad de la demanda.
 
 Específicamente, se asume que la demanda en cada localidad $j\in\mathcal{J}$ posee un valor esperado $d_j>0$ y una desviación estándar $\sigma_j\geq0$, ambos tratados como **parámetros exógenos conocidos**. Dado un tiempo de reposición $L>0$ y un nivel de servicio objetivo $\alpha\in(0,1)$, se define el **factor de seguridad** como $Z=\Phi^{-1}(\alpha)$, donde $\Phi^{-1}$ denota la inversa de la función de distribución acumulada de la normal estándar. Aunque esta construcción tiene raíces probabilísticas, en el modelo propuesto **todos los elementos son deterministas**, y el término $Z\sigma\sqrt{L}$ se incorpora como un parámetro de ajuste que refleja la magnitud de la incertidumbre.
 
@@ -30,7 +30,7 @@ Este enfoque permite formular un **modelo de optimización no lineal determinist
 
 ###  Limitaciones de los enfoques clásicos bajo incertidumbre y no linealidad
 
-Los modelos clásicos de localización e inventario, como el Uncapacitated Facility Location Problem (UFLP) y el Economic Order Quantity (EOQ) model o sus variantes deterministas, han sido ampliamente estudiados bajo el supuesto de **información perfecta y estructura lineal**, un enfoque cuya pertinencia disminuye notablemente en escenarios humanitarios caracterizados por **incertidumbre estructural** y **no linealidad inherente** en costos y restricciones (@HadleyWhitin1963; @Snyder2006).
+Los modelos clásicos de localización e inventario, como el Uncapacitated Facility Location Problem (UFLP) y el Economic Order Quantity (EOQ) model o sus variantes deterministas, han sido ampliamente estudiados bajo el supuesto de **información perfecta y estructura lineal**, un enfoque cuya pertinencia disminuye notablemente en escenarios humanitarios caracterizados por **incertidumbre estructural** y **no linealidad inherente** en costos y restricciones como se representa en @HadleyWhitin1963; @Snyder2006.
 
 ####  Supuestos restrictivos del modelo EOQ clásico
 
@@ -39,7 +39,7 @@ El modelo EOQ se fundamenta en supuestos como:
 1. Demanda constante y conocida $D>0$.
 2. Tiempo de entrega determinista $L \geq 0$.
 3. Costos lineales: costo de pedido $S$, costo unitario de mantenimiento $H$, sin faltantes.
-4. Reposición instantánea y sin restricciones de capacidad (@HadleyWhitin1963).
+4. Reposición instantánea y sin restricciones de capacidad, de acuerdo con los supuestos planteados por @HadleyWhitin1963.
 
 El costo total del modelo es:
 
@@ -58,11 +58,11 @@ Este resultado depende de la **deterministicidad** y la **convexidad estricta**.
 - La demanda es aleatoria $D(\omega)$.
 - $L$ es incierto debido a afectaciones en infraestructura.
 - Los faltantes deben modelarse mediante una penalización finita $\beta>0$.
-- Los costos pueden presentar economías de escala y no convexidades (@Porteus2002).
+- Los costos pueden presentar economías de escala y no convexidades, es decir, situaciones donde el costo promedio por unidad disminuye al aumentar el volumen de pedido o transporte, como se discute en @Porteus2002.
 
 ####  Incapacidad del EOQ para capturar riesgo
 
-Aunque la demanda en contextos humanitarios es inherentemente estocástica, en este trabajo se adopta un enfoque determinista robusto, ampliamente utilizado en la teoría de inventarios bajo incertidumbre (@Porteus2002, @Zipkin2000). Bajo los supuestos clásicos de demanda normal durante el tiempo de entrega, política de revisión continua y costo lineal por faltante, el costo total esperado puede aproximarse mediante una función determinista del tamaño de lote $Q$. Esta aproximación incorpora los efectos de la incertidumbre a través del inventario de seguridad $Z_\alpha \sigma_L$ y la penalización esperada por faltantes, pero su optimización se realiza como un problema determinista.
+Aunque la demanda en contextos humanitarios es inherentemente estocástica, en este trabajo se adopta un enfoque determinista robusto, ampliamente utilizado en la teoría de inventarios bajo incertidumbre como se expone en @Porteus2002 y @Zipkin2000. Bajo los supuestos clásicos de demanda normal durante el tiempo de entrega, política de revisión continua y costo lineal por faltante, el costo total esperado puede aproximarse mediante una función determinista del tamaño de lote $Q$. Esta aproximación incorpora los efectos de la incertidumbre a través del inventario de seguridad $Z_\alpha \sigma_L$ y la penalización esperada por faltantes, pero su optimización se realiza como un problema determinista.
 
 Si la demanda durante el tiempo de entrega se modela como $D_L \sim \mathcal{N}(\mu_L, \sigma_L^2)$, el nivel de inventario debe satisfacer:
 $$
@@ -76,7 +76,7 @@ $$
 Z(Q)=\frac{D}{Q}S+\left(\frac{Q}{2}+Z_\alpha\sigma_L\right)H+DC+\frac{D}{Q}\beta C. 
 $$ {#eq-Z(q)}
 
-Esta función **no es convexa globalmente** cuando $\sigma_L$ depende de $Q$, como ocurre cuando existe congestión en transporte o variabilidad dependiente del tamaño del pedido (@BertsimasThiele2006; @ShapiroDentchevaRuszczynski2021).
+Esta función **no es convexa globalmente** cuando $\sigma_L$ depende de $Q$, como ocurre cuando existe congestión en transporte o variabilidad dependiente del tamaño del pedido, aspectos estudiados por @BertsimasThiele2006 y @ShapiroDentchevaRuszczynski2021.
 
 > **Proposición  (No linealidad estricta).**  
 > La función $Z(Q)$ definida en (2.1) es diferenciable en $(0,\infty)$, pero no es convexa globalmente si $\beta>0$ y $\sigma_L>0$.  
@@ -148,10 +148,12 @@ $$
 
 Sustituyendo los valores:
 
-$$
-Z(Q)=\frac{Q}{1000}(100+500)+\left(\frac{2}{Q}+5.20\right)\cdot5+10000
-=\frac{Q}{600000}+2.5Q+10026.
-$$
+
+\begin{align*}
+Z(Q) &= \frac{Q}{1000}(100+500) + \left(\frac{2}{Q} + 5.20\right)\cdot 5 + 10000 \\
+     &= \frac{Q}{600000} + 2.5Q + 10026.
+\end{align*}
+
 
 Minimizando esta función determinista:
 
@@ -187,7 +189,7 @@ Sea:
 - $y = (y_{ij}) \in \mathbb{R}_+^{m\times n}$ los flujos desde almacenes a localidades,
 - $s = (s_1,\dots,s_m)^\top \in \mathbb{R}_+^m$ el inventario preposicionado.
 
-El espacio factible se define como:
+El espacio factible se define como el conjunto:
 
 $$
 \mathcal{X} := \left\{ (x, y, s) \;\middle|\;
@@ -204,7 +206,7 @@ $$ {#eq-EF}
 
 Aquí, $d_j > 0$ representa la demanda de la localidad $j$ y $M$ es un parámetro de gran magnitud. La tercera restricción impone un vínculo lógico: si $x_i = 0$, entonces $s_i = 0$ y, en consecuencia, $y_{ij} = 0$ para todo $j \in \mathcal{J}$.
 
-Este acoplamiento, combinado con la naturaleza **binaria** de las variables $x_i$, impide que el conjunto factible $\mathcal{X}$ sea convexo. La no convexidad se debe exclusivamente a la **discreción** de las variables $x_i$: el promedio de dos puntos factibles con configuraciones distintas de infraestructura no es factible, ya que viola la condición $x_i \in \{0,1\}$. Esta propiedad, la ausencia de convexidad en el conjunto factible debido a variables enteras, es bien conocida en la teoría de optimización mixta ver @Bertsekas1999.
+Este acoplamiento, combinado con la naturaleza **binaria** de las variables $x_i$, impide que el conjunto factible $\mathcal{X}$ sea convexo. La no convexidad se debe exclusivamente a la **discreción** de las variables $x_i$: el promedio de dos puntos factibles con configuraciones distintas de infraestructura no es factible, ya que viola la condición $x_i \in \{0,1\}$. Esta propiedad, la ausencia de convexidad en el conjunto factible debido a variables enteras, es bien conocida en la teoría de optimización mixta, como puede verse en el ejemplo de selección de proyectos presentado por @Bertsekas1999 donde las decisiones binarias de aceptar o rechazar proyectos generan un conjunto factible no convexo.
 
 > **Proposición (No convexidad).**  
 > El conjunto $\mathcal{X}$ definido en (2.2) **no es convexo**.  
@@ -215,7 +217,7 @@ Debido a esta no convexidad, el problema **no pertenece a la clase de optimizaci
 
 ####  Función objetivo y acoplamiento estructural
 
-El costo total del sistema se modela como:
+La función objetivo del modelo de ubicación de almacenes e inventario humanitario se define como:
 
 $$
 Z(x,y,s) 
@@ -228,6 +230,7 @@ $$ {#eq-Z(xys)}
 Aunque la parte en variables continuas es lineal, el término $f_i(x_i)$ introduce una **no linealidad discreta**, ya que $x_i \in \{0,1\}$. Esta discontinuidad, combinada con el acoplamiento lógico $s_i \leq M x_i$, da lugar a un **espacio de decisiones no convexo y combinatorio**.
 
 La dificultad computacional del problema se debe a la interacción entre variables discretas y continuas, que genera una estructura no separable y no convexa, característica de los **programas mixtos-enteros no lineales (MINLP)**. Como señalan @Grossmann2002, esta clase de problemas es computacionalmente exigente porque:
+
 - no se puede aplicar directamente la optimización convexa,
 - los métodos de enumeración son inviables en problemas de tamaño moderado,
 - y la no linealidad impide el uso de técnicas eficientes basadas en planos de corte o relajaciones lineales exactas.
@@ -253,7 +256,7 @@ Esto produce una dependencia en cascada que elimina la separabilidad global del 
 Esta propiedad, consistente en *la convexidad del subproblema continuo para una configuración de apertura fija*, es fundamental para la aplicación de métodos de descomposición, tales como el algoritmo de Benders. En dichos enfoques, el problema original se divide en:
 
 - **problema maestro**, que maneja las variables enteras ($x$) y genera configuraciones candidatas, y
-- un **subproblema**, que, para una configuración dada, resuelve el problema continuo (aquí, lineal) y devuelve información (por ejemplo, cortes de Benders) para refinar el problema maestro (@Wolsey1998).
+- un **subproblema**, que, para una configuración dada, resuelve el problema continuo (aquí, lineal) y devuelve información (por ejemplo, cortes de Benders) para refinar el problema maestro, siguiendo la metodología de descomposición descrita en @Wolsey1998.
 
 #### Ejemplo ilustrativo: interacción discreto–continuo
 
@@ -404,7 +407,7 @@ x_i = 0 \;\Rightarrow\; y_{ij} = 0 \quad \forall j \in \mathcal{J}.
 $$
 
 
-### **Ejemplo ilustrativo: interpretación y acoplamiento de variables**
+### **Ejemplo ilustrativo: interpretación y acoplamiento de variables** {#sec-ejemplo-ilustrativo}
 
 Sea:
 
@@ -412,7 +415,7 @@ $$
 \mathcal{I} = \{1,2,3\}, \qquad \mathcal{J} = \{1,2,3,4\}.
 $$
 
-Supóngase que se decide abrir instalaciones en $i=1$ y $i=3$, pero no en $i=2$:
+Supóngase que se decide abrir almacenes en $i=1$ y $i=3$, pero no en $i=2$:
 
 $$
 x = (1,0,1).
@@ -471,13 +474,13 @@ el **costo unitario de transportar** una unidad desde la instalación $i$ hasta 
 $$
 c_{ij}\ge 0,\quad \forall i,j,
 $$
-y denotamos la matriz $C:=[c_{ij}]_{i,j}\in\mathbb{R}_+^{m\times n}$. En contextos humanitarios $c_{ij}$ incorpora distancia, tiempo de acceso y penalizaciones por rutas inseguras; su estimación suele derivar de información geoespacial y modelos de capacidad vial como se presenta en @Daskin2013.
+y denotamos la matriz $C:=[c_{ij}]_{i,j}\in\mathbb{R}_+^{m\times n}$. En contextos humanitarios $c_{ij}$ incorpora distancia, tiempo de acceso y penalizaciones por rutas inseguras; su estimación suele derivar de información geoespacial y modelos de capacidad vial, los cuales constituyen insumos fundamentales en los modelos de localización descritos por @Daskin2013.
 
 #### Demanda esperada
 
 Para cada $j\in\mathcal{J}$, sea
 $$
-d_j\in\mathbb{R}_{+}-{0}
+d_j\in\mathbb{R}_{+}-\{0\}
 $$
 la **demanda esperada** en la localidad $j$ durante el horizonte considerado. Adicionalmente definimos el vector $d=(d_j)_{j\in\mathcal{J}}$. En la formulación determinista de referencia usamos $d_j$ como estimador puntual (p. ej. esperanza), con la advertencia explícita de que su uso directo puede producir soluciones frágiles en colas de distribución como lo argumenta @Snyder2006.
 
@@ -493,32 +496,33 @@ $$
 Para cada $i\in\mathcal{I}$ definimos la **capacidad máxima** $s_i^{\max}$ mediante
 $$
 s_i^{\max}\in\mathbb{R}_{+}\cup\{+\infty\}.
-$$
+$$ 
 
 La restricción de capacidad se escribe, asociada a la lógica de activación $x_i$:
 
 $$
 \sum_{j\in\mathcal{J}} y_{ij} \le s_i^{\max} x_i,\qquad \forall i\in\mathcal{I}.
-$$ {#eq-restriccion}
+$$ {#eq-capacidad-smax}
 
 En ausencia de un tope operativo se toma $s_i^{\max}=+\infty$ (modelo no capacitado); en práctica real $s_i^{\max}$ suele venir de disponibilidad física, limitaciones regulatorias o logísticas.
 
 
 #### Propiedades y observaciones formales
 
-1. **Dominios y no ambigüedad:** Todos los parámetros deben venir acompañados de su dominio y unidades. Esto evita ambigüedades en pruebas de existencia, estabilidad numérica y escalado de variables de acuerdo con las recomendaciones de @LewisOverton2013.
+1. **Dominios y no ambigüedad:** 
+Todos los parámetros deben venir acompañados de su dominio y unidades, lo cual evita ambigüedades en pruebas de existencia, estabilidad numérica y escalado de variables. La importancia de estas precisiones se refleja en la literatura sobre optimización numérica, como señalan @LewisOverton2013, donde la estabilidad depende críticamente de la correcta definición de las variables.
 
 2. **Dependencia discontinua de la solución óptima respecto a los parámetros:**  
 Pequeñas variaciones en los parámetros del modelo, como los costos fijos $f_i$, los costos de transporte $c_{ij}$, la demanda $d_j$ o la capacidad máxima $s_i^{\max}$, pueden inducir cambios abruptos en la configuración óptima de apertura de almacenes $x^*$.  
 
 Dado que el modelo se basa en estimaciones de parámetros sujetos a incertidumbre (por ejemplo, la demanda esperada $d_j = \mathbb{E}[D_j]$), es esencial evaluar la solución obtenida bajo múltiples escenarios plausibles y analizar su sensibilidad a perturbaciones en los datos. Este tipo de evaluación permite identificar soluciones no solo óptimas, sino también **estables y robustas ante errores en las estimaciones**, un aspecto crítico en contextos humanitarios donde la calidad de la información es limitada (@Snyder2006; @ShapiroDentchevaRuszczynski2021).
 
-3. **Elección de $M$ en big-M:** Si se usa la formulación $y_{ij}\le M x_i$ para acoplar variables (versus la formulación con $s_i^{\max}$), se recomienda elegir $M$ igual a una cota realista (ej. $\sum_j d_j$) para evitar degradación numérica; empero, la formulación (2.5) es preferible por su interpretación física y por estrechar el dominio factible.
+3. **Elección de $M$ en big-M:** Si se usa la formulación $y_{ij}\le M x_i$ para acoplar variables (versus la formulación con $s_i^{\max}$), se recomienda elegir $M$ igual a una cota realista (ej. $\sum_j d_j$) para evitar degradación numérica; empero, la formulación (@eq-capacidad-smax) es preferible por su interpretación física y por estrechar el dominio factible.
 
 
 #### Ejemplo numérico  (verificación de factibilidad y cálculo de costo)
 
-Tomemos la instancia didáctica ya utilizada en las secciones previas:
+Tomemos la instancia didáctica ya utilizada en la @sec-ejemplo-ilustrativo:
 
 - $\mathcal{I}=\{1,2,3\}$, $\mathcal{J}=\{1,2,3,4\}$.
 - Costos fijos (miles unidades monetarias): $f=(300,400,250)$.
@@ -544,7 +548,7 @@ $$
   \end{aligned}
   $$
 
-**Paso 1 — Comprobación de que se cumple la restricción de capacidades (ecuación (2.5)):**
+**Paso 1 — Comprobación de que se cumple la restricción de capacidades (@eq-capacidad-smax):**
 
 - Para $i=1$:
   $$
@@ -593,10 +597,21 @@ $$
 Z = 550\ (\text{miles}) + 1.770\ (\text{miles}) = 2.320\ \text{miles unidades monetarias}.
 $$
 
-**Interpretación:** la solución es factible y el costo cuantificado; variaciones en $d$, $c_{ij}$ o $f_i$ deben reevaluarse mediante análisis de sensibilidad y, en contextos reales, mediante formulaciones estocásticas o robustas (@Snyder2006; @ShapiroDentchevaRuszczynski2021).
+**Interpretación:** la solución es factible y el costo cuantificado; variaciones en $d$, $c_{ij}$ o $f_i$ deben reevaluarse mediante análisis de sensibilidad y, en contextos reales, mediante formulaciones **estocásticas** o **robustas**, como se discute en @Snyder2006 para problemas de localización y en @ShapiroDentchevaRuszczynski2021 para la teoría de optimización estocástica.  
 
+- En el enfoque **estocástico**, los parámetros inciertos (como la demanda) se modelan como variables aleatorias $\tilde d_j$ con distribución de probabilidad estimada a partir de datos históricos, y se optimiza el costo esperado (o una medida de riesgo, como el CVaR).  
+- En el enfoque **robusto**, se define un *conjunto de incertidumbre* $\mathcal{U}$ por ejemplo, un intervalo $d_j \in [\underline{d}_j, \overline{d}_j]$ o un conjunto de presupuesto $\sum_j \frac{|d_j - \bar d_j|}{\hat d_j} \leq \Gamma$ que contiene todos los valores plausibles de los parámetros, y se busca una solución que tenga buen desempeño incluso en el peor caso dentro de $mathcal{U}$.
 
-La especificación explícita de $f_i$, $c_{ij}$, $d_j$ y $s_i^{\max}$ permite no solo la construcción del problema determinista base sino también su extensión a modelos estocásticos (reemplazando $d_j$ por variables aleatorias $\tilde d_j$) o robustos (definiendo conjuntos de incertidumbre para $d_j$ y $c_{ij}$). La práctica recomendada (Lewis, 2003; Shapiro et al., 2021) es: (i) documentar fuentes y unidades de cada parámetro; (ii) fijar cotas realistas para $s_i^{\max}$ o $M$; y (iii) efectuar pruebas de sensibilidad sistemáticas antes de adoptar políticamente cualquier solución.
+La especificación explícita de $f_i$, $c_{ij}$, $d_j$ y $s_i^{\max}$ permite no solo la construcción del problema determinista base, sino también su extensión a:
+
+- **Modelos estocásticos**, donde $d_j$ se reemplaza por una variable aleatoria $\tilde d_j$;  
+- **Modelos robustos**, donde se define un conjunto de incertidumbre $\mathcal{U}$ para $d_j$ y $c_{ij}$, cuyos límites se basan en datos históricos, escenarios extremos o criterios de política (por ejemplo, “la demanda no excederá el doble de su valor promedio”).
+ 
+La práctica recomendada por @Lewis2003 y @ShapiroDentchevaRuszczynski2021, directamente relacionada con la robustez en optimización, consiste en:
+
+(i) documentar fuentes y unidades de cada parámetro;  
+(ii) fijar cotas realistas para $s_i^{\max}$ o $M$ (esenciales para definir $\mathcal{U}$ y evitar degradación numérica); y  
+(iii) efectuar pruebas de sensibilidad sistemáticas antes de adoptar políticamente cualquier solución.
 
 ### **Definición formal del espacio factible $\mathcal{X}$**
 
@@ -731,18 +746,17 @@ Z(x, y) :=
 \underbrace{\sum_{i \in \mathcal{I}} \sum_{j \in \mathcal{J}} c_{ij} y_{ij}}_{\text{(B) Costo de transporte}}
 +
 \underbrace{\sum_{i \in \mathcal{I}} h_i \left( \sum_{j \in \mathcal{J}} y_{ij} \right)}_{\text{(C) Costo de inventario}}.
-$$
+$$ {#eq-funcion-obje}
 
 Aquí, $h_i \ge 0$ es el **costo unitario de mantenimiento de inventario** en la instalación $i$. El término modela el costo asociado al volumen total preposicionado (equivalente al total despachado en el modelo determinista base).
 
 La función $Z$ es **afín en $y$** para $x$ fijo, y **lineal en $x$** cuando $y$ es tratado como variable libre. Sin embargo, en el dominio restringido $\mathcal{X}$, la interacción discontinua entre ambas familias de variables induce una **estructura global no lineal**.
 
-> **Observación  (Interpretación económica de los términos)**  
+> **Observación (Interpretación económica de los términos de (@eq-funcion-obje))**  
 > - (A): decisiones estratégicas de largo plazo.  
 > - (B): costos operativos de corto plazo.  
 > - (C): costo de oportunidad del inventario preposicionado.  
 > En logística humanitaria, $f_i$, $c_{ij}$ y $h_i$ pueden incorporar factores no monetarios (tiempo, riesgo, deterioro, ética), siempre que estén normalizados en una métrica común.
-
 
 
 ### **Propiedades analíticas de $Z$**
@@ -780,8 +794,7 @@ $$
 \right\}.
 $$
 
-Para cada $\bar{x}$ tal que $\mathcal{Y}(\bar{x}) \ne \emptyset$, el subproblema interno es un **problema de programación lineal** definido sobre un poliedro no vacío y acotado (ya que existen cotas inferiores por demanda y los coeficientes son no negativos). Por el teorema de existencia de mínimo en poliedros, el subproblema posee solución. Como el número de posibles $\bar{x}$ es finito, el mínimo global existe. ∎
-
+Para cada $\bar{x}$ tal que $\mathcal{Y}(\bar{x}) \ne \emptyset$, el subproblema interno es un **problema de programación lineal** definido sobre un poliedro no vacío y acotado (ya que existen cotas inferiores por demanda y los coeficientes son no negativos). Por el teorema fundamental de la programación lineal, el subproblema posee solución. Como el número de posibles $\bar{x}$ es finito, el mínimo global existe. ∎
 
 #### **Ejemplo ilustrativo: evaluación explícita de $Z(x, y)$**
 
@@ -846,7 +859,7 @@ El modelo EOQ se fundamenta en los siguientes supuestos deterministas, los cuale
 
 6. **Reposición instantánea y lote único**: Cada vez que el inventario llega a cero, se emite un pedido de tamaño fijo $Q > 0$, el cual es recibido íntegramente y de forma inmediata, restableciendo el inventario al nivel $Q$.
 
-Dado este conjunto de hipótesis, la evolución del inventario $x(t)$ en el tiempo sigue una trayectoria determinista en forma de diente de sierra: decrece linealmente desde $Q$ hasta $0$ a una tasa constante $d$, y luego se reabastece instantáneamente a $Q$. El periodo del ciclo es entonces $T = Q/d$. Estos supuestos, si bien facilitan el análisis matemático, imponen una estructura rígida que limita severamente la aplicabilidad del modelo en contextos donde la demanda es estocástica, los tiempos de entrega son inciertos o los faltantes son inevitables, situaciones comunes en operaciones humanitarias.
+Dado este conjunto de hipótesis, la evolución del inventario $x(t)$ en el tiempo sigue una trayectoria determinista en forma de diente de sierra: decrece linealmente desde $Q$ hasta $0$ a una tasa constante $d$, y luego se reabastece instantáneamente a $Q$. El periodo del ciclo es entonces $T = Q/d$. Estos supuestos, si bien facilitan el análisis, imponen una estructura rígida que limita severamente la aplicabilidad del modelo en contextos donde la demanda es estocástica, los tiempos de entrega son inciertos o los faltantes son inevitables, situaciones comunes en operaciones humanitarias.
 
 La formulación matemática del modelo EOQ se deriva directamente de estos supuestos, como se detalla en la sección siguiente. No obstante, ya en este punto es pertinente señalar que la idealización determinista del EOQ contrasta fuertemente con las condiciones operativas en logística humanitaria, donde la incertidumbre en la demanda y la criticidad de los faltantes exigen modelos más robustos y flexibles.
 
@@ -917,7 +930,7 @@ El número óptimo de pedidos anuales es $d / Q^* \approx 5.48$, y el costo tota
 $$
 C(Q^*) = \sqrt{2 \cdot 100 \cdot 1200 \cdot 5} = \sqrt{1\,200\,000} \approx 1095.45 \text{ unidades monetarias/año}.
 $$
-Este ejemplo, aunque sencillo, ilustra la sensibilidad del modelo a los parámetros de entrada y su dependencia crítica en la exactitud de las estimaciones de $d$, $K$ y $h$—un aspecto que se vuelve problemático cuando dichos parámetros son inciertos, como ocurre en entornos humanitarios.
+Este ejemplo, aunque sencillo, ilustra la sensibilidad del modelo a los parámetros de entrada y su dependencia crítica en la exactitud de las estimaciones de $d$, $K$ y $h$ un aspecto que se vuelve problemático cuando dichos parámetros son inciertos, como ocurre en entornos humanitarios.
 
 La derivación presentada demuestra que, bajo supuestos deterministas estrictos, el modelo EOQ admite una solución cerrada con propiedades analíticas claras. Sin embargo, esta elegancia matemática se ve comprometida en contextos donde dichos supuestos no se cumplen, motivando la necesidad de extensiones robustas o estocásticas.
 
@@ -940,7 +953,7 @@ donde $(\cdot)^+ = \max\{0, \cdot\}$. Si se introduce un costo unitario de falta
 $$
 \mathcal{C}(Q) = K + c \, \mathbb{E}[\tilde{D}] + h \, \mathbb{E}[(Q - \tilde{D})^+] + p \, \mathbb{E}[(\tilde{D} - Q)^+].
 $$
-Minimizar $\mathcal{C}(Q)$ conduce al modelo clásico de *newsvendor* (o *periódico*), cuya solución óptima $Q^{\text{NV}}$ satisface:
+Minimizar $\mathcal{C}(Q)$ conduce al modelo clásico de *newsvendor* (o *periódico*), cuya solución óptima denotada por $Q^{\text{NV}}$ satisface:
 $$
 F_D(Q^{\text{NV}}) = \frac{p - c}{p + h - c} \quad \text{(asumiendo } p > c\text{)}.
 $$
@@ -1011,7 +1024,7 @@ Sin embargo, minimizar el **valor esperado** puede ser insuficiente en contextos
 
 #### Incorporación de medidas de riesgo coherentes
 
-Para abordar esta preocupación, se propone reemplazar el operador de expectativa por una **medida de riesgo coherente** $\mathcal{R}: \mathcal{L} \to \mathbb{R}$, donde $\mathcal{L}$ es un espacio de variables aleatorias integrables. Siguiendo Artzner et al. (1999), una medida de riesgo coherente satisface: 
+Para abordar esta preocupación, se propone reemplazar el operador de expectativa por una **medida de riesgo coherente** $\mathcal{R}: \mathcal{L} \to \mathbb{R}$, donde $\mathcal{L}$ es un espacio de variables aleatorias integrables. Siguiendo @ArtznerDelbaenEberHeath1999, una medida de riesgo coherente satisface: 
 
 1. **Monotonía**: si $X \leq Y$ c.s., entonces $\mathcal{R}(X) \geq \mathcal{R}(Y)$,  
 2. **Invariancia traslacional**: $\mathcal{R}(X + a) = \mathcal{R}(X) - a$ para $a \in \mathbb{R}$,  
@@ -1122,7 +1135,6 @@ Consideremos un caso concreto para ilustrar el cálculo de $Z(Q)$ y su minimizac
 - $h = 3~\text{unidades monetarias/unidad}$,
 - $\phi(z) = z^2$ (penalización cuadrática, convexa, $\phi'(z) = 2z$).
 
-**Paso 1: Expresar $Z(Q)$ por tramos**
 
 Dado el soporte de $\tilde{D}$, analizamos tres casos:
 
@@ -1137,64 +1149,12 @@ $$
 Z(Q) = 200 + 15Q + 3 \int_{800}^Q (Q - d) \frac{1}{800} \, dd + \int_Q^{1600} (d - Q)^2 \frac{1}{800} \, dd.
 $$
 
-**Paso 2: Evaluar las integrales**
+Lo que permite expresar a $Z(Q)$ por tramos.
 
-Primera integral (mantenimiento):
-$$
-\int_{800}^Q (Q - d) \, dd = \left[ Qd - \frac{d^2}{2} \right]_{800}^Q = \frac{(Q - 800)^2}{2}.
-$$
+Lo anterior nos permite interpretar:
 
-Segunda integral (penalización):
-$$
-\int_Q^{1600} (d - Q)^2 \, dd = \left[ \frac{(d - Q)^3}{3} \right]_Q^{1600} = \frac{(1600 - Q)^3}{3}.
-$$
-
-Por tanto:
-$$
-Z(Q) = 200 + 15Q + \frac{3}{800} \cdot \frac{(Q - 800)^2}{2} + \frac{1}{800} \cdot \frac{(1600 - Q)^3}{3}.
-$$
-Simplificando:
-$$
-Z(Q) = 200 + 15Q + \frac{3 (Q - 800)^2}{1600} + \frac{(1600 - Q)^3}{2400}.
-$$
-
-**Paso 3: Derivar y encontrar el óptimo**
-
-Derivamos:
-$$
-Z'(Q) = 15 + \frac{3 \cdot 2 (Q - 800)}{1600} - \frac{3 (1600 - Q)^2}{2400}
-= 15 + \frac{3(Q - 800)}{800} - \frac{(1600 - Q)^2}{800}.
-$$
-
-Igualamos a cero:
-$$
-15 + \frac{3(Q - 800) - (1600 - Q)^2}{800} = 0
-\quad \Longrightarrow \quad
-3(Q - 800) - (1600 - Q)^2 = -12\,000.
-$$
-
-Desarrollando $(1600 - Q)^2 = 2\,560\,000 - 3200Q + Q^2$, obtenemos:
-$$
-3Q - 2400 - 2\,560\,000 + 3200Q - Q^2 = -12\,000
-\quad \Longrightarrow \quad
--Q^2 + 3203Q - 2\,550\,400 = 0.
-$$
-
-Resolviendo la ecuación cuadrática:
-$$
-Q = \frac{-3203 \pm \sqrt{3203^2 - 4 \cdot (-1) \cdot (-2\,550\,400)}}{-2}
-\approx \frac{-3203 \pm \sqrt{10\,259\,209 - 10\,201\,600}}{-2}
-= \frac{-3203 \pm \sqrt{57\,609}}{-2}.
-$$
-
-Dado que $\sqrt{57\,609} \approx 240$, la raíz viable en $(800,1600)$ es:
-$$
-Q^\star \approx \frac{-3203 + 240}{-2} = \frac{-2963}{-2} \approx 1481.5.
-$$
-
-**Paso 4: Interpretación**
-
-El óptimo $Q^\star \approx 1482$ unidades está significativamente por encima de la media de la demanda ($1200$), reflejando el efecto de la penalización cuadrática: el modelo prefiere incurrir en costos de sobreinventario para evitar faltantes, especialmente los grandes. Esto contrasta fuertemente con una solución EOQ ingenua ($Q^{\text{EOQ}} \approx \sqrt{2Kd/h} \approx \sqrt{2\cdot200\cdot1200/3} \approx 400$), que sería catastróficamente insuficiente.
+- El óptimo $Q^\star \approx 1482$ unidades está significativamente por encima de la media de la demanda ($1200$), reflejando el efecto de la penalización cuadrática: el modelo prefiere incurrir en costos de sobreinventario para evitar faltantes, especialmente los grandes.  
+- Esto contrasta fuertemente con una solución EOQ ingenua ($Q^{\text{EOQ}} \approx \sqrt{2Kd/h} \approx \sqrt{2\cdot200\cdot1200/3} \approx 400$), que sería catastróficamente insuficiente.
 
 Este ejemplo demuestra que la función $Z(Q)$, aunque más compleja que su contraparte EOQ, es analíticamente manejable en casos paramétricos y produce decisiones coherentes con los principios de la logística humanitaria: **precaución, equidad y protección de la vida humana**.
 
@@ -1235,6 +1195,7 @@ Este valor $\beta^\star$ cuantifica la **cobertura estocástica** lograda por la
 #### Derivación de $z^\star$ bajo la penalización cuadrática
 
 Para ilustrar esta interpretación, retomamos el ejemplo de la sección 2.4.1 con $\tilde{D} \sim \text{Uniforme}(800, 1600)$. Tenemos:
+
 - $\mu_D = (800 + 1600)/2 = 1200$,
 - $\sigma_D^2 = (1600 - 800)^2 / 12 = 640\,000 / 12 \approx 53\,333.33$,
 - $\sigma_D \approx \sqrt{53\,333.33} \approx 230.94$.
@@ -1265,8 +1226,7 @@ F_D(Q^\star) = \frac{p - c}{p + h - c},
 $$
 lo que implica un $z^\star$ fijo para una distribución dada recuperando el modelo de *newsvendor*. En cambio, si $\phi$ es convexa y creciente (como $z^{1.5}$, $e^{\lambda z}$, etc.), $z^\star$ aumenta con la curvatura de $\phi$, reflejando mayor aversión a los faltantes extremos.
 
-Más aún, si en lugar de minimizar $\mathbb{E}[C(Q,\tilde{D})]$ se minimiza $\text{CVaR}_\beta(C(Q,\tilde{D}))$, el factor $z^\star$ se ajusta explícitamente para controlar la magnitud de los peores $(1 - \beta) \times 100\%$ escenarios, lo que puede llevar a valores de $z^\star$ significativamente mayores que los obtenidos bajo valor esperado una propiedad deseable en logística humanitaria.
-
+Más aún, si en lugar de minimizar $\mathbb{E}[C(Q,\tilde{D})]$ se minimiza $\text{CVaR}_\beta(C(Q,\tilde{D}))$ (Valor Condicional en Riesgo, una medida coherente del promedio de las peores pérdidas), el factor $z^\star$ se ajusta explícitamente para controlar la magnitud de los peores $(1 - \beta) \times 100\%$ escenarios, lo que puede llevar a valores de $z^\star$ significativamente mayores que los obtenidos bajo valor esperado una propiedad deseable en logística humanitaria.
 
 El término $z^\star \sigma_D$ (análogo al clásico $z_\beta \sigma_L$) proporciona una **métrica interpretable** del compromiso entre costo y riesgo en el modelo extendido. A diferencia del enfoque clásico, donde $z_\beta$ es un parámetro de diseño impuesto por el decisor, aquí $z^\star$ emerge de la estructura de costos y la distribución de la demanda, encapsulando de forma rigurosa la **aversión implícita al riesgo humanitario**. Esta interpretación será crucial al integrar el modelo de inventario con decisiones de localización, donde distintas zonas de cobertura exhibirán diferentes perfiles de incertidumbre y, por tanto, distintos factores de seguridad óptimos.
 
@@ -1280,6 +1240,7 @@ En esta sección, desarrollamos rigurosamente una versión del modelo extendido 
 #### Formulación de la función de costo con $\beta_C$
 
 Sea $\psi: \mathbb{R}_+ \to \mathbb{R}_+$ una función de forma normalizada, tal que:
+
 - $\psi(0) = 0$,
 - $\psi$ es estrictamente creciente y convexa,
 - $\psi \in \mathcal{C}^1(\mathbb{R}_{>0})$,
@@ -1377,7 +1338,7 @@ $$
 
 **Interpretación**: Un valor de $\beta_C \approx 0.03$ induce una política que satisface la restricción ética sobre el faltante cuadrático esperado. Valores menores de $\beta_C$ violarían la restricción; valores mayores la satisfarían con margen, pero a un costo de inventario innecesariamente alto.
 
-Este ejemplo ilustra cómo $\beta_C$ puede **calibrarse** para alinear el modelo con objetivos operativos o éticos específicos, superando la arbitrariedad de asignar costos monetarios directos a vidas o sufrimiento humano. La parametrización mediante $\beta_C$ introduce flexibilidad sin sacrificar rigor matemático, y prepara el terreno para su integración en un modelo de localización-inventario multiperiodo con múltiples zonas de cobertura.
+Este ejemplo ilustra cómo $\beta_C$ puede calibrarse para alinear el modelo con objetivos operativos o éticos específicos, superando la arbitrariedad de asignar costos monetarios directos a vidas o sufrimiento humano. La parametrización mediante $\beta_C$ introduce flexibilidad sin sacrificar rigor matemático, y prepara el terreno para su integración en un modelo de localización-inventario multiperiodo con múltiples zonas de cobertura.
 
 > **Nota**: En el Capítulo 3, el parámetro $\beta_C$ se generalizará a un conjunto $\{\beta_{C,i}\}_{i \in I}$, permitiendo que distintas localidades candidatas reflejen diferentes niveles de criticidad humanitaria.
 
@@ -1453,7 +1414,7 @@ $$
 
 **Paso 3: Comparación con escenario determinista**
 
-Si se ignorara la incertidumbre en $L$ y se usara $\mathbb{E}[L] = 20$, se subestimaría la variancia:  
+Si se ignorara la incertidumbre en $L$ y se usara $\mathbb{E}[L] = 20$, se subestimaría la varianza:  
 $\operatorname{Var}(\tilde{D}_{20}) = 4 \cdot 20 = 80 \ll 10\,080$.
 
 **Paso 4: Consecuencia en el inventario de seguridad**
@@ -1525,51 +1486,37 @@ El caso más revelador ocurre cuando **$K \to 0$**: entonces $Q^{\text{EOQ}} \to
 #### Ejemplo de demostración del efecto descendente
 
 Consideremos los siguientes parámetros:
+
 - $\tilde{D} \sim \text{Normal}(\mu_D = 1000, \sigma_D = 300)$,
 - $c = 20~\text{unidades monetarias/unidad}$,
 - $h = 2~\text{unidades monetarias/unidad}$,
 - $p = 25~\text{unidades monetarias/unidad}$ (penalización lineal),
 - $K = 1000~\text{unidades monetarias}$ (costo fijo "administrativo" asignado arbitrariamente).
 
-**Paso 1: Solución EOQ**
+**El tamaño óptimo del pedido bajo el modelo EOQ** es:
 $$
-Q^{\text{EOQ}} = \sqrt{\frac{2 \cdot 1000 \cdot 1000}{2}} = \sqrt{1\,000\,000} = 1000.
+Q^{\text{EOQ}} = \sqrt{\frac{2 \cdot K \cdot \mu_D}{h}} = \sqrt{\frac{2 \cdot 1000 \cdot 1000}{2}} = \sqrt{1\,000\,000} = 1000.
 $$
 
-**Paso 2: Solución *newsvendor* (modelo extendido lineal)**
-El nivel de servicio crítico es:
-$$
-\beta_{\text{NV}} = \frac{p - c}{p + h - c} = \frac{25 - 20}{25 + 2 - 20} = \frac{5}{7} \approx 0.714.
-$$
-El cuantil correspondiente para la normal estándar es $z_{0.714} \approx 0.57$. Por tanto:
-$$
-Q^\star = \mu_D + z_{0.714} \sigma_D = 1000 + 0.57 \cdot 300 \approx 1171.
-$$
-Aquí, $Q^\star > Q^{\text{EOQ}}$, como se esperaría.
-
-**Paso 3: Modificación para inducir el efecto descendente**
-
-Ahora supongamos que el costo unitario es más alto, y la penalización más baja:
-- $c = 24~\text{unidades monetarias/unidad}$,
-- $p = 25~\text{unidades monetarias/unidad}$ (penalización marginal apenas positiva),
-- $K = 5000~\text{unidades monetarias}$ (costo fijo inflado por burocracia percibida).
-
-EOQ:
+Sin embargo, en contextos donde el costo unitario es más alto y la penalización por faltantes es apenas marginal, por ejemplo, al considerar $c = 24$, $p = 25$ y un costo fijo inflado por burocracia percibida ($K = 5000$), el modelo EOQ arroja un tamaño de lote considerablemente mayor:
 $$
 Q^{\text{EOQ}} = \sqrt{\frac{2 \cdot 5000 \cdot 1000}{2}} = \sqrt{5\,000\,000} \approx 2236.
 $$
 
-*Newsvendor*:
+En contraste, el modelo *newsvendor*, que incorpora explícitamente la incertidumbre en la demanda, produce una solución más conservadora. El cuantil óptimo es:
 $$
-\beta_{\text{NV}} = \frac{25 - 24}{25 + 2 - 24} = \frac{1}{3} \approx 0.333,
-\quad z_{0.333} \approx -0.43,
-\quad Q^\star = 1000 - 0.43 \cdot 300 \approx 871.
+\beta_{\text{NV}} = \frac{p - c}{p + h - c} = \frac{25 - 24}{25 + 2 - 24} = \frac{1}{3} \approx 0.333,
+$$
+lo que implica $z_{0.333} \approx -0.43$ y, por tanto,
+$$
+Q^\star = \mu_D + z_{\beta} \cdot \sigma_D = 1000 - 0.43 \cdot 300 \approx 871.
 $$
 
-Ahora:
+Así, se observa claramente el **efecto descendente**:  
 $$
-Q^\star \approx 871 \quad < \quad Q^{\text{EOQ}} \approx 2236.
+Q^\star \approx 871 \quad < \quad Q^{\text{EOQ}} \approx 2236,
 $$
+lo que ilustra que, bajo alta incertidumbre y baja penalización marginal, el modelo estocástico recomienda pedidos **más pequeños** que el modelo determinista, incluso cuando este último sugiere un lote grande por el alto costo fijo.
 
 **Interpretación**: Aunque el EOQ sugiere almacenar más de dos veces la demanda media, el modelo estocástico que reconoce que el costo marginal de comprar una unidad adicional ($24$) es casi tan alto como la penalización por no satisfacerla ($25$) prefiere aceptar faltantes frecuentes a incurrir en altos costos de compra e inventario. En contextos humanitarios, este escenario es poco común (pues $p \gg c$ usualmente), pero **ilustra que el EOQ no es un límite inferior universal**: su validez depende críticamente de la correcta especificación de $K$, y su uso con parámetros no calibrados puede llevar a decisiones excesivamente conservadoras en inventario, con implicaciones de costo y espacio de almacenamiento innecesarias.
 
@@ -1594,17 +1541,18 @@ Tras formular la función de costo total extendida en la Sección 2.4 y derivar 
 
 ### Formulación del problema de optimización: minimización de $f(Q)$ sujeto a $Q \geq 1$
 
-En el contexto del modelo de inventario extendido presentado en la Sección 2.1.2, la determinación del tamaño óptimo de lote se reduce a un problema de optimización escalar en la variable continua $Q > 0$. Tras aislar los términos que dependen explícitamente de $Q$ en la función de costo total extendida (2.1), se obtiene la función objetivo efectiva:
+En el contexto del modelo de inventario extendido presentado en la Sección 3.1.2, la determinación del tamaño óptimo de lote se reduce a un problema de optimización escalar en la variable continua $Q > 0$. Tras aislar los términos que dependen explícitamente de $Q$ en la función de costo total extendida (3.1), se obtiene la función objetivo efectiva:
 
 $$
 f(Q) := \frac{K}{Q} + a Q, \quad Q > 0,
 $$ {#eq-fQ_25}
 
-donde los parámetros están definidos como:
-- $K := D(S + \beta C) > 0$,
-- $a := H/2 > 0$.
+donde hemos definido  
+$$
+K := D\bigl(S + \beta C\bigr) \quad \text{y} \quad a := \frac{H}{2}.
+$$ 
 
-Estos parámetros son estrictamente positivos bajo las hipótesis operativas estándar (demanda positiva, costos no negativos, penalización estrictamente positiva), lo cual garantiza que $f(Q)$ esté bien definida y sea diferenciable en $(0, \infty)$.
+Bajo las hipótesis operativas estándar, demanda media $D > 0$, costos fijos y unitarios no negativos ($S \ge 0$, $C \ge 0$), penalización por faltante estrictamente positiva ($\beta > 0$) y costo de mantenimiento $H > 0$, se garantiza que $K > 0$ y $a > 0$. En consecuencia, $f(Q)$ está bien definida y es diferenciable en $(0, \infty)$.
 
 En logística humanitaria, la decisión de preposicionar inventario tiene sentido únicamente si se almacena **al menos una unidad** del bien esencial, lo que impone la restricción natural:
 
@@ -1625,11 +1573,12 @@ Este problema es un caso particular de minimización de una función real sobre 
 2. **Unicidad** del minimizador (derivada de la estricta convexidad local en el dominio relevante),
 3. **Comportamiento asintótico** en los extremos del dominio ($Q \to 1^+$ y $Q \to \infty$).
 
-Estas propiedades se desarrollan en las subsecciones siguientes, sustentadas en resultados clásicos del análisis no lineal (@BazaraaSheraliShetty2013; @BoydVandenberghe2004).
+Estas propiedades se desarrollan en las subsecciones siguientes, sustentadas en resultados clásicos del análisis no lineal, tal como se presentan en @BazaraaSheraliShetty2013; @BoydVandenberghe2004.
 
 #### Ejemplo ilustrativo: formulación explícita del problema
 
-Retomando los parámetros del ejemplo de la Sección 2.1.2:
+Retomando los parámetros del ejemplo de la Sección 3.1.2:
+
 - $D = 1000$,
 - $S = 100$,
 - $H = 5$,
@@ -1658,7 +1607,7 @@ La formulación @eq-pou constituye la base analítica para el estudio riguroso d
 
 ### Continuidad y coercividad: garantía de existencia del mínimo
 
-En la Sección 2.5.1 se formuló el problema de optimización unidimensional como:
+En la Sección 3.5.1 se formuló el problema de optimización unidimensional como:
 
 $$
 \min_{Q \geq 1} f(Q) = \min_{Q \geq 1} \left( \frac{K}{Q} + a Q \right),
@@ -1708,13 +1657,13 @@ $$
 - **Coercividad**: Por @eq-lim_coercivo, $\lim_{Q \to \infty} f(Q) = \infty$.  
 - **Valor en el borde**: $f(1) = 600\,002.5$.
 
-Por el Lema (Existencia del mínimo global), existe al menos un $Q^* \in [1, \infty)$ que minimiza $f(Q)$. En la Sección 2.5.3 se demostrará que este minimizador es único y se encuentra en el interior del dominio, ya que $Q^* \approx 489.9 > 1$.
+Por el Lema (Existencia del mínimo global), existe al menos un $Q^* \in [1, \infty)$ que minimiza $f(Q)$. En la Sección 3.5.3 se demostrará que este minimizador es único y se encuentra en el interior del dominio, ya que $Q^* \approx 489.9 > 1$.
 
 Este ejemplo confirma que, bajo parámetros realistas, el problema satisface las condiciones del lema y, por tanto, es **bien planteado en el sentido de Hadamard**: admite solución, que además es estable y única (propiedades que se desarrollarán a continuación).
 
 ### Análisis de convexidad local y unicidad del óptimo
 
-En la Sección 2.5.2 se demostró que el problema de optimización unidimensional
+En la Sección 3.5.2 se demostró que el problema de optimización unidimensional
 
 $$
 \min_{Q \geq 1} f(Q) = \min_{Q \geq 1} \left( \frac{K}{Q} + a Q \right),
@@ -1977,7 +1926,7 @@ $$
 f(Q) = \frac{K}{Q} + a Q, \quad Q > 0.
 $$ {#eq-fQ_26_2}
 
-Como se demostró en la Sección 2.5.3, $f(Q)$ es estrictamente convexa en $(0, \infty)$. En consecuencia, posee un único minimizador global en cualquier subconjunto convexo de su dominio. En particular, en el dominio restringido $[1, \infty)$, el minimizador existe y es único (Secciones 2.5.2–2.5.3).
+Como se demostró en la Sección 3.5.3, $f(Q)$ es estrictamente convexa en $(0, \infty)$. En consecuencia, posee un único minimizador global en cualquier subconjunto convexo de su dominio. En particular, en el dominio restringido $[1, \infty)$, el minimizador existe y es único (Secciones 3.5.2–3.5.3).
 
 Dado que $f$ es diferenciable en $(0, \infty)$, una **condición necesaria y suficiente** para que $Q^* \in (1, \infty)$ sea el minimizador global es que anule la derivada de primer orden:
 
@@ -1985,7 +1934,7 @@ $$
 \frac{dZ}{dQ}(Q^*) = f'(Q^*) = 0.
 $$ {#eq-cond_primer_orden_26}
 
-Sustituyendo la expresión de la derivada obtenida en la Sección 2.6.1, esta condición se escribe explícitamente como:
+Sustituyendo la expresión de la derivada obtenida en la Sección 3.6.1, esta condición se escribe explícitamente como:
 
 $$
 -\frac{D(S + \beta C)}{(Q^*)^2} + \frac{H}{2} = 0.
@@ -1995,7 +1944,8 @@ Esta ecuación constituye la **condición de primer orden** del problema de opti
 
 #### Ejemplo ilustrativo
 
-Retomamos los parámetros numéricos del ejemplo de la Sección 2.1.2:
+Retomamos los parámetros numéricos del ejemplo de la Sección 3.1.2:
+
 - $D = 1000$,
 - $S = 100$,
 - $H = 5$,
@@ -2081,7 +2031,8 @@ La existencia de $Q^* > 0$ está garantizada por la positividad de todos los par
 
 #### Ejemplo ilustrativo 
 
-Retomamos los parámetros del ejemplo de la Sección 2.1.2:
+Retomamos los parámetros del ejemplo de la Sección 3.1.2:
+
 - Demanda esperada: $D = 1000$,
 - Costo fijo de pedido: $S = 100$,
 - Costo de mantenimiento: $H = 5$,
@@ -2139,7 +2090,8 @@ La proyección (@eq-Qstar_proyectado) garantiza que la solución óptima sea **f
 
 #### Ejemplo ilustrativo 
 
-Retomamos los parámetros del ejemplo de la Sección 2.1.2:
+Retomamos los parámetros del ejemplo de la Sección 3.1.2:
+
 - Demanda esperada: $D = 1000$,
 - Costo fijo de pedido: $S = 100$,
 - Costo de mantenimiento: $H = 5$,
@@ -2242,7 +2194,8 @@ Estas elasticidades son **constantes en signo**, pero **dependen del balance rel
 
 #### Ejemplo ilustrativo paso a paso
 
-Retomamos los parámetros del ejemplo de la Sección 2.1.2:
+Retomamos los parámetros del ejemplo de la Sección 3.1.2:
+
 - $D = 1000$,
 - $S = 100$,
 - $H = 5$,
@@ -2282,7 +2235,7 @@ Si cambiamos $Z_\alpha$ de 1.645 a 2.33 (pasando de 95 % a 99 % de nivel de serv
 
 Este análisis de sensibilidad no solo valida la robustez del modelo, sino que también proporciona **directrices operativas** para la recolección de datos y la toma de decisiones: es prioritario estimar con precisión $\beta$ y $D$, mientras que $S$ y $H$ pueden aproximarse con mayor tolerancia. Además, confirma que el parámetro $Z_\alpha$ puede ajustarse **a posteriori** para satisfacer requisitos de nivel de servicio sin alterar la solución óptima de $Q^*$, siempre que $\sigma_L$ sea independiente de $Q$.
 
-En conjunto, las secciones 2.6.1–2.6.5 establecen que, bajo el enfoque determinista robusto adoptado en este trabajo, el problema de optimización unidimensional $\min_{Q \geq 1} Z(Q)$ admite una **solución cerrada explícita**, dada por la proyección $Q^* = \max\{1, \sqrt{2D(S + \beta C)/H}\}$. Esta solución es **única, estable y sensible** a los parámetros críticos del modelo, especialmente a la penalización por faltante $\beta$. El análisis de sensibilidad confirma que, en contextos humanitarios, el tamaño óptimo de lote está dominado por la aversión al riesgo, lo que justifica el abandono del modelo EOQ clásico en favor de formulaciones que internalicen explícitamente la incertidumbre mediante parámetros de penalización y servicio. Estos resultados teóricos sientan las bases para la integración del componente de inventario en el modelo híbrido de localización-inventario. 
+En conjunto, las secciones 3.6.1–3.6.5 establecen que, bajo el enfoque determinista robusto adoptado en este trabajo, el problema de optimización unidimensional $\min_{Q \geq 1} Z(Q)$ admite una **solución cerrada explícita**, dada por la proyección $Q^* = \max\{1, \sqrt{2D(S + \beta C)/H}\}$. Esta solución es **única, estable y sensible** a los parámetros críticos del modelo, especialmente a la penalización por faltante $\beta$. El análisis de sensibilidad confirma que, en contextos humanitarios, el tamaño óptimo de lote está dominado por la aversión al riesgo, lo que justifica el abandono del modelo EOQ clásico en favor de formulaciones que internalicen explícitamente la incertidumbre mediante parámetros de penalización y servicio. Estos resultados teóricos sientan las bases para la integración del componente de inventario en el modelo híbrido de localización-inventario. 
 
 ## Conclusiones del capítulo
 Este capítulo ha presentado un modelo matemático determinista robusto para el problema integrado de localización e inventario en contextos humanitarios, caracterizado por la interacción entre decisiones binarias (ubicación de almacenes) y continuas (niveles de inventario y asignación de flujos). La formulación incorpora de forma paramétrica la incertidumbre en la demanda mediante un stock de seguridad y una penalización explícita por faltantes, lo que introduce no linealidad y rompe la convexidad global del problema, aun cuando la función de costo sea convexa condicionalmente para configuraciones fijas de infraestructura. Esta estructura híbrida, que combina no convexidad combinatoria, no linealidad inducida por la incertidumbre y una formulación de riesgo implícita a través de la penalización, constituye una contribución teórica que extiende los modelos clásicos de EOQ y localización, haciéndolos pertinentes para entornos donde la insatisfacción de la demanda tiene consecuencias éticas y operativas críticas. Al establecer propiedades analíticas fundamentales (existencia, unicidad y sensibilidad del óptimo en el subproblema de inventario) y al caracterizar formalmente el espacio factible mixto, el capítulo sienta las bases para el desarrollo de métodos de solución especializados.

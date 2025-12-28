@@ -1,5 +1,5 @@
 ---
-title: Formulacion del Problema
+title: Formulación del Problema
 lang: es
 format:
   html: default
