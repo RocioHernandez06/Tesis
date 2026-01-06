@@ -225,7 +225,7 @@ Z(x,y,s)
 \underbrace{\sum_{i\in\mathcal{I}} f_i(x_i)}_{\text{Costos fijos}}
 + \underbrace{\sum_{i\in\mathcal{I}} h_i s_i}_{\text{Costos de inventario}}
 + \underbrace{\sum_{i\in\mathcal{I}}\sum_{j\in\mathcal{J}} c_{ij} y_{ij}}_{\text{Costos de transporte}}.
-$$ {#eq-Z(xys)}
+$$ {#eq-Z_xys}
 
 Aunque la parte en variables continuas es lineal, el término $f_i(x_i)$ introduce una **no linealidad discreta**, ya que $x_i \in \{0,1\}$. Esta discontinuidad, combinada con el acoplamiento lógico $s_i \leq M x_i$, da lugar a un **espacio de decisiones no convexo y combinatorio**.
 
@@ -394,7 +394,7 @@ El tensor $y = (y_{ij})_{(i,j) \in \mathcal{I} \times \mathcal{J}} \in \mathbb{R
 > $$
 > que es tipo no convexo, no conexo y discontinuo en la dirección discreta. Esta estructura impide la aplicación directa de herramientas del análisis convexo clásico y exige métodos de optimización entera mixta.
 
-Las variables $x_i$ y $y_{ij}$ no son independientes. Su acoplamiento se establece mediante **restricciones de factibilidad**, que garantizan que no se asignen flujos desde instalaciones no abiertas. Para todo $i \in \mathcal{I}$ y $j \in \mathcal{J}$:
+Las variables $x_i$ y $y_{ij}$ no son independientes. Su acoplamiento se establece mediante **restricciones de factibilidad**, que garantizan que no se asignen flujos desde almacenes no abiertos. Para todo $i \in \mathcal{I}$ y $j \in \mathcal{J}$:
 
 $$
 y_{ij} \le M x_i,
@@ -457,7 +457,7 @@ Para cada $i\in\mathcal{I}$ definimos
 $$
 f_i \in \mathbb{R}_{+}
 $$
-como el **costo fijo de apertura** del almacén en la localización $i$. En la formulación base del modelo, presentada en la ecuación (2.3), este término contribuye a la función objetivo mediante el producto lineal $f_i x_i$, donde $x_i \in \{0,1\}$ es la variable binaria. Se exige  
+como el **costo fijo de apertura** del almacén en la localización $i$. En la formulación base del modelo, presentada en la @eq-Z_xys, este término contribuye a la función objetivo mediante el producto lineal $f_i x_i$, donde $x_i \in \{0,1\}$ es la variable binaria. Se exige  
 $$
 f_i \ge 0, \qquad \forall i \in \mathcal{I}.
 $$
@@ -1338,7 +1338,7 @@ $$
 
 **Interpretación**: Un valor de $\beta_C \approx 0.03$ induce una política que satisface la restricción ética sobre el faltante cuadrático esperado. Valores menores de $\beta_C$ violarían la restricción; valores mayores la satisfarían con margen, pero a un costo de inventario innecesariamente alto.
 
-Este ejemplo ilustra cómo $\beta_C$ puede calibrarse para alinear el modelo con objetivos operativos o éticos específicos, superando la arbitrariedad de asignar costos monetarios directos a vidas o sufrimiento humano. La parametrización mediante $\beta_C$ introduce flexibilidad sin sacrificar rigor matemático, y prepara el terreno para su integración en un modelo de localización-inventario multiperiodo con múltiples zonas de cobertura.
+Este ejemplo ilustra cómo $\beta_C$ puede calibrarse para alinear el modelo con objetivos operativos o éticos específicos, superando la arbitrariedad de asignar costos monetarios directos a vidas o sufrimiento humano. La parametrización mediante $\beta_C$ introduce flexibilidad sin sacrificar el análisis, y prepara el terreno para su integración en un modelo de localización-inventario multiperiodo con múltiples zonas de cobertura.
 
 > **Nota**: En el Capítulo 3, el parámetro $\beta_C$ se generalizará a un conjunto $\{\beta_{C,i}\}_{i \in I}$, permitiendo que distintas localidades candidatas reflejen diferentes niveles de criticidad humanitaria.
 

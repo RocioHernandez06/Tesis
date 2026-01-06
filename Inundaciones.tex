@@ -280,7 +280,7 @@
 \title{Inundaciones}
 \author{Yulissa del Rocío Hernández Vázquez \and Asesor: Dr.~Yofre
 Hernán García Gómez}
-\date{2025-12-28}
+\date{2026-01-05}
 \begin{document}
 \begin{titlepage}
 \hspace{-1.7cm} %Este comando es para mandar a la izquierda ;)
@@ -348,6 +348,126 @@ Hernán García Gómez}
 \bookmarksetup{startatroot}
 
 \chapter{Resumen}\label{resumen}
+
+\bookmarksetup{startatroot}
+
+\chapter{Preliminares}\label{preliminares}
+
+\section{Conjuntos y espacios
+vectoriales}\label{conjuntos-y-espacios-vectoriales}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{\(\mathbb{R}^n\)}: espacio vectorial real de dimensión \(n\).
+\item
+  \textbf{\(\mathbb{R}_{+}^n = \{x \in \mathbb{R}^n : x_i \geq 0,\ \forall i\}\)}:
+  ortante no negativo.
+\end{itemize}
+
+\section{Convexidad y conjuntos
+especiales}\label{convexidad-y-conjuntos-especiales}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Conjunto convexo}: \(C \subseteq \mathbb{R}^n\) es convexo si
+  para todo \(x, y \in C\) y \(\lambda \in [0,1]\), se cumple
+  \(\lambda x + (1-\lambda)y \in C\).
+\item
+  \textbf{Poliedro convexo}: conjunto de la forma
+  \(\{x \in \mathbb{R}^n : Ax \leq b\}\) con
+  \(A \in \mathbb{R}^{m \times n}\), \(b \in \mathbb{R}^m\). Es cerrado
+  y convexo (Bazaraa et al., 2013).
+\item
+  \textbf{Conjunto cerrado en dimensión finita}: En \(\mathbb{R}^n\)
+  dotado de la topología euclidiana, un conjunto es \textbf{cerrado} si
+  contiene todos sus puntos límite. Todo subespacio vectorial de
+  \(\mathbb{R}^n\) es cerrado, y en dimensión finita, los conjuntos
+  cerrados y acotados son compactos (teorema de Heine--Borel).
+\end{itemize}
+
+\section{Funciones y propiedades
+analíticas}\label{funciones-y-propiedades-analuxedticas}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Función convexa}: \(f: \mathbb{R}^n \to \mathbb{R}\) es
+  convexa si\\
+  \[
+  f(\lambda x + (1-\lambda)y) \leq \lambda f(x) + (1-\lambda)f(y), \quad \forall x,y, \lambda \in [0,1].
+  \]
+\item
+  \textbf{Función estrictamente cuadrática}:
+  \(f(x) = \tfrac{1}{2} x^\top Q x - b^\top x + c\), con
+  \(Q \in \mathbb{R}^{n \times n}\) simétrica. Si \(Q\) es constante,
+  entonces el Hessiano \(\nabla^2 f(x) = Q\) es constante.
+\item
+  \textbf{Separabilidad}: \(f(x)\) es separable si puede escribirse como
+  \(f(x) = \sum_{i=1}^n f_i(x_i)\).
+\end{itemize}
+
+\section{Notación de orden
+matricial}\label{notaciuxf3n-de-orden-matricial}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{\(A \succ 0\)}: matriz simétrica \(A\) es definida positiva,
+  es decir, \(x^\top A x > 0\) para todo \(x \neq 0\).
+\end{itemize}
+
+\section{Formulaciones de optimización
+mixta}\label{formulaciones-de-optimizaciuxf3n-mixta}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Formulación big-M estándar}: restricción de la forma
+  \(y \leq M x\), con \(x \in \{0,1\}\), \(y \in \mathbb{R}_+\), y
+  \(M > 0\) suficientemente grande, usada para modelar
+  \(x = 0 \Rightarrow y = 0\).
+\end{itemize}
+
+\section{Teoría de probabilidad y variables
+aleatorias}\label{teoruxeda-de-probabilidad-y-variables-aleatorias}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Variable aleatoria (v.a.) absolutamente continua}: aquella
+  cuya distribución tiene densidad \(f_X\) respecto a la medida de
+  Lebesgue: \(\mathbb{P}(X \in A) = \int_A f_X(x)\,dx\).
+\item
+  \textbf{Distribución normal}: si
+  \(D_L \sim \mathcal{N}(\mu_L, \sigma_L^2)\), su densidad es\\
+  \[
+  \phi_{D_L}(d) = \frac{1}{\sqrt{2\pi}\sigma_L} \exp\!\left(-\frac{(d - \mu_L)^2}{2\sigma_L^2}\right).
+  \]
+\item
+  \textbf{Varianza}: para una v.a. \(\tilde{X}\),
+  \(\operatorname{Var}(\tilde{X}) = \mathbb{E}[(\tilde{X} - \mathbb{E}[\tilde{X}])^2]\).
+\item
+  \textbf{Notación \(\ll\)}: indica que una cantidad es mucho menor que
+  otra (por ejemplo, \(a \ll b\) significa \(a/b \approx 0\) en contexto
+  numérico).
+\end{itemize}
+
+\section{Optimización y condiciones de
+optimalidad}\label{optimizaciuxf3n-y-condiciones-de-optimalidad}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Condiciones de Karush--Kuhn--Tucker (KKT)}: condiciones
+  necesarias de optimalidad local bajo restricciones de desigualdad y
+  calificación de restricciones. No garantizan optimalidad global en
+  problemas no convexos (Lewis y Overton, 2013).
+\item
+  \textbf{\(\mathbb{E}[d_j]\)}: valor esperado de la demanda en la
+  localidad \(j\).
+\end{itemize}
 
 \bookmarksetup{startatroot}
 
@@ -815,7 +935,7 @@ estructural}\label{funciuxf3n-objetivo-y-acoplamiento-estructural}
 La función objetivo del modelo de ubicación de almacenes e inventario
 humanitario se define como:
 
-\begin{equation}\phantomsection\label{eq-Zux28xysux29}{
+\begin{equation}\phantomsection\label{eq-Z_xys}{
 Z(x,y,s) 
 = 
 \underbrace{\sum_{i\in\mathcal{I}} f_i(x_i)}_{\text{Costos fijos}}
@@ -1170,9 +1290,8 @@ mixta.
 
 Las variables \(x_i\) y \(y_{ij}\) no son independientes. Su
 acoplamiento se establece mediante \textbf{restricciones de
-factibilidad}, que garantizan que no se asignen flujos desde
-instalaciones no abiertas. Para todo \(i \in \mathcal{I}\) y
-\(j \in \mathcal{J}\):
+factibilidad}, que garantizan que no se asignen flujos desde almacenes
+no abiertos. Para todo \(i \in \mathcal{I}\) y \(j \in \mathcal{J}\):
 
 \begin{equation}\phantomsection\label{eq-y_ij}{
 y_{ij} \le M x_i,
@@ -1271,9 +1390,9 @@ Para cada \(i\in\mathcal{I}\) definimos \[
 f_i \in \mathbb{R}_{+}
 \] como el \textbf{costo fijo de apertura} del almacén en la
 localización \(i\). En la formulación base del modelo, presentada en la
-ecuación (2.3), este término contribuye a la función objetivo mediante
-el producto lineal \(f_i x_i\), donde \(x_i \in \{0,1\}\) es la variable
-binaria. Se exige\\
+Ecuación~\ref{eq-Z_xys}, este término contribuye a la función objetivo
+mediante el producto lineal \(f_i x_i\), donde \(x_i \in \{0,1\}\) es la
+variable binaria. Se exige\\
 \[
 f_i \ge 0, \qquad \forall i \in \mathcal{I}.
 \]
@@ -2867,8 +2986,8 @@ Este ejemplo ilustra cómo \(\beta_C\) puede calibrarse para alinear el
 modelo con objetivos operativos o éticos específicos, superando la
 arbitrariedad de asignar costos monetarios directos a vidas o
 sufrimiento humano. La parametrización mediante \(\beta_C\) introduce
-flexibilidad sin sacrificar rigor matemático, y prepara el terreno para
-su integración en un modelo de localización-inventario multiperiodo con
+flexibilidad sin sacrificar el análisis, y prepara el terreno para su
+integración en un modelo de localización-inventario multiperiodo con
 múltiples zonas de cobertura.
 
 \begin{quote}
@@ -7530,7 +7649,7 @@ municipio del estado de \textbf{Chiapas}.
 
 \bookmarksetup{startatroot}
 
-\chapter{Formulacion del Problema}\label{formulacion-del-problema}
+\chapter{Formulación del Problema}\label{formulaciuxf3n-del-problema}
 
 En esta sección se presenta la formulación matemática de un modelo de
 optimización aplicado a la logística humanitaria ante inundaciones. El
@@ -7772,7 +7891,7 @@ cuando la cobertura es insuficiente.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{chapters/formulacion_files/figure-pdf/fig-funcion-perdida-output-1.png}}
+\pandocbounded{\includegraphics[keepaspectratio]{chapters/formulacion_files/figure-pdf/fig-funcion-perdida-output-1.pdf}}
 
 }
 

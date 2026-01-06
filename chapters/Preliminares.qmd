@@ -1,0 +1,56 @@
+---
+title: Preliminares
+lang: es
+format:
+  html: default
+  pdf: default  
+execute: 
+  freeze: auto 
+jupyter: python3
+---
+:::{style="text-align: justify"}
+
+## Conjuntos y espacios vectoriales
+
+- **$\mathbb{R}^n$**: espacio vectorial real de dimensión $n$.
+- **$\mathbb{R}_{+}^n = \{x \in \mathbb{R}^n : x_i \geq 0,\ \forall i\}$**: ortante no negativo.
+
+## Convexidad y conjuntos especiales
+
+- **Conjunto convexo**: $C \subseteq \mathbb{R}^n$ es convexo si para todo $x, y \in C$ y $\lambda \in [0,1]$, se cumple $\lambda x + (1-\lambda)y \in C$.
+- **Poliedro convexo**: conjunto de la forma $\{x \in \mathbb{R}^n : Ax \leq b\}$ con $A \in \mathbb{R}^{m \times n}$, $b \in \mathbb{R}^m$. Es cerrado y convexo (Bazaraa et al., 2013).
+- **Conjunto cerrado en dimensión finita**: En $\mathbb{R}^n$ dotado de la topología euclidiana, un conjunto es **cerrado** si contiene todos sus puntos límite. Todo subespacio vectorial de $\mathbb{R}^n$ es cerrado, y en dimensión finita, los conjuntos cerrados y acotados son compactos (teorema de Heine–Borel).
+
+## Funciones y propiedades analíticas
+
+- **Función convexa**: $f: \mathbb{R}^n \to \mathbb{R}$ es convexa si  
+  $$
+  f(\lambda x + (1-\lambda)y) \leq \lambda f(x) + (1-\lambda)f(y), \quad \forall x,y, \lambda \in [0,1].
+  $$
+- **Función estrictamente cuadrática**: $f(x) = \tfrac{1}{2} x^\top Q x - b^\top x + c$, con $Q \in \mathbb{R}^{n \times n}$ simétrica. Si $Q$ es constante, entonces el Hessiano $\nabla^2 f(x) = Q$ es constante.
+- **Separabilidad**: $f(x)$ es separable si puede escribirse como $f(x) = \sum_{i=1}^n f_i(x_i)$.
+
+## Notación de orden matricial
+
+- **$A \succ 0$**: matriz simétrica $A$ es definida positiva, es decir, $x^\top A x > 0$ para todo $x \neq 0$.
+
+## Formulaciones de optimización mixta
+
+- **Formulación big-M estándar**: restricción de la forma $y \leq M x$, con $x \in \{0,1\}$, $y \in \mathbb{R}_+$, y $M > 0$ suficientemente grande, usada para modelar $x = 0 \Rightarrow y = 0$.
+
+## Teoría de probabilidad y variables aleatorias
+
+- **Variable aleatoria (v.a.) absolutamente continua**: aquella cuya distribución tiene densidad $f_X$ respecto a la medida de Lebesgue: $\mathbb{P}(X \in A) = \int_A f_X(x)\,dx$.
+- **Distribución normal**: si $D_L \sim \mathcal{N}(\mu_L, \sigma_L^2)$, su densidad es  
+  $$
+  \phi_{D_L}(d) = \frac{1}{\sqrt{2\pi}\sigma_L} \exp\!\left(-\frac{(d - \mu_L)^2}{2\sigma_L^2}\right).
+  $$
+- **Varianza**: para una v.a. $\tilde{X}$, $\operatorname{Var}(\tilde{X}) = \mathbb{E}[(\tilde{X} - \mathbb{E}[\tilde{X}])^2]$.
+- **Notación $\ll$**: indica que una cantidad es mucho menor que otra (por ejemplo, $a \ll b$ significa $a/b \approx 0$ en contexto numérico).
+
+## Optimización y condiciones de optimalidad
+
+- **Condiciones de Karush–Kuhn–Tucker (KKT)**: condiciones necesarias de optimalidad local bajo restricciones de desigualdad y calificación de restricciones. No garantizan optimalidad global en problemas no convexos (Lewis y Overton, 2013).
+- **$\mathbb{E}[d_j]$**: valor esperado de la demanda en la localidad $j$.
+
+:::
