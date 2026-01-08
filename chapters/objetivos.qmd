@@ -1,0 +1,29 @@
+---
+title: Objetivos
+lang: es
+format:
+  html: default
+  pdf: default  
+execute: 
+  freeze: auto 
+jupyter: python3
+---
+:::{style="text-align: justify"}
+
+
+## **Objetivo general**
+
+Diseñar e implementar un modelo de optimización **determinista robusto** para la gestión integrada de la ubicación de almacenes preposicionados y el control de inventario humanitario en zonas propensas a inundaciones en México, que incorpore **parámetros derivados de la incertidumbre en la demanda** (como inventario de seguridad y penalización por faltantes) y minimice el costo total del sistema bajo condiciones de **no convexidad, decisiones mixtas y restricciones tipo caja**.
+
+
+
+## **Objetivos específicos**
+
+1. **Formular un modelo de localización–inventario humanitario bajo incertidumbre parametrizada**, que extienda el modelo clásico de cantidad económica de pedido (EOQ) para incluir inventario de seguridad, faltantes estocásticos penalizados y decisiones binarias de apertura de almacenes, utilizando la demanda esperada y su variabilidad como parámetros exógenos fijos.
+
+2. **Desarrollar un esquema de solución híbrido basado en optimización mixta entera no lineal (MINLP)**, que combine enumeración sobre variables binarias con el algoritmo **L-BFGS-B** para resolver eficientemente los subproblemas continuos no convexos asociados al tamaño del lote y al nivel de inventario de seguridad.
+
+3. **Evaluar el desempeño del modelo propuesto mediante estudios de caso en regiones vulnerables a inundaciones en Chiapas y Veracruz**, cuantificando la mejora en robustez y costo esperado respecto a enfoques deterministas que ignoran la incertidumbre en la demanda o en el tiempo de entrega.
+
+
+:::

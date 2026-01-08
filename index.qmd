@@ -1,5 +1,5 @@
 ---
-title: "Resumen"
+title: ""
 unnumbered: true
 
 author:
@@ -19,3 +19,18 @@ affiliations:
   - id: unach
     name: "Universidad Autónoma de Chiapas"
 ---
+
+:::{style="text-align: justify"}
+# Resumen
+
+La logística humanitaria en contextos de desastre requiere estrategias robustas que anticipen la incertidumbre operativa. En este trabajo se propone un modelo de optimización determinista robusto para la gestión integrada de la ubicación de almacenes preposicionados y el control de inventario ante inundaciones en México. El modelo extiende el clásico problema de la cantidad económica de pedido (EOQ) al incorporar inventario de seguridad, penalización por faltantes y decisiones binarias de apertura de almacenes, utilizando la demanda esperada y su variabilidad derivadas de una distribución normal como parámetros fijos. La formulación resultante es un problema de optimización mixta entera no lineal (MINLP) con una función objetivo no convexa y no separable. Para su resolución, se emplea un esquema híbrido que combina enumeración sobre las variables binarias con el algoritmo L-BFGS-B para los subproblemas continuos. El modelo se evalúa mediante estudios de caso en regiones vulnerables a inundaciones en Chiapas y Veracruz, demostrando que considerar la incertidumbre parametrizada reduce significativamente el costo total esperado y mejora la robustez frente a eventos extremos, en comparación con enfoques deterministas que ignoran la variabilidad en la demanda o en el tiempo de entrega.
+
+**Palabras clave**: logística humanitaria, ubicación–inventario, EOQ robusto, incertidumbre parametrizada, MINLP, L-BFGS-B, inundaciones.
+
+# Abstract
+
+Humanitarian logistics in disaster contexts demands robust strategies that account for operational uncertainty. This work proposes a robust deterministic optimization model for the integrated management of prepositioned warehouse location and inventory control under flood risk in Mexico. The model extends the classical Economic Order Quantity (EOQ) problem by incorporating safety stock, shortage penalties, and binary warehouse opening decisions, using expected demand and its variability derived from a normal distribution as fixed parameters. The resulting formulation is a mixed integer nonlinear programming (MINLP) problem with a non convex and non separable objective function. A hybrid solution scheme is employed, combining enumeration over binary variables with the L-BFGS-B algorithm for continuous subproblems. The model is evaluated through case studies in flood prone regions of Chiapas and Veracruz. Results show that incorporating parametrized uncertainty significantly reduces the expected total cost and enhances robustness against extreme events, compared to deterministic approaches that neglect demand or lead time variability.
+
+**Keywords**: humanitarian logistics, location–inventory, robust EOQ, parametrized uncertainty, MINLP, L-BFGS-B, floods.
+
+:::

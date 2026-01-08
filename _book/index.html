@@ -32,7 +32,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./chapters/Preliminares.html" rel="next">
+<link href="./chapters/Introduccion.html" rel="next">
 <link href="./FCFMLOGO.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -334,44 +334,50 @@ window.MathJax = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./chapters/Preliminares.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Preliminares</span></span></a>
+  <a href="./chapters/Introduccion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introducción</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./chapters/Introduccion.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Introducción</span></span></a>
+  <a href="./chapters/objetivos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Objetivos</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/Preliminares.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Preliminares y notación</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chapters/Teoria.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Fundamentación Teórica y Formulación Matemática del Modelo</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Fundamentación Teórica y Formulación Matemática del Modelo</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chapters/metodos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Métodos numéricos y optimización con restricciones tipo caja</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Métodos numéricos y optimización con restricciones tipo caja</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chapters/implementacion.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Implementación y herramientas computacionales</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Implementación y herramientas computacionales</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chapters/formulacion.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Formulación del Problema</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Formulación del Problema</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chapters/chiapas.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Escenario principal estado de Chiapas</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Escenario principal estado de Chiapas</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -426,7 +432,7 @@ window.MathJax = {
     <div>
     <div class="quarto-title-meta-heading">Fecha de publicación</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">5 de enero de 2026</p>
+      <p class="date">8 de enero de 2026</p>
     </div>
   </div>
   
@@ -438,6 +444,18 @@ window.MathJax = {
 </header>
 
 
+<div style="text-align: justify">
+<section id="resumen" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Resumen</h1>
+<p>La logística humanitaria en contextos de desastre requiere estrategias robustas que anticipen la incertidumbre operativa. En este trabajo se propone un modelo de optimización determinista robusto para la gestión integrada de la ubicación de almacenes preposicionados y el control de inventario ante inundaciones en México. El modelo extiende el clásico problema de la cantidad económica de pedido (EOQ) al incorporar inventario de seguridad, penalización por faltantes y decisiones binarias de apertura de almacenes, utilizando la demanda esperada y su variabilidad derivadas de una distribución normal como parámetros fijos. La formulación resultante es un problema de optimización mixta entera no lineal (MINLP) con una función objetivo no convexa y no separable. Para su resolución, se emplea un esquema híbrido que combina enumeración sobre las variables binarias con el algoritmo L-BFGS-B para los subproblemas continuos. El modelo se evalúa mediante estudios de caso en regiones vulnerables a inundaciones en Chiapas y Veracruz, demostrando que considerar la incertidumbre parametrizada reduce significativamente el costo total esperado y mejora la robustez frente a eventos extremos, en comparación con enfoques deterministas que ignoran la variabilidad en la demanda o en el tiempo de entrega.</p>
+<p><strong>Palabras clave</strong>: logística humanitaria, ubicación–inventario, EOQ robusto, incertidumbre parametrizada, MINLP, L-BFGS-B, inundaciones.</p>
+</section>
+<section id="abstract" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Abstract</h1>
+<p>Humanitarian logistics in disaster contexts demands robust strategies that account for operational uncertainty. This work proposes a robust deterministic optimization model for the integrated management of prepositioned warehouse location and inventory control under flood risk in Mexico. The model extends the classical Economic Order Quantity (EOQ) problem by incorporating safety stock, shortage penalties, and binary warehouse opening decisions, using expected demand and its variability derived from a normal distribution as fixed parameters. The resulting formulation is a mixed integer nonlinear programming (MINLP) problem with a non convex and non separable objective function. A hybrid solution scheme is employed, combining enumeration over binary variables with the L-BFGS-B algorithm for continuous subproblems. The model is evaluated through case studies in flood prone regions of Chiapas and Veracruz. Results show that incorporating parametrized uncertainty significantly reduces the expected total cost and enhances robustness against extreme events, compared to deterministic approaches that neglect demand or lead time variability.</p>
+<p><strong>Keywords</strong>: humanitarian logistics, location–inventory, robust EOQ, parametrized uncertainty, MINLP, L-BFGS-B, floods.</p>
+</section>
+</div>
 
 
 
@@ -859,8 +877,8 @@ window.MathJax = {
   <div class="nav-page nav-page-previous">
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./chapters/Preliminares.html" class="pagination-link" aria-label="Preliminares">
-        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Preliminares</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./chapters/Introduccion.html" class="pagination-link" aria-label="Introducción">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introducción</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

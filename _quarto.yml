@@ -32,8 +32,9 @@ book:
   page-navigation: true
   chapters:
     - index.qmd
-    - chapters/Preliminares.qmd
     - chapters/Introduccion.qmd
+    - chapters/objetivos.qmd
+    - chapters/Preliminares.qmd
     - chapters/Teoria.qmd
     - chapters/metodos.qmd
     - chapters/implementacion.qmd

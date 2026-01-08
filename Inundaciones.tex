@@ -280,7 +280,7 @@
 \title{Inundaciones}
 \author{Yulissa del Rocío Hernández Vázquez \and Asesor: Dr.~Yofre
 Hernán García Gómez}
-\date{2026-01-05}
+\date{2026-01-08}
 \begin{document}
 \begin{titlepage}
 \hspace{-1.7cm} %Este comando es para mandar a la izquierda ;)
@@ -338,6 +338,8 @@ Hernán García Gómez}
 
 
 \chapter*{Agradecimientos}
+
+
 \renewcommand*\contentsname{Tabla de contenidos}
 {
 \hypersetup{linkcolor=}
@@ -349,125 +351,53 @@ Hernán García Gómez}
 
 \chapter{Resumen}\label{resumen}
 
+La logística humanitaria en contextos de desastre requiere estrategias
+robustas que anticipen la incertidumbre operativa. En este trabajo se
+propone un modelo de optimización determinista robusto para la gestión
+integrada de la ubicación de almacenes preposicionados y el control de
+inventario ante inundaciones en México. El modelo extiende el clásico
+problema de la cantidad económica de pedido (EOQ) al incorporar
+inventario de seguridad, penalización por faltantes y decisiones
+binarias de apertura de almacenes, utilizando la demanda esperada y su
+variabilidad derivadas de una distribución normal como parámetros fijos.
+La formulación resultante es un problema de optimización mixta entera no
+lineal (MINLP) con una función objetivo no convexa y no separable. Para
+su resolución, se emplea un esquema híbrido que combina enumeración
+sobre las variables binarias con el algoritmo L-BFGS-B para los
+subproblemas continuos. El modelo se evalúa mediante estudios de caso en
+regiones vulnerables a inundaciones en Chiapas y Veracruz, demostrando
+que considerar la incertidumbre parametrizada reduce significativamente
+el costo total esperado y mejora la robustez frente a eventos extremos,
+en comparación con enfoques deterministas que ignoran la variabilidad en
+la demanda o en el tiempo de entrega.
+
+\textbf{Palabras clave}: logística humanitaria, ubicación--inventario,
+EOQ robusto, incertidumbre parametrizada, MINLP, L-BFGS-B, inundaciones.
+
 \bookmarksetup{startatroot}
 
-\chapter{Preliminares}\label{preliminares}
+\chapter{Abstract}\label{abstract}
 
-\section{Conjuntos y espacios
-vectoriales}\label{conjuntos-y-espacios-vectoriales}
+Humanitarian logistics in disaster contexts demands robust strategies
+that account for operational uncertainty. This work proposes a robust
+deterministic optimization model for the integrated management of
+prepositioned warehouse location and inventory control under flood risk
+in Mexico. The model extends the classical Economic Order Quantity (EOQ)
+problem by incorporating safety stock, shortage penalties, and binary
+warehouse opening decisions, using expected demand and its variability
+derived from a normal distribution as fixed parameters. The resulting
+formulation is a mixed integer nonlinear programming (MINLP) problem
+with a non convex and non separable objective function. A hybrid
+solution scheme is employed, combining enumeration over binary variables
+with the L-BFGS-B algorithm for continuous subproblems. The model is
+evaluated through case studies in flood prone regions of Chiapas and
+Veracruz. Results show that incorporating parametrized uncertainty
+significantly reduces the expected total cost and enhances robustness
+against extreme events, compared to deterministic approaches that
+neglect demand or lead time variability.
 
-\begin{itemize}
-\tightlist
-\item
-  \textbf{\(\mathbb{R}^n\)}: espacio vectorial real de dimensión \(n\).
-\item
-  \textbf{\(\mathbb{R}_{+}^n = \{x \in \mathbb{R}^n : x_i \geq 0,\ \forall i\}\)}:
-  ortante no negativo.
-\end{itemize}
-
-\section{Convexidad y conjuntos
-especiales}\label{convexidad-y-conjuntos-especiales}
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{Conjunto convexo}: \(C \subseteq \mathbb{R}^n\) es convexo si
-  para todo \(x, y \in C\) y \(\lambda \in [0,1]\), se cumple
-  \(\lambda x + (1-\lambda)y \in C\).
-\item
-  \textbf{Poliedro convexo}: conjunto de la forma
-  \(\{x \in \mathbb{R}^n : Ax \leq b\}\) con
-  \(A \in \mathbb{R}^{m \times n}\), \(b \in \mathbb{R}^m\). Es cerrado
-  y convexo (Bazaraa et al., 2013).
-\item
-  \textbf{Conjunto cerrado en dimensión finita}: En \(\mathbb{R}^n\)
-  dotado de la topología euclidiana, un conjunto es \textbf{cerrado} si
-  contiene todos sus puntos límite. Todo subespacio vectorial de
-  \(\mathbb{R}^n\) es cerrado, y en dimensión finita, los conjuntos
-  cerrados y acotados son compactos (teorema de Heine--Borel).
-\end{itemize}
-
-\section{Funciones y propiedades
-analíticas}\label{funciones-y-propiedades-analuxedticas}
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{Función convexa}: \(f: \mathbb{R}^n \to \mathbb{R}\) es
-  convexa si\\
-  \[
-  f(\lambda x + (1-\lambda)y) \leq \lambda f(x) + (1-\lambda)f(y), \quad \forall x,y, \lambda \in [0,1].
-  \]
-\item
-  \textbf{Función estrictamente cuadrática}:
-  \(f(x) = \tfrac{1}{2} x^\top Q x - b^\top x + c\), con
-  \(Q \in \mathbb{R}^{n \times n}\) simétrica. Si \(Q\) es constante,
-  entonces el Hessiano \(\nabla^2 f(x) = Q\) es constante.
-\item
-  \textbf{Separabilidad}: \(f(x)\) es separable si puede escribirse como
-  \(f(x) = \sum_{i=1}^n f_i(x_i)\).
-\end{itemize}
-
-\section{Notación de orden
-matricial}\label{notaciuxf3n-de-orden-matricial}
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{\(A \succ 0\)}: matriz simétrica \(A\) es definida positiva,
-  es decir, \(x^\top A x > 0\) para todo \(x \neq 0\).
-\end{itemize}
-
-\section{Formulaciones de optimización
-mixta}\label{formulaciones-de-optimizaciuxf3n-mixta}
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{Formulación big-M estándar}: restricción de la forma
-  \(y \leq M x\), con \(x \in \{0,1\}\), \(y \in \mathbb{R}_+\), y
-  \(M > 0\) suficientemente grande, usada para modelar
-  \(x = 0 \Rightarrow y = 0\).
-\end{itemize}
-
-\section{Teoría de probabilidad y variables
-aleatorias}\label{teoruxeda-de-probabilidad-y-variables-aleatorias}
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{Variable aleatoria (v.a.) absolutamente continua}: aquella
-  cuya distribución tiene densidad \(f_X\) respecto a la medida de
-  Lebesgue: \(\mathbb{P}(X \in A) = \int_A f_X(x)\,dx\).
-\item
-  \textbf{Distribución normal}: si
-  \(D_L \sim \mathcal{N}(\mu_L, \sigma_L^2)\), su densidad es\\
-  \[
-  \phi_{D_L}(d) = \frac{1}{\sqrt{2\pi}\sigma_L} \exp\!\left(-\frac{(d - \mu_L)^2}{2\sigma_L^2}\right).
-  \]
-\item
-  \textbf{Varianza}: para una v.a. \(\tilde{X}\),
-  \(\operatorname{Var}(\tilde{X}) = \mathbb{E}[(\tilde{X} - \mathbb{E}[\tilde{X}])^2]\).
-\item
-  \textbf{Notación \(\ll\)}: indica que una cantidad es mucho menor que
-  otra (por ejemplo, \(a \ll b\) significa \(a/b \approx 0\) en contexto
-  numérico).
-\end{itemize}
-
-\section{Optimización y condiciones de
-optimalidad}\label{optimizaciuxf3n-y-condiciones-de-optimalidad}
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{Condiciones de Karush--Kuhn--Tucker (KKT)}: condiciones
-  necesarias de optimalidad local bajo restricciones de desigualdad y
-  calificación de restricciones. No garantizan optimalidad global en
-  problemas no convexos (Lewis y Overton, 2013).
-\item
-  \textbf{\(\mathbb{E}[d_j]\)}: valor esperado de la demanda en la
-  localidad \(j\).
-\end{itemize}
+\textbf{Keywords}: humanitarian logistics, location--inventory, robust
+EOQ, parametrized uncertainty, MINLP, L-BFGS-B, floods.
 
 \bookmarksetup{startatroot}
 
@@ -540,6 +470,291 @@ logística humanitaria eficiente, flexible y ética. Este modelo se
 inspira en las mejores prácticas de la literatura científica reciente,
 adaptándolas a condiciones de incertidumbre, alta demanda y
 restricciones operativas.
+
+\bookmarksetup{startatroot}
+
+\chapter{Objetivos}\label{objetivos}
+
+\section{\texorpdfstring{\textbf{Objetivo
+general}}{Objetivo general}}\label{objetivo-general}
+
+Diseñar e implementar un modelo de optimización \textbf{determinista
+robusto} para la gestión integrada de la ubicación de almacenes
+preposicionados y el control de inventario humanitario en zonas
+propensas a inundaciones en México, que incorpore \textbf{parámetros
+derivados de la incertidumbre en la demanda} (como inventario de
+seguridad y penalización por faltantes) y minimice el costo total del
+sistema bajo condiciones de \textbf{no convexidad, decisiones mixtas y
+restricciones tipo caja}.
+
+\section{\texorpdfstring{\textbf{Objetivos
+específicos}}{Objetivos específicos}}\label{objetivos-especuxedficos}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Formular un modelo de localización--inventario humanitario
+  bajo incertidumbre parametrizada}, que extienda el modelo clásico de
+  cantidad económica de pedido (EOQ) para incluir inventario de
+  seguridad, faltantes estocásticos penalizados y decisiones binarias de
+  apertura de almacenes, utilizando la demanda esperada y su
+  variabilidad como parámetros exógenos fijos.
+\item
+  \textbf{Desarrollar un esquema de solución híbrido basado en
+  optimización mixta entera no lineal (MINLP)}, que combine enumeración
+  sobre variables binarias con el algoritmo \textbf{L-BFGS-B} para
+  resolver eficientemente los subproblemas continuos no convexos
+  asociados al tamaño del lote y al nivel de inventario de seguridad.
+\item
+  \textbf{Evaluar el desempeño del modelo propuesto mediante estudios de
+  caso en regiones vulnerables a inundaciones en Chiapas y Veracruz},
+  cuantificando la mejora en robustez y costo esperado respecto a
+  enfoques deterministas que ignoran la incertidumbre en la demanda o en
+  el tiempo de entrega.
+\end{enumerate}
+
+\bookmarksetup{startatroot}
+
+\chapter{Preliminares y notación}\label{preliminares-y-notaciuxf3n}
+
+\section{Conjuntos y espacios
+vectoriales}\label{conjuntos-y-espacios-vectoriales}
+
+En la formulación de redes logísticas humanitarias, las decisiones
+suelen representarse en espacios euclidianos de dimensión finita. Dos
+subconjuntos relevantes son:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{\(\mathbb{R}^n\)}: espacio vectorial real de dimensión \(n\).
+\item
+  \textbf{\(\mathbb{R}_{+}^n = \{x \in \mathbb{R}^n : x_i \geq 0,\ \forall i\}\)}:
+  ortante no negativo, usado para modelar flujos, inventarios o
+  asignaciones no negativas.
+\end{itemize}
+
+Estos conjuntos garantizan que las variables del modelo respeten
+restricciones físicas (por ejemplo, no es posible enviar una cantidad
+negativa de ayuda humanitaria).
+
+\section{Convexidad y conjuntos
+especiales}\label{convexidad-y-conjuntos-especiales}
+
+La estructura geométrica del espacio factible influye directamente en la
+complejidad del problema. En particular:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Conjunto convexo}: \(C \subseteq \mathbb{R}^n\) es convexo si
+  para todo \(x, y \in C\) y \(\lambda \in [0,1]\), se cumple
+  \(\lambda x + (1-\lambda)y \in C\). En logística, la convexidad
+  permite combinar estrategias factibles sin violar restricciones. Sin
+  embargo, la presencia de decisiones binarias (como abrir o no un
+  almacén) rompe esta propiedad, como se discute en el Capítulo 3.
+\item
+  \textbf{Poliedro convexo}: conjunto de la forma
+  \(\{x \in \mathbb{R}^n : Ax \leq b\}\) con
+  \(A \in \mathbb{R}^{m \times n}\), \(b \in \mathbb{R}^m\). Es cerrado
+  y convexo (Bazaraa et al., 2013), y describe sistemas de restricciones
+  lineales como límites de capacidad o cobertura de demanda.
+\end{itemize}
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{chapters/Preliminares_files/figure-pdf/fig-poliedro-output-1.pdf}}
+
+}
+
+\caption{\label{fig-poliedro}Representación gráfica de un poliedro
+convexo en \(\mathbb{R}^2\), definido por el sistema de desigualdades
+lineales \(x_1 + x_2 \leq 5\), \(2x_1 + x_2 \leq 8\), \(x_1 \geq 0\),
+\(x_2 \geq 0\). La región factible, sombreada en azul claro, corresponde
+al conjunto de soluciones admisibles para un subproblema de asignación
+de inventario o flujo en un modelo de localización--inventario. Su
+estructura poliédrica refleja la linealidad de las restricciones de
+capacidad, cobertura de demanda y no negatividad, y garantiza convexidad
+cuando las decisiones de apertura de almacenes están fijas.}
+
+\end{figure}%
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Conjunto cerrado en dimensión finita}: En \(\mathbb{R}^n\) con
+  la topología euclidiana, un conjunto es \textbf{cerrado} si contiene
+  todos sus puntos límite. Todo subespacio vectorial de \(\mathbb{R}^n\)
+  es cerrado, y en dimensión finita, los conjuntos cerrados y acotados
+  son compactos (teorema de Heine--Borel). Esta propiedad es clave para
+  garantizar existencia de soluciones en optimización.
+\end{itemize}
+
+\section{Funciones y propiedades
+analíticas}\label{funciones-y-propiedades-analuxedticas}
+
+La formulación del costo total en inventario humanitario depende de
+propiedades analíticas que facilitan el análisis de optimalidad:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Función convexa}: \(f: \mathbb{R}^n \to \mathbb{R}\) es
+  convexa si\\
+  \[
+  f(\lambda x + (1-\lambda)y) \leq \lambda f(x) + (1-\lambda)f(y), \quad \forall x,y, \lambda \in [0,1].
+  \] La convexidad garantiza que todo mínimo local sea global, una
+  propiedad deseable en diseño de redes.
+\item
+  \textbf{Función estrictamente cuadrática}:
+  \(f(x) = \tfrac{1}{2} x^\top Q x - b^\top x + c\), con
+  \(Q \in \mathbb{R}^{n \times n}\) simétrica. Si \(Q\) es constante, el
+  Hessiano \(\nabla^2 f(x) = Q\) también lo es, lo que simplifica el
+  análisis de curvatura en modelos de costo.
+\item
+  \textbf{Separabilidad}: \(f(x)\) es separable si puede escribirse como
+  \(f(x) = \sum_{i=1}^n f_i(x_i)\). Esta propiedad permite descomponer
+  el problema en subproblemas independientes, útil en redes con nodos
+  débilmente acoplados. La función de costo \textbf{no es separable},
+  debido a la interacción entre tamaño de lote, inventario de seguridad
+  y penalización por faltantes.
+\end{itemize}
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{chapters/Preliminares_files/figure-pdf/fig-separable-output-1.pdf}}
+
+}
+
+\caption{\label{fig-separable}Comparación entre una función separable y
+una no separable mediante curvas de nivel. A la izquierda,
+\(f(x_1,x_2) = x_1^2 + \sin(x_2)\) es separable, pues su estructura no
+acopla las variables: las curvas de nivel son alineadas con los ejes, lo
+que permite optimización por coordenadas. A la derecha,
+\(f(x_1,x_2) = (x_1 - x_2)^2 + x_1 x_2\) es no separable, con curvas
+inclinadas que reflejan interacción entre decisiones una característica
+clave en modelos de inventario humanitario, donde el tamaño del lote, el
+inventario de seguridad y la penalización por faltantes están
+fuertemente acoplados.}
+
+\end{figure}%
+
+\section{Notación de orden
+matricial}\label{notaciuxf3n-de-orden-matricial}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{\(A \succ 0\)}: matriz simétrica \(A\) es definida positiva,
+  es decir, \(x^\top A x > 0\) para todo \(x \neq 0\). Esta notación es
+  útil al analizar la curvatura de funciones cuadráticas en modelos de
+  inventario.
+\end{itemize}
+
+\section{Formulaciones de optimización
+mixta}\label{formulaciones-de-optimizaciuxf3n-mixta}
+
+La integración de decisiones estratégicas (ubicación) y tácticas
+(inventario) da lugar a formulaciones mixtas:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Formulación big-M estándar}: restricción de la forma
+  \(y \leq M x\), con \(x \in \{0,1\}\), \(y \in \mathbb{R}_+\), y
+  \(M > 0\) suficientemente grande, usada para modelar la implicación
+  lógica \(x = 0 \Rightarrow y = 0\). Por ejemplo, si no se abre un
+  almacén (\(x = 0\)), no puede enviar ayuda (\(y = 0\)).
+\end{itemize}
+
+\section{Teoría de probabilidad, incertidumbre y medida de
+Lebesgue}\label{teoruxeda-de-probabilidad-incertidumbre-y-medida-de-lebesgue}
+
+En contextos humanitarios, la demanda es incierta. Para modelarla
+rigurosamente, es necesario entender que la \textbf{medida de Lebesgue}
+generaliza el concepto de ``volumen'' y permite integrar funciones más
+allá del cálculo clásico. Esto sustenta la definición de
+\textbf{variables aleatorias absolutamente continuas}, aquellas cuya
+probabilidad se expresa mediante una densidad.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Variable aleatoria (v.a.) absolutamente continua}:
+  \(\mathbb{P}(X \in A) = \int_A f_X(x)\,dx\), donde \(f_X\) es la
+  densidad respecto a la medida de Lebesgue. Esta formulación es
+  esencial para modelar demandas con distribuciones suaves, como la
+  normal.
+\item
+  \textbf{Distribución normal}: si
+  \(D_L \sim \mathcal{N}(\mu_L, \sigma_L^2)\), su densidad es\\
+  \[
+  \phi_{D_L}(d) = \frac{1}{\sqrt{2\pi}\sigma_L} \exp\!\left(-\frac{(d - \mu_L)^2}{2\sigma_L^2}\right).
+  \] Esta distribución se usa para aproximar la demanda durante el
+  tiempo de entrega, lo que permite calcular el inventario de seguridad.
+\item
+  \textbf{Varianza}: para una v.a. \(\tilde{X}\),
+  \(\operatorname{Var}(\tilde{X}) = \mathbb{E}[(\tilde{X} - \mathbb{E}[\tilde{X}])^2]\).
+  La varianza cuantifica la incertidumbre en la demanda; ignorarla (por
+  ejemplo, al usar solo \(\mathbb{E}[d_j]\)) puede inducir soluciones
+  frágiles en eventos extremos.
+\end{itemize}
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{chapters/Preliminares_files/figure-pdf/fig-normal-perdida-output-1.pdf}}
+
+}
+
+\caption{\label{fig-normal-perdida}Función de densidad de probabilidad
+\(\phi(z)\) y función de pérdida logística
+\(E_p(z) = z(\Phi(z)-1) + \phi(z)\) asociadas a la distribución normal
+estándar. La densidad \(\phi(z)\) (azul sólido) modela la incertidumbre
+en la demanda estandarizada, mientras que la función de pérdida
+\(E_p(z)\) (rojo punteado) cuantifica el déficit esperado normalizado
+cuando el nivel de inventario es insuficiente (\(z < 0\)). La región
+sombreada para \(z \geq 1\) ilustra la probabilidad de cola superior,
+relevante para el cálculo del inventario de seguridad en contextos
+humanitarios. Esta función es fundamental para internalizar el riesgo de
+faltantes en la formulación del costo total.}
+
+\end{figure}%
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Notación \(\ll\)}: indica que una cantidad es mucho menor que
+  otra. Por ejemplo, en la Sección 3.4.4 se muestra que, si se ignora la
+  incertidumbre en \(L\), la varianza estimada puede ser
+  \(80 \ll 10\,080\), subestimando severamente el riesgo.
+\end{itemize}
+
+El \textbf{valor esperado} \(\mathbb{E}[d_j]\) representa la demanda
+media en la localidad \(j\). Aunque es común usarlo como estimador
+puntual en modelos deterministas, como se advierte en la Sección
+3.1.2.3, esta simplificación puede ser inadecuada en logística
+humanitaria, donde la cola de la distribución (eventos extremos) es
+crítica.
+
+\section{Optimización y condiciones de
+optimalidad}\label{optimizaciuxf3n-y-condiciones-de-optimalidad}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Condiciones de Karush--Kuhn--Tucker (KKT)}: condiciones
+  necesarias de optimalidad local bajo restricciones de desigualdad y
+  calificación de restricciones. Como se expone en Lewis y Overton
+  (2013), estas condiciones \textbf{no garantizan optimalidad global} en
+  problemas no convexos, como el propuesto, donde la no convexidad surge
+  de las variables binarias y la no linealidad en la incertidumbre.
+\end{itemize}
 
 \bookmarksetup{startatroot}
 
