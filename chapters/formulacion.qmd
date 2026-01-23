@@ -10,7 +10,7 @@ jupyter: python3
 ---
 :::{style="text-align: justify"}
 
-En esta sección se presenta la formulación matemática de un modelo de optimización aplicado a la logística humanitaria ante inundaciones. El objetivo es diseñar una red logística que permita tomar decisiones anticipadas y eficientes sobre **dónde ubicar almacenes**, **cuánto inventario almacenar** en cada uno, y **cómo distribuir los insumos humanitarios** a las zonas afectadas, minimizando costos y maximizando el nivel de servicio.
+En esta sección se presenta la formulación matemática de un modelo de optimización aplicado a la logística humanitaria ante inundaciones con base a lo fundamentado en el capitulo 5. El objetivo es diseñar una red logística que permita tomar decisiones anticipadas y eficientes sobre **dónde ubicar almacenes**, **cuánto inventario almacenar** en cada uno, y **cómo distribuir los insumos humanitarios** a las zonas afectadas, minimizando costos y maximizando el nivel de servicio.
 
 Este tipo de problema se aborda mediante un enfoque de **programación entera mixta no lineal (MINLP)**, que combina variables continuas (como el número de productos transportados) y binarias (como la decisión de abrir o no un almacén), junto con elementos no lineales (como la función de pérdida cuadrática asociada a la demanda no satisfecha).
 
@@ -245,9 +245,9 @@ $${#eq-FR}
 Un *fill rate* elevado indica una mayor cobertura de las necesidades, mientras que valores bajos sugieren fallas en la asignación de recursos o limitaciones estructurales de la red.
 
 
-## Escenario base estado de Veracruz
+## Escenario base estado de Veracruz {#sec-Veracruz}
 
-Con el fin de verificar la eficiencia y robustez del modelo de optimización propuesto, se analizaron diversos escenarios que simulan condiciones reales y variaciones en la infraestructura logística, la demanda y las restricciones operativas. Los escenarios definidos permiten evaluar el impacto de las decisiones estratégicas (ubicación y número de almacenes, cantidad de inventario y rutas de distribución) sobre el costo total y el nivel de servicio.
+Con el fin de verificar la eficiencia y robustez del modelo de optimización propuesto, se analizaron mediante el uso de la implementación numérica presentada en el capitulo 6 y el uso de las herramientas computacionales descritas en el capitulo 7, diversos escenarios que simulan condiciones reales y variaciones en la infraestructura logística, la demanda y las restricciones operativas. Los escenarios definidos permiten evaluar el impacto de las decisiones estratégicas (ubicación y número de almacenes, cantidad de inventario y rutas de distribución) sobre el costo total y el nivel de servicio.
 
 En particular, se consideraron:
 

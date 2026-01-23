@@ -742,7 +742,7 @@ else:
 ```
 :::{style="text-align: justify"}
 
-Basándose en los resultados y lecciones aprendidas de la implementación del modelo en el estado de Veracruz, el presente capítulo extiende la aplicación de la metodología al estado de Chiapas. Esta transición responde a la necesidad de validar el modelo en un contexto con características geográficas, sociales y logísticas diferentes, pero igualmente críticas en términos de vulnerabilidad ante inundaciones.
+Basándose en los resultados y lecciones aprendidas de la implementación del modelo en el estado de Veracruz @sec-Veracruz, el presente capítulo extiende la aplicación de la metodología al estado de Chiapas. Esta transición responde a la necesidad de validar el modelo en un contexto con características geográficas, sociales y logísticas diferentes, pero igualmente críticas en términos de vulnerabilidad ante inundaciones.
 
 Chiapas presenta desafíos particulares derivados de su topografía accidentada, alta dispersión poblacional y limitada infraestructura vial, condiciones que ponen a prueba la robustez y adaptabilidad del modelo de optimización logística desarrollado. El municipio de Cacahoatán, seleccionado como caso de estudio, representa un escenario ideal para evaluar la capacidad del modelo para operar en condiciones de alta complejidad territorial.
 
@@ -1369,7 +1369,7 @@ En la comparación con el caso de Veracruz, se observa que las diferencias clim�
 
 Desde el punto de vista **climático**, Cacahoatán presenta un entorno tropical húmedo con precipitaciones intensas concentradas en periodos cortos, mientras que Veracruz, aunque también expuesto a eventos hidrometeorológicos severos, posee una distribución más amplia de zonas costeras y planicies influenciadas por el Golfo de México. Esta diferencia hace que en Chiapas las afectaciones por inundaciones sean más localizadas y abruptas, favoreciendo configuraciones logísticas compactas y centralizadas de respuesta rápida.
 
-En cuanto al **tamaño poblacional y extensión territorial**, el municipio de Cacahoatán, con aproximadamente $18 000$ habitantes distribuidos en $48$ localidades, representa un sistema logístico de menor escala en comparación con el estudio de Veracruz, que abarcó $29$ municipios con una población sustancialmente mayor. Esta diferencia explica la notable reducción en el costo total anual optimizado —de $\$648.3$ millones MXN en Veracruz a $\$195.5$ millones MXN en Cacahoatán— sin pérdida de eficiencia operativa.
+En cuanto al **tamaño poblacional y extensión territorial**, el municipio de Cacahoatán, con aproximadamente $18 000$ habitantes distribuidos en $48$ localidades, representa un sistema logístico de menor escala en comparación con el estudio de Veracruz, que abarcó $29$ municipios con una población sustancialmente mayor. Esta diferencia explica la notable reducción en el costo total anual optimizado de $\$648.3$ millones MXN en Veracruz a $\$195.5$ millones MXN en Cacahoatán sin pérdida de eficiencia operativa.
 
 Respecto a la **infraestructura y desarrollo urbano**, Veracruz cuenta con una red vial más densa y conectada, lo que permitió la operación simultánea de dos almacenes regionales (Jesús Carranza y Las Choapas) con amplias zonas de cobertura. En cambio, Cacahoatán presenta una infraestructura vial limitada, con carreteras secundarias y caminos rurales susceptibles a interrupciones durante las lluvias, razón por la cual el modelo optó por un esquema centralizado con un único almacén de alta eficiencia.
 

@@ -51,7 +51,7 @@ Para la resolución de los problemas de optimización no lineal con restriccione
 
 El *L-BFGS-B* se caracteriza por su **eficiencia en memoria**, **capacidad para manejar restricciones** y **robustez numérica**. Estas propiedades lo hacen especialmente adecuado para problemas de optimización de mediana escala, en los que es necesario mantener cotas sobre las variables sin reformular el modelo.  
 
-En términos conceptuales, el algoritmo aproxima de forma iterativa el gradiente y la matriz Hessiana del sistema, proyectando cada iteración dentro del espacio factible definido por los límites de las variables. La convergencia se alcanza cuando se satisfacen las condiciones de **Karush–Kuhn–Tucker (KKT)**, que garantizan la optimalidad local.  
+En términos conceptuales, el algoritmo aproxima de forma iterativa el gradiente (ver la @sec-gradiente) y la matriz Hessiana del sistema, proyectando cada iteración dentro del espacio factible definido por los límites de las variables. La convergencia se alcanza cuando se satisfacen las condiciones de **Karush–Kuhn–Tucker (KKT)** @sec-kkt , que garantizan la optimalidad local.  
 
 Aunque la implementación práctica se realizó mediante la función `minimize()` del módulo `scipy.optimize`, el código fuente completo se incluye en los **Anexos** del documento, con el propósito de mantener el enfoque teórico del capítulo y conservar la legibilidad del texto principal.  
 

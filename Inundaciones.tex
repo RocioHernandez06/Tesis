@@ -280,7 +280,7 @@
 \title{Inundaciones}
 \author{Yulissa del Rocío Hernández Vázquez \and Asesor: Dr.~Yofre
 Hernán García Gómez}
-\date{2026-01-08}
+\date{2026-01-22}
 \begin{document}
 \begin{titlepage}
 \hspace{-1.7cm} %Este comando es para mandar a la izquierda ;)
@@ -478,14 +478,10 @@ restricciones operativas.
 \section{\texorpdfstring{\textbf{Objetivo
 general}}{Objetivo general}}\label{objetivo-general}
 
-Diseñar e implementar un modelo de optimización \textbf{determinista
-robusto} para la gestión integrada de la ubicación de almacenes
-preposicionados y el control de inventario humanitario en zonas
-propensas a inundaciones en México, que incorpore \textbf{parámetros
-derivados de la incertidumbre en la demanda} (como inventario de
-seguridad y penalización por faltantes) y minimice el costo total del
-sistema bajo condiciones de \textbf{no convexidad, decisiones mixtas y
-restricciones tipo caja}.
+Implementar un modelo de optimización \textbf{determinista} para la
+gestión integrada de la ubicación de almacenes preposicionados y el
+control de inventario humanitario en zonas propensas a inundaciones en
+el sureste de México.
 
 \section{\texorpdfstring{\textbf{Objetivos
 específicos}}{Objetivos específicos}}\label{objetivos-especuxedficos}
@@ -493,8 +489,8 @@ específicos}}{Objetivos específicos}}\label{objetivos-especuxedficos}
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  \textbf{Formular un modelo de localización--inventario humanitario
-  bajo incertidumbre parametrizada}, que extienda el modelo clásico de
+  \textbf{Adaptar un modelo de localización--inventario humanitario bajo
+  incertidumbre parametrizada}, que extienda el modelo clásico de
   cantidad económica de pedido (EOQ) para incluir inventario de
   seguridad, faltantes estocásticos penalizados y decisiones binarias de
   apertura de almacenes, utilizando la demanda esperada y su
@@ -506,16 +502,26 @@ específicos}}{Objetivos específicos}}\label{objetivos-especuxedficos}
   resolver eficientemente los subproblemas continuos no convexos
   asociados al tamaño del lote y al nivel de inventario de seguridad.
 \item
-  \textbf{Evaluar el desempeño del modelo propuesto mediante estudios de
-  caso en regiones vulnerables a inundaciones en Chiapas y Veracruz},
-  cuantificando la mejora en robustez y costo esperado respecto a
-  enfoques deterministas que ignoran la incertidumbre en la demanda o en
-  el tiempo de entrega.
+  \textbf{Verificar el desempeño del modelo propuesto mediante estudios
+  de caso en regiones vulnerables a inundaciones en Veracruz y replicar
+  en el estado de Chiapas}, cuantificando la mejora en robustez y costo
+  esperado respecto a enfoques deterministas que ignoran la
+  incertidumbre en la demanda o en el tiempo de entrega.
 \end{enumerate}
 
 \bookmarksetup{startatroot}
 
-\chapter{Preliminares y notación}\label{preliminares-y-notaciuxf3n}
+\chapter{Notación y preliminares}\label{notaciuxf3n-y-preliminares}
+
+Antes de presentar los modelos y algoritmos propuestos, es necesario
+establecer las bases matemáticas y la notación que se utilizarán a lo
+largo de esta tesis. Este capítulo reúne conceptos fundamentales de
+análisis, álgebra lineal, optimización y teoría de probabilidad que
+permiten formular rigurosamente el problema de localización--inventario
+bajo incertidumbre, caracterizar su estructura no convexa y justificar
+las estrategias de solución empleadas. El enfoque no es exhaustivo, sino
+selectivo: solo se incluyen aquellos elementos directamente relevantes
+para el desarrollo posterior.
 
 \section{Conjuntos y espacios
 vectoriales}\label{conjuntos-y-espacios-vectoriales}
@@ -532,6 +538,14 @@ subconjuntos relevantes son:
   \textbf{\(\mathbb{R}_{+}^n = \{x \in \mathbb{R}^n : x_i \geq 0,\ \forall i\}\)}:
   ortante no negativo, usado para modelar flujos, inventarios o
   asignaciones no negativas.
+\item
+  \textbf{Conjunto compacto}: Un subconjunto
+  \(K \subseteq \mathbb{R}^n\) es \textbf{compacto} si es
+  \textbf{cerrado y acotado}. Esta propiedad es fundamental en
+  optimización, ya que garantiza que toda sucesión en \(K\) tiene una
+  subsucesión convergente cuyo límite pertenece a \(K\), lo cual asegura
+  la existencia de mínimos globales para funciones continuas (teorema de
+  Weierstrass).
 \end{itemize}
 
 Estos conjuntos garantizan que las variables del modelo respeten
@@ -541,11 +555,36 @@ negativa de ayuda humanitaria).
 \section{Convexidad y conjuntos
 especiales}\label{convexidad-y-conjuntos-especiales}
 
+La convexidad juega un papel central en la teoría de optimización, ya
+que garantiza que cualquier mínimo local sea también un mínimo global,
+lo que simplifica enormemente la búsqueda de soluciones óptimas. En el
+contexto de redes logísticas humanitarias, muchos subproblemas como la
+asignación de flujos o el cálculo de inventarios dan lugar a regiones
+factibles convexas cuando las decisiones de apertura de almacenes están
+fijas. Sin embargo, la presencia de variables binarias (por ejemplo,
+decidir si abrir o no un centro de distribución) introduce no convexidad
+estructural, lo que complica el análisis y requiere métodos
+especializados. Comprender la geometría de los conjuntos convexos y
+poliedros permite identificar cuándo un subproblema es tratable, diseñar
+descomposiciones eficientes y justificar el uso de relajaciones convexas
+en algoritmos de solución.
+
 La estructura geométrica del espacio factible influye directamente en la
 complejidad del problema. En particular:
 
 \begin{itemize}
 \tightlist
+\item
+  \textbf{Combinación convexa}: Dados dos puntos
+  \(x, y \in \mathbb{R}^n\), cualquier punto de la forma\\
+  \[
+  z = \lambda x + (1 - \lambda) y, \quad \text{con } \lambda \in [0,1],
+  \]\\
+  se denomina \textbf{combinación convexa} de \(x\) e \(y\). Esta
+  operación genera todos los puntos en el segmento de recta que une
+  \(x\) con \(y\). Un conjunto \(C \subseteq \mathbb{R}^n\) es
+  \textbf{convexo} si contiene todas las combinaciones convexas de
+  cualesquiera dos de sus puntos.
 \item
   \textbf{Conjunto convexo}: \(C \subseteq \mathbb{R}^n\) es convexo si
   para todo \(x, y \in C\) y \(\lambda \in [0,1]\), se cumple
@@ -557,8 +596,9 @@ complejidad del problema. En particular:
   \textbf{Poliedro convexo}: conjunto de la forma
   \(\{x \in \mathbb{R}^n : Ax \leq b\}\) con
   \(A \in \mathbb{R}^{m \times n}\), \(b \in \mathbb{R}^m\). Es cerrado
-  y convexo (Bazaraa et al., 2013), y describe sistemas de restricciones
-  lineales como límites de capacidad o cobertura de demanda.
+  y convexo (Bazaraa, Sherali, y Shetty (2013a)), y describe sistemas de
+  restricciones lineales como límites de capacidad o cobertura de
+  demanda.
 \end{itemize}
 
 \begin{figure}
@@ -595,11 +635,89 @@ cuando las decisiones de apertura de almacenes están fijas.}
 \section{Funciones y propiedades
 analíticas}\label{funciones-y-propiedades-analuxedticas}
 
+Las propiedades analíticas de la función objetivo como su
+diferenciabilidad, curvatura (Hessiano) y estructura (separabilidad,
+convexidad) determinan directamente la elección del método de solución,
+la calidad de las soluciones obtenidas y la eficiencia computacional del
+proceso de optimización. En el contexto de la logística humanitaria bajo
+incertidumbre, la función de costo total combina términos no lineales
+(como el inventario de seguridad basado en la distribución normal) con
+decisiones discretas (por ejemplo, abrir o no un almacén), lo que da
+lugar a un paisaje no convexo y no separable. Aun así, comprender
+propiedades locales como la suavidad del gradiente o la
+Lipschitz-continuidad del Hessiano permite aplicar métodos iterativos
+robustos (por ejemplo, L-BFGS-B) y garantizar su convergencia. Además,
+cuando se fijan las decisiones discretas (es decir, se decide qué
+almacenes están abiertos), el problema restante suele ser fuertemente
+convexo o casi separable, lo que facilita el diseño de algoritmos
+eficientes y el análisis de sensibilidad.
+
 La formulación del costo total en inventario humanitario depende de
 propiedades analíticas que facilitan el análisis de optimalidad:
 
 \begin{itemize}
 \tightlist
+\item
+  \textbf{Función continuamente diferenciable}: Una función
+  \(f: \mathbb{R}^n \to \mathbb{R}\) es \textbf{continuamente
+  diferenciable} en un conjunto abierto
+  \(\mathcal{U} \subseteq \mathbb{R}^n\) si todas sus derivadas
+  parciales existen y son funciones continuas en \(\mathcal{U}\). En
+  este caso, se dice que \(f \in C^1(\mathcal{U})\). Esta propiedad
+  garantiza que el gradiente \(\nabla f(x)\) varía suavemente en
+  \(\mathcal{U}\), lo cual es esencial para la convergencia de métodos
+  iterativos como el gradiente descendente y para la validez de las
+  condiciones de optimalidad de primer orden (Nocedal y Wright (2006),
+  Sección 2.1).
+\item
+  \textbf{Hessiano}: Dada una función \(f: \mathbb{R}^n \to \mathbb{R}\)
+  dos veces continuamente diferenciable en un conjunto abierto
+  \(\mathcal{U} \subseteq \mathbb{R}^n\), su \textbf{matriz Hessiana} (o
+  simplemente \textbf{Hessiano}) en un punto \(x \in \mathcal{U}\) es la
+  matriz simétrica de segundas derivadas parciales: \[
+  \nabla^2 f(x) = \left[ \frac{\partial^2 f}{\partial x_i \partial x_j}(x) \right]_{i,j=1}^n.
+  \] El Hessiano describe la curvatura local de \(f\) y es fundamental
+  en el análisis de segundo orden, en la caracterización de mínimos
+  locales y en métodos de optimización como Newton o cuasi-Newton. Si
+  \(\nabla^2 f(x) \succ 0\) (definida positiva), entonces \(x\) es un
+  mínimo local estricto bajo condiciones de primer orden.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Hessiano Lipschitz-continuo}: Sea
+    \(f: \mathbb{R}^n \to \mathbb{R}\) una función dos veces
+    continuamente diferenciable en un conjunto abierto
+    \(\mathcal{U} \subseteq \mathbb{R}^n\). Se dice que su
+    \textbf{Hessiano \$ \nabla\^{}2 f \$ es Lipschitz-continuo} en
+    \(\mathcal{U}\) si existe una constante \(L_H > 0\) tal que\\
+    \[
+    \|\nabla^2 f(x) - \nabla^2 f(y)\| \leq L_H \|x - y\|, \quad \forall x, y \in \mathcal{U},
+    \] donde \$ \textbar{}\cdot\textbar{} \$ denota una norma matricial
+    compatible (por ejemplo, la norma espectral). Esta propiedad
+    garantiza que la curvatura de \$ f \$ no varía de forma abrupta y es
+    clave para establecer tasas de convergencia superlineal o cuadrática
+    en métodos de segundo orden, como Newton o BFGS (Nocedal y Wright
+    (2006), Sección 6.4).
+  \item
+    \textbf{Función cuadrática fuertemente convexa}: Una función
+    \(f: \mathbb{R}^n \to \mathbb{R}\) es \textbf{cuadrática fuertemente
+    convexa} si puede escribirse como\\
+    \[
+    f(x) = \tfrac{1}{2} x^\top Q x - b^\top x + c,
+    \]\\
+    donde \(Q \in \mathbb{R}^{n \times n}\) es una matriz
+    \textbf{simétrica y definida positiva} (\$Q \succ 0 \$),
+    \(b \in \mathbb{R}^n\) y \(c \in \mathbb{R}\). La condición
+    \(Q \succ 0\) implica que existe una constante \(\mu > 0\) tal que\\
+    \[
+    x^\top Q x \geq \mu \|x\|^2, \quad \forall x \in \mathbb{R}^n,
+    \]\\
+    lo que garantiza que \(f\) tiene un único mínimo global y que su
+    paisaje de optimización es ``bien condicionado''. Esta propiedad es
+    fundamental para asegurar convergencia rápida de métodos iterativos
+    como el gradiente descendente o BFGS.
+  \end{itemize}
 \item
   \textbf{Función convexa}: \(f: \mathbb{R}^n \to \mathbb{R}\) es
   convexa si\\
@@ -613,6 +731,20 @@ propiedades analíticas que facilitan el análisis de optimalidad:
   \(Q \in \mathbb{R}^{n \times n}\) simétrica. Si \(Q\) es constante, el
   Hessiano \(\nabla^2 f(x) = Q\) también lo es, lo que simplifica el
   análisis de curvatura en modelos de costo.
+\item
+  \textbf{Direcciones conjugadas}: Dada una matriz simétrica definida
+  positiva \(Q \in \mathbb{R}^{n \times n}\), un conjunto de vectores no
+  nulos \(\{p_0, p_1, \dots, p_{k}\} \subseteq \mathbb{R}^n\) es
+  \textbf{\(Q\)-conjugado} (o \textbf{conjugado respecto a \(Q\)}) si\\
+  \[
+  p_i^\top Q p_j = 0, \quad \forall i \neq j.
+  \] En el contexto de minimización de una función cuadrática
+  \(f(x) = \tfrac{1}{2} x^\top Q x - b^\top x + c\), las direcciones
+  conjugadas permiten alcanzar el mínimo global en a lo sumo \(n\)
+  iteraciones, ya que exploran subespacios mutuamente ortogonales en la
+  métrica inducida por \(Q\). Los métodos de la familia de Broyden
+  (incluyendo BFGS y DFP) generan tales direcciones cuando se aplican a
+  funciones cuadráticas con búsquedas lineales exactas.
 \item
   \textbf{Separabilidad}: \(f(x)\) es separable si puede escribirse como
   \(f(x) = \sum_{i=1}^n f_i(x_i)\). Esta propiedad permite descomponer
@@ -643,23 +775,59 @@ fuertemente acoplados.}
 
 \end{figure}%
 
-\section{Notación de orden
-matricial}\label{notaciuxf3n-de-orden-matricial}
+\section{Matrices definidas positivas y su papel en la
+optimización}\label{matrices-definidas-positivas-y-su-papel-en-la-optimizaciuxf3n}
 
-\begin{itemize}
-\tightlist
-\item
-  \textbf{\(A \succ 0\)}: matriz simétrica \(A\) es definida positiva,
-  es decir, \(x^\top A x > 0\) para todo \(x \neq 0\). Esta notación es
-  útil al analizar la curvatura de funciones cuadráticas en modelos de
-  inventario.
-\end{itemize}
+En optimización de funciones en varias variables, la \textbf{matriz
+Hessiana} \(\nabla^2 f(x)\) describe la curvatura local de la función
+objetivo \(f\). Una propiedad fundamental es si esta matriz es
+\textbf{definida positiva}, lo cual se denota como
+\(\nabla^2 f(x) \succ 0\).
 
-\section{Formulaciones de optimización
-mixta}\label{formulaciones-de-optimizaciuxf3n-mixta}
+Formalmente, una matriz simétrica \(A \in \mathbb{R}^{n \times n}\) es
+\textbf{definida positiva} si\\
+\[
+x^\top A x > 0 \quad \text{para todo } x \in \mathbb{R}^n,\ x \neq 0.
+\]
 
-La integración de decisiones estratégicas (ubicación) y tácticas
-(inventario) da lugar a formulaciones mixtas:
+Esta condición garantiza que la función \(f\) es \textbf{estrictamente
+convexa} en una vecindad del punto \(x\), y por tanto, si además
+\(\nabla f(x) = 0\), entonces \(x\) es un \textbf{mínimo local
+estricto}. En modelos de inventario humanitario, donde la función de
+costo incluye términos cuadráticos o aproximaciones de segundo orden
+(por ejemplo, en el cálculo del inventario de seguridad bajo demanda
+normal), la definición positiva del Hessiano asegura que los métodos de
+optimización basados en curvatura como Newton o L-BFGS converjan a
+soluciones estables y únicas en subproblemas continuos.
+
+\section{Estructura general de problemas de optimización con
+restricciones}\label{estructura-general-de-problemas-de-optimizaciuxf3n-con-restricciones}
+
+Los modelos de logística humanitaria integran decisiones de naturaleza
+distinta: \textbf{estratégicas} (por ejemplo, dónde ubicar centros de
+distribución) y \textbf{tácticas/operativas} (como cuánto inventario
+almacenar o cuánta ayuda enviar). Esta combinación da lugar a problemas
+de optimización \textbf{mixtos}, que involucran variables binarias (para
+las decisiones de apertura/cierre) y variables continuas no negativas
+(para flujos, inventarios o asignaciones).
+
+En términos generales, el problema puede expresarse como:
+
+\[
+\begin{aligned}
+\min_{x,y} \quad & f(x, y) \\
+\text{sujeto a} \quad & g_i(x, y) \leq 0, \quad i = 1,\dots,m, \\
+& x \in \{0,1\}^p, \quad y \in \mathbb{R}_+^q,
+\end{aligned}
+\]
+
+donde \(f\) representa el costo total esperado (incluyendo
+penalizaciones por faltantes y costos de operación), y las restricciones
+modelan capacidades, cobertura de demanda y lógica de activación.
+
+Un componente esencial de esta estructura es la \textbf{vinculación
+entre variables discretas y continuas}, comúnmente implementada mediante
+la \textbf{formulación big-M}:
 
 \begin{itemize}
 \tightlist
@@ -671,15 +839,29 @@ La integración de decisiones estratégicas (ubicación) y tácticas
   almacén (\(x = 0\)), no puede enviar ayuda (\(y = 0\)).
 \end{itemize}
 
+Esta estructura mixta introduce no convexidad y discontinuidad en el
+espacio de decisiones, lo que impide el uso directo de métodos basados
+en gradientes y motiva el uso de algoritmos especializados, como los
+discutidos en el Capítulo 5.
+
 \section{Teoría de probabilidad, incertidumbre y medida de
 Lebesgue}\label{teoruxeda-de-probabilidad-incertidumbre-y-medida-de-lebesgue}
 
-En contextos humanitarios, la demanda es incierta. Para modelarla
-rigurosamente, es necesario entender que la \textbf{medida de Lebesgue}
-generaliza el concepto de ``volumen'' y permite integrar funciones más
-allá del cálculo clásico. Esto sustenta la definición de
-\textbf{variables aleatorias absolutamente continuas}, aquellas cuya
-probabilidad se expresa mediante una densidad.
+\section{Teoría de probabilidad y variables
+aleatorias}\label{teoruxeda-de-probabilidad-y-variables-aleatorias}
+
+En la logística humanitaria, la demanda de ayuda especialmente durante o
+después de eventos como inundaciones es inherentemente incierta y
+altamente variable. Modelar esta incertidumbre de forma adecuada es
+crucial: usar únicamente valores promedio ignora la posibilidad de
+eventos extremos, lo que puede llevar a niveles insuficientes de
+inventario y, en consecuencia, a faltantes críticos. Por ello, es
+necesario representar la demanda como una \textbf{variable aleatoria},
+cuyo comportamiento se describe mediante herramientas de la teoría de
+probabilidad. Esta formulación permite cuantificar no solo la demanda
+esperada, sino también su variabilidad y el riesgo asociado a sus colas
+(eventos raros pero severos), aspectos esenciales para el cálculo del
+inventario de seguridad y la toma de decisiones robustas.
 
 \begin{itemize}
 \tightlist
@@ -742,8 +924,23 @@ puntual en modelos deterministas, como se advierte en la Sección
 humanitaria, donde la cola de la distribución (eventos extremos) es
 crítica.
 
-\section{Optimización y condiciones de
-optimalidad}\label{optimizaciuxf3n-y-condiciones-de-optimalidad}
+\section{Optimización no lineal y condiciones de
+optimalidad}\label{sec-kkt}
+
+El problema de localización--inventario bajo incertidumbre da lugar a un
+modelo de optimización \textbf{no lineal}, debido a la presencia de
+términos como el inventario de seguridad (basado en la distribución
+normal) y funciones de penalización por faltantes. En este contexto, las
+\textbf{condiciones de Karush--Kuhn--Tucker (KKT)} proporcionan un marco
+teórico fundamental para caracterizar puntos candidatos a óptimos
+locales, siempre que se satisfagan ciertas condiciones de regularidad
+(calificación de restricciones). Sin embargo, dado que el problema
+incluye variables binarias y acoplamiento no lineal entre decisiones, el
+espacio factible es \textbf{no convexo y discontinuo}, lo que implica
+que las condiciones KKT aunque necesarias \textbf{no garantizan
+optimalidad global}. Esta limitación justifica el uso de métodos de
+solución especializados, como algoritmos de ramificación o heurísticas
+híbridas, que se discuten en capítulos posteriores.
 
 \begin{itemize}
 \tightlist
@@ -3679,7 +3876,7 @@ dominio (\(Q \to 1^+\) y \(Q \to \infty\)).
 
 Estas propiedades se desarrollan en las subsecciones siguientes,
 sustentadas en resultados clásicos del análisis no lineal, tal como se
-presentan en Bazaraa, Sherali, y Shetty (2013); Boyd y Vandenberghe
+presentan en Bazaraa, Sherali, y Shetty (2013b); Boyd y Vandenberghe
 (2004).
 
 \subsubsection{Ejemplo ilustrativo: formulación explícita del
@@ -4300,7 +4497,7 @@ optimización asociado, en ausencia de la restricción de caja
 Este problema es un caso clásico de optimización unidimensional con
 solución cerrada, ampliamente estudiado en la teoría de inventarios y en
 textos de programación no lineal (ver Boyd y Vandenberghe (2004);
-Bazaraa, Sherali, y Shetty (2013)).
+Bazaraa, Sherali, y Shetty (2013b)).
 
 Dado que \(f(Q)\) es \textbf{estrictamente convexa} en \((0, \infty)\)
 (pues \(f''(Q) = 2K/Q^3 > 0\) para todo \(Q > 0\)), el único punto
@@ -4719,8 +4916,9 @@ encuentran acotadas superior e inferiormente dentro de un dominio
 compacto. Este tipo de problemas es común en la modelación de sistemas
 físicos, económicos y logísticos, donde las condiciones naturales o
 estructurales limitan el espacio de búsqueda de soluciones, para más
-detalles sobre este tipo de problemas de optimizacion ver Bertsekas
-(2016).
+detalles sobre este tipo de problemas de optimizacion ver por ejemplo el
+capitulo 3 de Bertsekas (2016), el Luenberger y Ye (2016), el Bazaraa,
+Sherali, y Shetty (2013b) y el Nocedal y Wright (2006).
 
 El desarrollo del capítulo se organiza en cinco secciones. En primer
 lugar, se introducen los fundamentos de los métodos iterativos de primer
@@ -4729,16 +4927,17 @@ gradiente y la aproximación del Hessiano. Posteriormente, se extiende el
 análisis hacia dominios con restricciones tipo caja, detallando la
 formulación y justificación estructural del algoritmo \textbf{L-BFGS-B},
 uno de los más eficientes para resolver problemas de gran escala con
-cotas bajo el esquema de Byrd et~al. (1995); Nocedal y Wright (2006). En
-la tercera sección se analizan los resultados teóricos de convergencia
-del método bajo hipótesis de regularidad, presentando un teorema global
-que garantiza la existencia de puntos estacionarios que satisfacen las
-condiciones de Karush-Kuhn-Tucker (KKT). En seguida, la cuarta parte
-describe la implementación computacional del algoritmo y los
-experimentos numéricos realizados para evaluar su desempeño frente a
-otros métodos clásicos de optimización sin restricciones. Finalmente, se
-incluye una discusión crítica acerca de las ventajas, limitaciones y
-posibles extensiones del enfoque propuesto.
+cotas bajo el esquema de Byrd et~al. (1995) y el Nocedal y Wright (2006)
+capítulo 6. En la tercera sección se analizan los resultados teóricos de
+convergencia del método bajo hipótesis de regularidad, presentando un
+teorema global que garantiza la existencia de puntos estacionarios que
+satisfacen las condiciones de Karush-Kuhn-Tucker (KKT)
+Sección~\ref{sec-kkt}. En seguida, la cuarta parte describe la
+implementación computacional del algoritmo y los experimentos numéricos
+realizados para evaluar su desempeño frente a otros métodos clásicos de
+optimización sin restricciones. Finalmente, se incluye una discusión
+crítica acerca de las ventajas, limitaciones y posibles extensiones del
+enfoque propuesto.
 
 El propósito de este capítulo es ofrecer una comprensión integral del
 método \textbf{L-BFGS-B}, integrando su base matemática, su estructura
@@ -4749,7 +4948,7 @@ problemas con restricciones tipo caja.
 orden}\label{fundamentos-de-muxe9todos-iterativos-de-primer-y-segundo-orden}
 
 \subsection{Método de gradiente descendente y sus propiedades de
-convergencia}\label{muxe9todo-de-gradiente-descendente-y-sus-propiedades-de-convergencia}
+convergencia}\label{sec-gradiente}
 
 El método de gradiente descendente constituye el algoritmo más elemental
 dentro de los métodos iterativos de primer orden para la minimización no
@@ -4758,8 +4957,9 @@ propiedad geométrica de que el gradiente de una función escalar
 \(f: \mathbb{R}^n \to \mathbb{R}\), diferenciable en un punto
 \(x \in \mathbb{R}^n\), apunta en la dirección de máximo crecimiento
 local. En consecuencia, la dirección opuesta, \(-\nabla f(x)\), indica
-un camino de descenso local siempre que \(\nabla f(x) \neq 0\) (Nocedal
-y Wright (2006)).
+un camino de descenso local siempre que \(\nabla f(x) \neq 0\) (véase
+Nocedal y Wright (2006), Capítulo 2, Sección 2.1, en particular la
+discusión sobre la dirección de máximo crecimiento, p.~14).
 
 Formalmente, dado un punto inicial \(x_0 \in \mathbb{R}^n\), el método
 genera una sucesión \(\{x_k\}_{k \geq 0}\) definida por
@@ -4773,7 +4973,7 @@ iteración mediante una búsqueda lineal adecuada.
 
 La elección de \(\alpha_k\) resulta determinante para la convergencia.
 Una estrategia robusta impone las \textbf{condiciones de Wolfe} (Nocedal
-y Wright (2006)):
+y Wright (2006), Sección 3.1, pp.33--34):
 
 \[
   f(x_k - \alpha_k \nabla f(x_k)) \le f(x_k) - c_1 \alpha_k \|\nabla f(x_k)\|^2,
@@ -4848,6 +5048,27 @@ presentados en la siguiente sección.
 convergencia
 superlineal}\label{muxe9todos-cuasi-newton-aproximaciuxf3n-del-hessiano-y-convergencia-superlineal}
 
+Antes de describir el esquema algorítmico, introducimos la noción de
+\textbf{convergencia superlineal}, que caracteriza la eficiencia
+asintótica de esta clase de métodos.
+
+Sea \(\{x_k\}\) una sucesión generada por un algoritmo que converge a un
+punto óptimo \(x^\star\). Se dice que la convergencia es
+\textbf{superlineal} si\\
+\[
+\lim_{k \to \infty} \frac{\|x_{k+1} - x^\star\|}{\|x_k - x^\star\|} = 0.
+\] Esta tasa es más rápida que la convergencia lineal y refleja una
+aceleración progresiva del algoritmo cerca de la solución. Los métodos
+cuasi-Newton, como BFGS, alcanzan esta tasa bajo hipótesis de
+regularidad (por ejemplo, \(f \in C^2\) con Hessiano Lipschitz-continuo)
+y búsquedas lineales que satisfagan las condiciones de Wolfe (Nocedal y
+Wright (2006), Sección 6.4).
+
+Los métodos cuasi-Newton constituyen una clase fundamental de algoritmos
+iterativos para la minimización de funciones diferenciables sin
+restricciones, diseñados para emular el comportamiento del método de
+Newton sin requerir la evaluación explícita del Hessiano\ldots{}
+
 Los métodos cuasi-Newton constituyen una clase fundamental de algoritmos
 iterativos para la minimización de funciones diferenciables sin
 restricciones, diseñados para emular el comportamiento del método de
@@ -4857,7 +5078,7 @@ Newton sin requerir la evaluación explícita del Hessiano
 \(H_k \approx (\nabla^2 f(x_k))^{-1}\)) a partir de la información de
 gradientes acumulada durante la iteración, logrando así tasas de
 convergencia \textbf{superlineales} bajo hipótesis razonables Nocedal y
-Wright (2006).
+Wright (2006), Sección 6.4.
 
 Sea \(f : \mathbb{R}^n \to \mathbb{R}\) una función continuamente
 diferenciable. El esquema genérico de un método cuasi-Newton se expresa
@@ -5058,9 +5279,9 @@ simétricas actualizadas a partir de la información de gradiente
 acumulada. Esta familia engloba los métodos más relevantes en la
 práctica, entre ellos el \textbf{BFGS}
 (Broyden--Fletcher--Goldfarb--Shanno) y el \textbf{DFP}
-(Davidon--Fletcher--Powell), y permite analizar sus propiedades de
-convergencia, estabilidad y eficiencia computacional de manera unificada
-Nocedal y Wright (2006).
+(Davidon--Fletcher--Powell), y permite, como se expone en la Sección 6.3
+de Nocedal y Wright (2006) analizar de forma unificada sus propiedades
+de convergencia, estabilidad y eficiencia computacional.
 
 Sea \(f : \mathbb{R}^n \to \mathbb{R}\) una función dos veces
 continuamente diferenciable. En cada iteración \(k\), se dispone de los
@@ -5080,10 +5301,10 @@ B_{k+1} s_k = y_k. \tag{3.11}
 La \textbf{familia de Broyden} se define como el conjunto de
 actualizaciones
 
-\[
+\begin{equation}\phantomsection\label{eq-broy}{
 B_{k+1}(\phi_k) = B_k - \frac{B_k s_k s_k^\top B_k}{s_k^\top B_k s_k}
-+ \frac{y_k y_k^\top}{y_k^\top s_k} + \phi_k\, v_k v_k^\top, \tag{3.12}
-\]
++ \frac{y_k y_k^\top}{y_k^\top s_k} + \phi_k\, v_k v_k^\top,
+}\end{equation}
 
 donde
 
@@ -5094,8 +5315,8 @@ v_k = \left(\frac{y_k}{y_k^\top s_k} - \frac{B_k s_k}{s_k^\top B_k s_k}\right), 
 y \(\phi_k \in \mathbb{R}\) es un parámetro que determina el miembro
 particular de la familia.
 
-La fórmula (3.12) puede interpretarse como una combinación convexa de
-dos actualizaciones extremas:
+La fórmula Ecuación~\ref{eq-broy} puede interpretarse como una
+combinación convexa de dos actualizaciones extremas:
 
 \begin{itemize}
 \tightlist
@@ -5134,14 +5355,14 @@ p_k = -B_k^{-1} \nabla f(x_k) \tag{3.16}
 sea de descenso. Además, si \(f\) es una función cuadrática fuertemente
 convexa, cualquier método de la familia restringida de Broyden converge
 en a lo sumo \(n\) pasos, generando direcciones conjugadas respecto al
-Hessiano exacto \(\nabla^2 f\) Dennis y Moré (1977).
+Hessiano exacto \(\nabla^2 f\) Dennis y Moré (1977), Sección 5.
 
 \subsubsection{El método BFGS como caso
 prototípico}\label{el-muxe9todo-bfgs-como-caso-prototuxedpico}
 
-El método \textbf{BFGS} corresponde a \(\phi_k = 0\) en (3.12). Su
-fórmula de actualización de la \textbf{inversa del Hessiano aproximado}
-\(H_k = B_k^{-1}\) es
+El método \textbf{BFGS} corresponde a \(\phi_k = 0\) en
+Ecuación~\ref{eq-broy}. Su fórmula de actualización de la
+\textbf{inversa del Hessiano aproximado} \(H_k = B_k^{-1}\) es
 
 \[
 H_{k+1} = (I - \rho_k s_k y_k^\top) H_k (I - \rho_k y_k s_k^\top) + \rho_k s_k s_k^\top,
@@ -5276,9 +5497,9 @@ La proyección ortogonal de \(z\) sobre \(\Omega\), denotada
 \(P_\Omega(z)\), se define como la solución única del problema de
 minimización
 
-\[
-P_\Omega(z) = \arg\min_{x \in \Omega} \tfrac{1}{2}\|x - z\|^2. \tag{3.18}
-\]
+\begin{equation}\phantomsection\label{eq-18}{
+P_\Omega(z) = \arg\min_{x \in \Omega} \tfrac{1}{2}\|x - z\|^2. 
+}\end{equation}
 
 Dado que \(\Omega\) es un producto cartesiano de intervalos cerrados, la
 proyección se \textbf{descompone coordenada a coordenada}:
@@ -5332,7 +5553,7 @@ fundamentales}\label{propiedades-fundamentales}
   \]
 
   que equivalen a las condiciones de optimalidad de primer orden del
-  problema cuadrático (3.18).
+  problema cuadrático (Ecuación~\ref{eq-18}).
 \end{enumerate}
 
 \subsubsection{\texorpdfstring{Ejemplo: proyección en
@@ -5539,17 +5760,17 @@ métodos estándar para problemas de gran escala con restricciones tipo
 caja.
 
 \subsection{Condiciones de optimalidad bajo cotas: KKT para problemas
-con restricciones tipo
-caja}\label{condiciones-de-optimalidad-bajo-cotas-kkt-para-problemas-con-restricciones-tipo-caja}
+con restricciones tipo caja}\label{sec-kkt_caja}
 
 Tras haber introducido la formulación proyectada del algoritmo L-BFGS-B,
 resulta necesario caracterizar formalmente las condiciones de
 optimalidad que dicho método busca satisfacer. En particular, cuando el
 dominio está delimitado por cotas inferiores y superiores, las
-condiciones de Karush--Kuhn--Tucker (KKT) adquieren una estructura
-particularmente simple y separable por coordenadas. Esta sección
-desarrolla esa caracterización, que constituye el fundamento teórico de
-la convergencia de los métodos con restricciones tipo caja.
+condiciones de Karush--Kuhn--Tucker (KKT) Sección~\ref{sec-kkt}
+adquieren una estructura particularmente simple y separable por
+coordenadas. Esta sección desarrolla esa caracterización, que constituye
+el fundamento teórico de la convergencia de los métodos con
+restricciones tipo caja.
 
 Consideremos el problema de optimización
 
@@ -5741,11 +5962,12 @@ asociado\\
 
 La hipótesis (H1) implica que el gradiente no cambia bruscamente, lo que
 permite controlar los pasos del algoritmo mediante la cota superior
-\(L\). Equivalentemente, la desigualdad de suavidad se cumple: \[
-f(y) \le f(x) + \nabla f(x)^\top (y-x) + \tfrac{L}{2}\|y-x\|^2, \quad \forall x, y \in \Omega. \tag{3.39}
-\] Esta relación garantiza que las búsquedas lineales que satisfacen las
-\textbf{condiciones de Wolfe} producen pasos uniformemente acotados y no
-degenerados.
+\(L\). Equivalentemente, la desigualdad de suavidad se cumple:
+\begin{equation}\phantomsection\label{eq-hipotesis}{
+f(y) \le f(x) + \nabla f(x)^\top (y-x) + \tfrac{L}{2}\|y-x\|^2, \quad \forall x, y \in \Omega. 
+}\end{equation} Esta relación garantiza que las búsquedas lineales que
+satisfacen las \textbf{condiciones de Wolfe} producen pasos
+uniformemente acotados y no degenerados.
 
 La hipótesis (H2), por su parte, asegura que las iteraciones \(\{x_k\}\)
 permanecen en un subconjunto \textbf{compacto y factible} de \(\Omega\).
@@ -5797,13 +6019,14 @@ generada por L-BFGS-B verifica \[
 
 \textbf{Bosquejo de prueba.}\\
 De (H2) se sigue que \(\{x_k\} \subset \mathcal{L}\) es acotada, por lo
-que posee subsucesiones convergentes. La desigualdad (3.39) y las
-condiciones de Wolfe garantizan un descenso suficiente de \(f\). La
-condición de curvatura \(y_k^\top s_k > 0\) asegura que las matrices
-\(H_k\) permanecen definidas positivas y acotadas. Por tanto, todo punto
-límite \(\bar{x}\) de la sucesión satisface la condición de
-estacionariedad proyectada \(\nabla_\Omega f(\bar{x}) = 0\). Nocedal y
-Wright (2006); Byrd et~al. (1995).
+que posee subsucesiones convergentes. La desigualdad
+Ecuación~\ref{eq-hipotesis} y las condiciones de Wolfe garantizan un
+descenso suficiente de \(f\). La condición de curvatura
+\(y_k^\top s_k > 0\) asegura que las matrices \(H_k\) permanecen
+definidas positivas y acotadas (Nocedal y Wright (2006), Teorema 3.2 y
+Sección 6.1). Por tanto, todo punto límite \(\bar{x}\) de la sucesión
+satisface la condición de estacionariedad proyectada
+\(\nabla_\Omega f(\bar{x}) = 0\) (Byrd et~al. (1995), Teorema 4.1).
 
 \subsubsection{Ejemplo de verificación de las
 hipótesis}\label{ejemplo-de-verificaciuxf3n-de-las-hipuxf3tesis}
@@ -5854,10 +6077,10 @@ KKT}\label{teorema-de-convergencia-global-luxedmite-de-puntos-estacionarios-que-
 El algoritmo \textbf{L-BFGS-B} está diseñado para resolver problemas de
 optimización no lineal con restricciones tipo caja de la forma
 
-\[
+\begin{equation}\phantomsection\label{eq-teo_con}{
 \min_{x \in \mathbb{R}^n} f(x)
-\quad \text{sujeto a} \quad \ell \le x \le u. \tag{3.60}
-\]
+\quad \text{sujeto a} \quad \ell \le x \le u. 
+}\end{equation}
 
 Aquí, \(f : \mathbb{R}^n \to \mathbb{R}\) es continuamente
 diferenciable, y el conjunto factible
@@ -5913,14 +6136,15 @@ f(x_k + \alpha_k d_k) &\le f(x_k) + c_1 \alpha_k \nabla f(x_k)^\top d_k, \\
 \end{aligned} \tag{3.64}
 \] con \(0 < c_1 < c_2 < 1\).
 
-Entonces, la sucesión \(\{x_k\}\) verifica: \[
-\liminf_{k \to \infty} \|\nabla_\Omega f(x_k)\| = 0, \tag{3.65}
-\] donde \[
+Entonces, la sucesión \(\{x_k\}\) verifica:
+\begin{equation}\phantomsection\label{eq-liminf}{
+\liminf_{k \to \infty} \|\nabla_\Omega f(x_k)\| = 0,
+}\end{equation} donde \[
 \nabla_\Omega f(x) := P_\Omega(x - \nabla f(x)) - x \tag{3.66}
 \] es el \textbf{gradiente proyectado}.\\
 En consecuencia, toda subsucesión convergente de \(\{x_k\}\) converge a
 un punto \(x^\star \in \Omega\) que satisface las \textbf{condiciones
-KKT} del problema (3.60).
+KKT} del problema Ecuación~\ref{eq-teo_con}.
 \end{quote}
 
 \subsubsection{Bosquejo de la
@@ -5949,17 +6173,17 @@ demostración}\label{bosquejo-de-la-demostraciuxf3n}
 \item
   \textbf{Aplicación del lema de Zoutendijk en problemas restringidos.}
 
-  El lema de Zoutendijk original Zoutendijk (1970) se formuló para
-  problemas sin restricciones, pero admite una extensión natural al caso
-  de minimización sobre un conjunto convexo cerrado
-  \(\Omega \subset \mathbb{R}^n\) Nocedal y Wright (2006). Bajo las
-  hipótesis del teorema, en particular, que \(f\) es continuamente
-  diferenciable con gradiente Lipschitz en un conjunto de nivel
-  compacto, y que los pasos \(\alpha_k\) satisfacen las condiciones de
-  Wolfe, la sucesión generada por un método de descenso proyectado
-  verifica \[
-  \sum_{k=0}^\infty \frac{(\nabla f(x_k)^\top d_k)^2}{\|d_k\|^2} < \infty. \tag{3.69}
-  \]
+  El lema de Zoutendijk original (Zoutendijk (1970), p.~40) se formuló
+  para problemas sin restricciones, pero admite una extensión natural al
+  caso de minimización sobre un conjunto convexo cerrado
+  \(\Omega \subset \mathbb{R}^n\) (Nocedal y Wright (2006), Lema 12.1,
+  p.~333). Bajo las hipótesis del teorema, en particular, que \(f\) es
+  continuamente diferenciable con gradiente Lipschitz en un conjunto de
+  nivel compacto, y que los pasos \(\alpha_k\) satisfacen las
+  condiciones de Wolfe, la sucesión generada por un método de descenso
+  proyectado verifica \begin{equation}\phantomsection\label{eq-wol}{
+  \sum_{k=0}^\infty \frac{(\nabla f(x_k)^\top d_k)^2}{\|d_k\|^2} < \infty. 
+  }\end{equation}
 
   En el caso del gradiente proyectado, la dirección de búsqueda se
   define como
@@ -5969,19 +6193,21 @@ demostración}\label{bosquejo-de-la-demostraciuxf3n}
   (x_k - \nabla f(x_k) - (x_k + d_k))^\top (x - (x_k + d_k)) \le 0, \quad \forall x \in \Omega,
   \] la cual implica, en particular, que \[
   \nabla f(x_k)^\top d_k = -\|d_k\|^2. \tag{3.68}
-  \] Sustituyendo en (3.69), obtenemos \[
+  \] Sustituyendo en Ecuación~\ref{eq-wol}, obtenemos \[
   \sum_{k=0}^\infty \|d_k\|^2 < \infty.
   \] Esta serie convergente implica que \(\|d_k\| \to 0\) cuando
   \(k \to \infty\). Dado que \(d_k = \nabla_\Omega f(x_k)\), se concluye
   que \[
   \lim_{k \to \infty} \|\nabla_\Omega f(x_k)\| = 0,
-  \] lo cual refuerza (3.65) y completa este paso del argumento.
+  \] lo cual refuerza Ecuación~\ref{eq-liminf} y completa este paso del
+  argumento.
 \item
   \textbf{Condición KKT en el límite.}\\
   Por continuidad de \(P_\Omega\) y de \(\nabla f\), si
   \(x_{k_j} \to x^\star\), entonces \[
   P_\Omega(x^\star - \nabla f(x^\star)) = x^\star,
-  \] que equivale a las condiciones KKT (véase Sección 3.2.3).
+  \] que equivale a las condiciones KKT (véase
+  Sección~\ref{sec-kkt_caja}).
 \end{enumerate}
 
 \subsubsection{Ejemplo de convergencia hacia un punto
@@ -6234,10 +6460,10 @@ i = k-m,\dots,k-1.
 Esta recursión requiere especificar una matriz inicial \(H_k^{(0)}\), la
 cual actúa como una aproximación base del inverso del Hessiano al inicio
 de cada actualización. Según se ha documentado ampliamente (Liu y
-Nocedal (1989); Nocedal y Wright (2006)), la elección de \(H_k^{(0)}\)
-influye de forma directa en la dirección de búsqueda
-\(p_k = -H_k \nabla f(x_k)\), afectando así estabilidad y eficiencia del
-método.
+Nocedal (1989), Sección 4, p.~513; Nocedal y Wright (2006), Sección 7.2,
+p.~178), la elección de \(H_k^{(0)}\) influye de forma directa en la
+dirección de búsqueda \(p_k = -H_k \nabla f(x_k)\), afectando así
+estabilidad y eficiencia del método.
 
 \subsubsection{Inicialización básica e inicialización
 escalada}\label{inicializaciuxf3n-buxe1sica-e-inicializaciuxf3n-escalada}
@@ -6445,11 +6671,14 @@ p_1 \approx (0.01, -0.01)^\top.
 \]
 
 El escalado mediante \(\gamma_k\) constituye un componente esencial del
-desempeño de L-BFGS-B. Además de ser computacionalmente económico,
-estabiliza la recursión, mejora el acondicionamiento de la dirección de
-búsqueda y permite reproducir el comportamiento esperado en problemas
-con curvatura anisótropa. Estos resultados coinciden con lo reportado
-por Liu y Nocedal (1989) y por Nocedal y Wright (2006).
+desempeño del método L-BFGS-B. Además de ser computacionalmente
+económico, estabiliza la recursión, mejora el acondicionamiento de la
+dirección de búsqueda y permite reproducir el comportamiento esperado en
+problemas con curvatura anisótropa. Esta estrategia fue propuesta
+originalmente por Liu y Nocedal (1989, sec. 4, p.~513) para L-BFGS y
+posteriormente adoptada en L-BFGS-B. Su efectividad se sustenta
+teóricamente en su capacidad para aproximar la magnitud del inverso del
+Hessiano (Nocedal y Wright 2006, sec. 7.2, p.~178).
 
 \subsection{\texorpdfstring{Estimación empírica del número de
 iteraciones y dependencia del parámetro de memoria
@@ -6460,8 +6689,9 @@ La variante L-BFGS-B incorpora un parámetro estructural crucial: el
 el número de pares de curvatura \((s_i, y_i)\) retenidos durante el
 proceso iterativo. Este parámetro determina la dimensión efectiva del
 subespacio en el que se aproxima el inverso del Hessiano y, por tanto,
-modula el equilibrio entre costo computacional y rapidez de convergencia
-Liu y Nocedal (1989).
+modula el equilibrio entre costo computacional y rapidez de
+convergencia, tal como se analiza en Liu y Nocedal (1989, sec. 4,
+p.~512).
 
 \subsubsection{\texorpdfstring{Dependencia teórica de la convergencia
 respecto a
@@ -6503,10 +6733,11 @@ La evidencia teórica y computacional muestra que:
 \end{itemize}
 
 Este comportamiento se justifica porque muchas aplicaciones presentan
-curvatura activa en un subespacio reducido; por ello, valores de
-\(m \in [10,20]\) suelen capturar la información esencial sin costos
-elevados para más detalles Liu y Nocedal (1989); Nocedal y Wright
-(2006).
+curvatura activa en un subespacio de dimensión reducida; por ello,
+valores moderados de \(m\) (por ejemplo, entre 3 y 20) suelen capturar
+la información esencial sin incurrir en costos computacionales
+innecesarios, tal como se discute en Liu y Nocedal (1989, sec. 4,
+p.~512) y Nocedal y Wright (2006, sec. 7.2, pp.~178--179).
 
 \subsubsection{Estimación empírica del número de
 iteraciones}\label{estimaciuxf3n-empuxedrica-del-nuxfamero-de-iteraciones}
@@ -7000,7 +7231,6 @@ cualitativo}\label{anuxe1lisis-cuantitativo-y-cualitativo}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\tightlist
 \item
   \textbf{Eficiencia en iteraciones vs.~costo por iteración.}
 
@@ -7024,39 +7254,62 @@ cualitativo}\label{anuxe1lisis-cuantitativo-y-cualitativo}
   \begin{itemize}
   \tightlist
   \item
-    L-BFGS-B y los métodos proyectados garantizan factibilidad en todas
-    las iteraciones; BFGS sin restricciones produce iteraciones
-    infactibles (p.~ej. \(x_3^{(5)}=0.98<1\)) y por tanto es inadecuado
-    en aplicaciones con restricciones físicas ineludibles.
+    \textbf{L-BFGS-B} y \textbf{GD} garantizan factibilidad en todas las
+    iteraciones.\\
+  \item
+    \textbf{BFGS sin restricciones} produce iteraciones infactibles
+    (p.~ej. \(x_3^{(5)} = 0.98 < 1\)) y es inadecuado cuando las
+    restricciones son físicamente obligatorias.
   \end{itemize}
-\item
-  \textbf{Robustez cerca de la frontera.}
 
-  \begin{itemize}
+  \begin{enumerate}
+  \def\labelenumii{\arabic{enumii}.}
+  \setcounter{enumii}{2}
   \tightlist
   \item
+    \textbf{Robustez cerca de la frontera.}\\
     Dado que el Hessiano contiene términos \(\mu/(x_i-1)^2\) que crecen
     cuando \(x_i\to 1^+\), el problema es efectivamente mal condicionado
-    cerca de la frontera. L-BFGS-B tolera bien esta condición gracias a
-    la proyección y al escalado implícito. El método Newton--CG también
-    es capaz de manejar esta situación, ya que no requiere formar
-    explícitamente el Hessiano, sino únicamente productos del tipo
-    \(\nabla^2 f(x) v\) \(\textit{hessiano-vector}\), los cuales pueden
-    evaluarse eficientemente incluso en problemas de gran escala. Sin
-    embargo, su desempeño depende críticamente de una implementación
-    robusta del producto hessiano-vector y, en problemas altamente mal
-    condicionados, de un precondicionador adecuado.
-  \end{itemize}
-\item
-  \textbf{Interpretación de curvas de convergencia.}
+    cerca de la frontera. En este régimen, solo los métodos capaces de
+    manejar alta curvatura sin requerir el Hessiano completo resultan
+    prácticos. Por esta razón, el análisis se centra en L-BFGS-B y
+    Newton--CG:\\
+  \end{enumerate}
 
   \begin{itemize}
   \tightlist
   \item
-    En la gráfica de \(\log_{10}\|\nabla_\Omega f(x_k)\|\) vs
-    iteraciones se observa: GD con pendiente suave (decadencia lineal
-    lenta), Newton--CG con caída abrupta tras pocas iteraciones,
-    L-BFGS-B con comportamiento cuasi-superlineal desde etapas medias, y
+    \textbf{L-BFGS-B} tolera bien esta condición gracias a la proyección
+    y al escalado implícito.\\
+  \item
+    \textbf{Newton--CG} también es capaz de manejar esta situación, ya
+    que no requiere formar explícitamente el Hessiano, sino únicamente
+    productos del tipo \(\nabla^2 f(x) v\) (\emph{hessiano-vector}), los
+    cuales pueden evaluarse eficientemente incluso en problemas de gran
+    escala. Sin embargo, su desempeño depende críticamente de una
+    implementación robusta del producto hessiano-vector y, en problemas
+    altamente mal condicionados, de un precondicionador adecuado.
+  \end{itemize}
+
+  Los métodos \textbf{GD proyectado} y \textbf{BFGS sin restricciones}
+  no se incluyen en este análisis porque, en la práctica, GD converge
+  demasiado lentamente para acercarse significativamente a la frontera
+  en un número razonable de iteraciones, mientras que BFGS genera
+  iteraciones infactibles antes de alcanzar dicha región.
+\item
+  \textbf{Interpretación de curvas de convergencia.}\\
+  En la gráfica de \(\log_{10}\|\nabla_\Omega f(x_k)\|\) vs iteraciones
+  se observa:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    GD con pendiente suave (decadencia lineal lenta)
+  \item
+    Newton--CG con caída abrupta tras pocas iteraciones
+  \item
+    L-BFGS-B con comportamiento cuasi-superlineal desde etapas medias
+  \item
     BFGS similar a L-BFGS-B en reducción teórica pero con violaciones de
     cotas en la trayectoria.
   \end{itemize}
@@ -7516,7 +7769,7 @@ Una clase relevante de problemas de optimización de gran escala exhibe
 la función objetivo como una suma de subfunciones dependientes de
 subconjuntos reducidos de las variables. Dicho enfoque, analizado en
 profundidad por Griewank y Toint (1984) y sistematizado en marcos
-generales de optimización no lineal Conn, Gould, y Toint (1991),
+generales de optimización no lineal Conn, Gould, y Toint (1992),
 posibilita una construcción eficiente tanto del gradiente como del
 Hessiano, permitiendo algoritmos cuasi-Newton especializados con menores
 costos computacionales.
@@ -7727,19 +7980,22 @@ p_k = -\sum_{i=1}^{N_e} U_i^\top (B_k^{(i)})^{-1} U_i \nabla f(x_k).
 \tag{3.145}
 \]
 
-En software especializado como \textbf{LANCELOT} o \textbf{IPOPT}, este
-tipo de estrategias estructuradas han mostrado mejoras notables cuando
-la función presenta una separabilidad marcada Conn, Gould, y Toint
-(1991).
+La estructura parcialmente separable de la función objetivo cuya
+explotación se analiza en Conn, Gould, y Toint (1992, vol. 17, cap. 2,
+pp.~25--26) permite mejoras notables en la eficiencia computacional para
+problemas de gran escala.
 
 La extensión de L-BFGS-B a funciones con estructura parcialmente
-separable resulta no solo viable, sino altamente ventajosa. La clave
-técnica consiste en identificar explícitamente los conjuntos
-\(\{\mathcal{I}_i\}\) o las matrices \(U_i\), ya sea mediante modelado
-explícito o análisis simbólico. Este marco se vuelve esencial en
-aplicaciones de gran escala como calibración de parámetros en sistemas
-físicos, modelos de elementos finitos o inferencia estadística con
-interacciones locales.
+separable no solo es posible, sino muy útil. La clave técnica consiste
+en identificar explícitamente los conjuntos \(\{\mathcal{I}_i\}\) o las
+matrices \(U_i\), ya sea mediante modelado explícito o análisis
+simbólico. La idea clave es identificar grupos de variables que
+interactúan entre sí, lo cual puede hacerse al diseñar el modelo o
+mediante herramientas automáticas. Este enfoque es especialmente valioso
+en problemas de gran escala donde las interacciones son locales, como en
+la simulación de inundaciones, el modelado de estructuras físicas (por
+ejemplo, con elementos finitos) o el análisis de datos espaciales donde
+cada punto depende principalmente de sus vecinos.
 
 \bookmarksetup{startatroot}
 
@@ -7844,11 +8100,11 @@ problemas de optimización de mediana escala, en los que es necesario
 mantener cotas sobre las variables sin reformular el modelo.
 
 En términos conceptuales, el algoritmo aproxima de forma iterativa el
-gradiente y la matriz Hessiana del sistema, proyectando cada iteración
-dentro del espacio factible definido por los límites de las variables.
-La convergencia se alcanza cuando se satisfacen las condiciones de
-\textbf{Karush--Kuhn--Tucker (KKT)}, que garantizan la optimalidad
-local.
+gradiente (ver la Sección~\ref{sec-gradiente}) y la matriz Hessiana del
+sistema, proyectando cada iteración dentro del espacio factible definido
+por los límites de las variables. La convergencia se alcanza cuando se
+satisfacen las condiciones de \textbf{Karush--Kuhn--Tucker (KKT)}
+Sección~\ref{sec-kkt} , que garantizan la optimalidad local.
 
 Aunque la implementación práctica se realizó mediante la función
 \texttt{minimize()} del módulo \texttt{scipy.optimize}, el código fuente
@@ -7867,12 +8123,12 @@ municipio del estado de \textbf{Chiapas}.
 \chapter{Formulación del Problema}\label{formulaciuxf3n-del-problema}
 
 En esta sección se presenta la formulación matemática de un modelo de
-optimización aplicado a la logística humanitaria ante inundaciones. El
-objetivo es diseñar una red logística que permita tomar decisiones
-anticipadas y eficientes sobre \textbf{dónde ubicar almacenes},
-\textbf{cuánto inventario almacenar} en cada uno, y \textbf{cómo
-distribuir los insumos humanitarios} a las zonas afectadas, minimizando
-costos y maximizando el nivel de servicio.
+optimización aplicado a la logística humanitaria ante inundaciones con
+base a lo fundamentado en el capitulo 5. El objetivo es diseñar una red
+logística que permita tomar decisiones anticipadas y eficientes sobre
+\textbf{dónde ubicar almacenes}, \textbf{cuánto inventario almacenar} en
+cada uno, y \textbf{cómo distribuir los insumos humanitarios} a las
+zonas afectadas, minimizando costos y maximizando el nivel de servicio.
 
 Este tipo de problema se aborda mediante un enfoque de
 \textbf{programación entera mixta no lineal (MINLP)}, que combina
@@ -8221,16 +8477,17 @@ Un \emph{fill rate} elevado indica una mayor cobertura de las
 necesidades, mientras que valores bajos sugieren fallas en la asignación
 de recursos o limitaciones estructurales de la red.
 
-\section{Escenario base estado de
-Veracruz}\label{escenario-base-estado-de-veracruz}
+\section{Escenario base estado de Veracruz}\label{sec-Veracruz}
 
 Con el fin de verificar la eficiencia y robustez del modelo de
-optimización propuesto, se analizaron diversos escenarios que simulan
-condiciones reales y variaciones en la infraestructura logística, la
-demanda y las restricciones operativas. Los escenarios definidos
-permiten evaluar el impacto de las decisiones estratégicas (ubicación y
-número de almacenes, cantidad de inventario y rutas de distribución)
-sobre el costo total y el nivel de servicio.
+optimización propuesto, se analizaron mediante el uso de la
+implementación numérica presentada en el capitulo 6 y el uso de las
+herramientas computacionales descritas en el capitulo 7, diversos
+escenarios que simulan condiciones reales y variaciones en la
+infraestructura logística, la demanda y las restricciones operativas.
+Los escenarios definidos permiten evaluar el impacto de las decisiones
+estratégicas (ubicación y número de almacenes, cantidad de inventario y
+rutas de distribución) sobre el costo total y el nivel de servicio.
 
 En particular, se consideraron:
 
@@ -8520,11 +8777,12 @@ de desastre.
 Chiapas}\label{escenario-principal-estado-de-chiapas}
 
 Basándose en los resultados y lecciones aprendidas de la implementación
-del modelo en el estado de Veracruz, el presente capítulo extiende la
-aplicación de la metodología al estado de Chiapas. Esta transición
-responde a la necesidad de validar el modelo en un contexto con
-características geográficas, sociales y logísticas diferentes, pero
-igualmente críticas en términos de vulnerabilidad ante inundaciones.
+del modelo en el estado de Veracruz Sección~\ref{sec-Veracruz}, el
+presente capítulo extiende la aplicación de la metodología al estado de
+Chiapas. Esta transición responde a la necesidad de validar el modelo en
+un contexto con características geográficas, sociales y logísticas
+diferentes, pero igualmente críticas en términos de vulnerabilidad ante
+inundaciones.
 
 Chiapas presenta desafíos particulares derivados de su topografía
 accidentada, alta dispersión poblacional y limitada infraestructura
@@ -9129,8 +9387,8 @@ distribuidos en \(48\) localidades, representa un sistema logístico de
 menor escala en comparación con el estudio de Veracruz, que abarcó
 \(29\) municipios con una población sustancialmente mayor. Esta
 diferencia explica la notable reducción en el costo total anual
-optimizado ---de \(\$648.3\) millones MXN en Veracruz a \(\$195.5\)
-millones MXN en Cacahoatán--- sin pérdida de eficiencia operativa.
+optimizado de \(\$648.3\) millones MXN en Veracruz a \(\$195.5\)
+millones MXN en Cacahoatán sin pérdida de eficiencia operativa.
 
 Respecto a la \textbf{infraestructura y desarrollo urbano}, Veracruz
 cuenta con una red vial más densa y conectada, lo que permitió la
@@ -9262,9 +9520,13 @@ Mexico}, editado por Daniel Sánchez-Partida, 169-98. Cham: Springer.
 \url{https://doi.org/10.1007/978-3-030-67295-9_8}.
 
 \bibitem[\citeproctext]{ref-BazaraaSheraliShetty2013}
-Bazaraa, Mokhtar S., Hanif D. Sherali, y C. M. Shetty. 2013.
+Bazaraa, Mokhtar S., Hanif D. Sherali, y C. M. Shetty. 2013b.
 \emph{Nonlinear Programming: Theory and Algorithms}. 3.ª ed. Wiley.
 \url{https://doi.org/10.1002/9781118762371}.
+
+\bibitem[\citeproctext]{ref-Bazaraa2013}
+---------. 2013a. \emph{Nonlinear Programming: Theory and Algorithms}.
+3rd ed. Hoboken, NJ: John Wiley \& Sons.
 
 \bibitem[\citeproctext]{ref-Bertsekas1999}
 Bertsekas, Dimitri P. 1999. \emph{Nonlinear Programming}. Athena
@@ -9296,10 +9558,12 @@ emergency logistics: A literature review»}. \emph{Socio-Economic
 Planning Sciences} 46 (1): 4-13.
 \url{https://doi.org/10.1016/j.seps.2011.04.004}.
 
-\bibitem[\citeproctext]{ref-ConnGouldToint1991}
-Conn, A. R., N. I. M. Gould, y Ph. L. Toint. 1991. \emph{LANCELOT: A
-Fortran package for large-scale nonlinear optimization}. Berlin:
-Springer. \url{https://books.google.com/books?id=zff0CAAAQBAJ}.
+\bibitem[\citeproctext]{ref-ConnGouldToint1992}
+Conn, Andrew R., Nicholas I. M. Gould, y Philippe L. Toint. 1992.
+\emph{LANCELOT: A Fortran Package for Large-Scale Nonlinear Optimization
+(Release A)}. Vol. 17. Springer Series en Computational Mathematics.
+Berlin, Heidelberg: Springer-Verlag.
+\url{https://doi.org/10.1007/978-3-662-12220-5}.
 
 \bibitem[\citeproctext]{ref-Daskin2013}
 Daskin, Mark S. 2013. \emph{Network and Discrete Location: Models,
@@ -9351,6 +9615,11 @@ via quasi-Newton methods»}. \emph{Mathematical Programming} 141 (1--2):
 Liu, Dong C., y Jorge Nocedal. 1989. {«On the Limited Memory BFGS Method
 for Large Scale Optimization»}. \emph{Mathematical Programming} 45
 (1--3): 503-28. \url{https://doi.org/10.1007/BF01589116}.
+
+\bibitem[\citeproctext]{ref-Luenberger2016}
+Luenberger, David G., y Yinyu Ye. 2016. \emph{Linear and Nonlinear
+Programming}. 4th ed. Cham, Switzerland: Springer.
+\url{https://doi.org/10.1007/978-3-319-18842-3}.
 
 \bibitem[\citeproctext]{ref-Mashrut2024}
 Mashrut, S., y A. Rahimi. 2024. {«Robust-fuzzy-probabilistic

@@ -10,17 +10,17 @@ jupyter: python3
 ---
 
 :::{style="text-align: justify"}
-En este capítulo se presentan los fundamentos teóricos y computacionales de los métodos de optimización aplicados a problemas con restricciones tipo caja, es decir, aquellos en los que las variables de decisión se encuentran acotadas superior e inferiormente dentro de un dominio compacto. Este tipo de problemas es común en la modelación de sistemas físicos, económicos y logísticos, donde las condiciones naturales o estructurales limitan el espacio de búsqueda de soluciones, para más detalles sobre este tipo de problemas de optimizacion ver @Bertsekas2016.
+En este capítulo se presentan los fundamentos teóricos y computacionales de los métodos de optimización aplicados a problemas con restricciones tipo caja, es decir, aquellos en los que las variables de decisión se encuentran acotadas superior e inferiormente dentro de un dominio compacto. Este tipo de problemas es común en la modelación de sistemas físicos, económicos y logísticos, donde las condiciones naturales o estructurales limitan el espacio de búsqueda de soluciones, para más detalles sobre este tipo de problemas de optimizacion ver por ejemplo el capitulo 3 de @Bertsekas2016, el @Luenberger2016, el @BazaraaSheraliShetty2013 y el @NocedalWright2006.
 
-El desarrollo del capítulo se organiza en cinco secciones. En primer lugar, se introducen los fundamentos de los métodos iterativos de primer y segundo orden, enfatizando los mecanismos de actualización del gradiente y la aproximación del Hessiano. Posteriormente, se extiende el análisis hacia dominios con restricciones tipo caja, detallando la formulación y justificación estructural del algoritmo **L-BFGS-B**, uno de los más eficientes para resolver problemas de gran escala con cotas bajo el esquema de @Byrd1995; @NocedalWright2006. En la tercera sección se analizan los resultados teóricos de convergencia del método bajo hipótesis de regularidad, presentando un teorema global que garantiza la existencia de puntos estacionarios que satisfacen las condiciones de Karush-Kuhn-Tucker (KKT). En seguida, la cuarta parte describe la implementación computacional del algoritmo y los experimentos numéricos realizados para evaluar su desempeño frente a otros métodos clásicos de optimización sin restricciones. Finalmente, se incluye una discusión crítica acerca de las ventajas, limitaciones y posibles extensiones del enfoque propuesto.
+El desarrollo del capítulo se organiza en cinco secciones. En primer lugar, se introducen los fundamentos de los métodos iterativos de primer y segundo orden, enfatizando los mecanismos de actualización del gradiente y la aproximación del Hessiano. Posteriormente, se extiende el análisis hacia dominios con restricciones tipo caja, detallando la formulación y justificación estructural del algoritmo **L-BFGS-B**, uno de los más eficientes para resolver problemas de gran escala con cotas bajo el esquema de @Byrd1995 y el @NocedalWright2006 capítulo 6. En la tercera sección se analizan los resultados teóricos de convergencia del método bajo hipótesis de regularidad, presentando un teorema global que garantiza la existencia de puntos estacionarios que satisfacen las condiciones de Karush-Kuhn-Tucker (KKT) @sec-kkt. En seguida, la cuarta parte describe la implementación computacional del algoritmo y los experimentos numéricos realizados para evaluar su desempeño frente a otros métodos clásicos de optimización sin restricciones. Finalmente, se incluye una discusión crítica acerca de las ventajas, limitaciones y posibles extensiones del enfoque propuesto.
 
 El propósito de este capítulo es ofrecer una comprensión integral del método **L-BFGS-B**, integrando su base matemática, su estructura computacional y su relevancia práctica para la resolución eficiente de problemas con restricciones tipo caja.
 
 ## Fundamentos de métodos iterativos de primer y segundo orden
 
-### Método de gradiente descendente y sus propiedades de convergencia
+### Método de gradiente descendente y sus propiedades de convergencia {#sec-gradiente}
 
-El método de gradiente descendente constituye el algoritmo más elemental dentro de los métodos iterativos de primer orden para la minimización no lineal de funciones diferenciables. Su fundamento se basa en la propiedad geométrica de que el gradiente de una función escalar $f: \mathbb{R}^n \to \mathbb{R}$, diferenciable en un punto $x \in \mathbb{R}^n$, apunta en la dirección de máximo crecimiento local. En consecuencia, la dirección opuesta, $-\nabla f(x)$, indica un camino de descenso local siempre que $\nabla f(x) \neq 0$ (@NocedalWright2006).
+El método de gradiente descendente constituye el algoritmo más elemental dentro de los métodos iterativos de primer orden para la minimización no lineal de funciones diferenciables. Su fundamento se basa en la propiedad geométrica de que el gradiente de una función escalar $f: \mathbb{R}^n \to \mathbb{R}$, diferenciable en un punto $x \in \mathbb{R}^n$, apunta en la dirección de máximo crecimiento local. En consecuencia, la dirección opuesta, $-\nabla f(x)$, indica un camino de descenso local siempre que $\nabla f(x) \neq 0$ (véase @NocedalWright2006, Capítulo 2, Sección 2.1, en particular la discusión sobre la dirección de máximo crecimiento, p. 14).
 
 Formalmente, dado un punto inicial $x_0 \in \mathbb{R}^n$, el método genera una sucesión $\{x_k\}_{k \geq 0}$ definida por  
 
@@ -30,7 +30,7 @@ $$
 
 donde $\alpha_k > 0$ es la longitud de paso seleccionada en cada iteración mediante una búsqueda lineal adecuada.
 
-La elección de $\alpha_k$ resulta determinante para la convergencia. Una estrategia robusta impone las **condiciones de Wolfe** (@NocedalWright2006):
+La elección de $\alpha_k$ resulta determinante para la convergencia. Una estrategia robusta impone las **condiciones de Wolfe** (@NocedalWright2006, Sección 3.1, pp.33--34):
 
 $$
   f(x_k - \alpha_k \nabla f(x_k)) \le f(x_k) - c_1 \alpha_k \|\nabla f(x_k)\|^2,
@@ -86,7 +86,17 @@ Este comportamiento justifica la necesidad de métodos que incorporen informaci�
 
 ### Métodos cuasi-Newton: aproximación del Hessiano y convergencia superlineal
 
-Los métodos cuasi-Newton constituyen una clase fundamental de algoritmos iterativos para la minimización de funciones diferenciables sin restricciones, diseñados para emular el comportamiento del método de Newton sin requerir la evaluación explícita del Hessiano $\nabla^2 f(x_k)$. En lugar de ello, estos métodos construyen **aproximaciones sucesivas** $B_k \in \mathbb{R}^{n \times n}$ (o $H_k \approx (\nabla^2 f(x_k))^{-1}$) a partir de la información de gradientes acumulada durante la iteración, logrando así tasas de convergencia **superlineales** bajo hipótesis razonables @NocedalWright2006.
+Antes de describir el esquema algorítmico, introducimos la noción de **convergencia superlineal**, que caracteriza la eficiencia asintótica de esta clase de métodos.
+
+Sea $\{x_k\}$ una sucesión generada por un algoritmo que converge a un punto óptimo $x^\star$. Se dice que la convergencia es **superlineal** si  
+$$
+\lim_{k \to \infty} \frac{\|x_{k+1} - x^\star\|}{\|x_k - x^\star\|} = 0.
+$$
+Esta tasa es más rápida que la convergencia lineal y refleja una aceleración progresiva del algoritmo cerca de la solución. Los métodos cuasi-Newton, como BFGS, alcanzan esta tasa bajo hipótesis de regularidad (por ejemplo, $f \in C^2$ con Hessiano Lipschitz-continuo) y búsquedas lineales que satisfagan las condiciones de Wolfe (@NocedalWright2006, Sección 6.4).
+
+Los métodos cuasi-Newton constituyen una clase fundamental de algoritmos iterativos para la minimización de funciones diferenciables sin restricciones, diseñados para emular el comportamiento del método de Newton sin requerir la evaluación explícita del Hessiano...
+
+Los métodos cuasi-Newton constituyen una clase fundamental de algoritmos iterativos para la minimización de funciones diferenciables sin restricciones, diseñados para emular el comportamiento del método de Newton sin requerir la evaluación explícita del Hessiano $\nabla^2 f(x_k)$. En lugar de ello, estos métodos construyen **aproximaciones sucesivas** $B_k \in \mathbb{R}^{n \times n}$ (o $H_k \approx (\nabla^2 f(x_k))^{-1}$) a partir de la información de gradientes acumulada durante la iteración, logrando así tasas de convergencia **superlineales** bajo hipótesis razonables @NocedalWright2006, Sección 6.4.
 
 Sea $f : \mathbb{R}^n \to \mathbb{R}$ una función continuamente diferenciable. El esquema genérico de un método cuasi-Newton se expresa como
 
@@ -272,7 +282,7 @@ En solo dos iteraciones el algoritmo reduce el error residual en más de un orde
 
 ### Familia Broyden y el método BFGS como caso prototípico
 
-La clase de métodos cuasi-Newton puede organizarse en torno a la **familia de actualizaciones de Broyden**, un conjunto paramétrico de fórmulas que preservan la ecuación secante y generan matrices simétricas actualizadas a partir de la información de gradiente acumulada. Esta familia engloba los métodos más relevantes en la práctica, entre ellos el **BFGS** (Broyden–Fletcher–Goldfarb–Shanno) y el **DFP** (Davidon–Fletcher–Powell), y permite analizar sus propiedades de convergencia, estabilidad y eficiencia computacional de manera unificada @NocedalWright2006.
+La clase de métodos cuasi-Newton puede organizarse en torno a la **familia de actualizaciones de Broyden**, un conjunto paramétrico de fórmulas que preservan la ecuación secante y generan matrices simétricas actualizadas a partir de la información de gradiente acumulada. Esta familia engloba los métodos más relevantes en la práctica, entre ellos el **BFGS** (Broyden–Fletcher–Goldfarb–Shanno) y el **DFP** (Davidon–Fletcher–Powell), y permite, como se expone en la Sección 6.3 de @NocedalWright2006 analizar de forma unificada sus propiedades de convergencia, estabilidad y eficiencia computacional.
 
 Sea $f : \mathbb{R}^n \to \mathbb{R}$ una función dos veces continuamente diferenciable. En cada iteración $k$, se dispone de los incrementos
 
@@ -283,25 +293,25 @@ $$
 y se busca una matriz simétrica $B_{k+1} \in \mathbb{R}^{n \times n}$ que satisfaga la **ecuación secante**
 
 $$
-B_{k+1} s_k = y_k. \tag{3.11}
-$$
+B_{k+1} s_k = y_k. 
+$${#eq-11}
 
 La **familia de Broyden** se define como el conjunto de actualizaciones
 
 $$
 B_{k+1}(\phi_k) = B_k - \frac{B_k s_k s_k^\top B_k}{s_k^\top B_k s_k}
-+ \frac{y_k y_k^\top}{y_k^\top s_k} + \phi_k\, v_k v_k^\top, \tag{3.12}
-$$
++ \frac{y_k y_k^\top}{y_k^\top s_k} + \phi_k\, v_k v_k^\top,
+$$ {#eq-broy}
 
 donde
 
 $$
-v_k = \left(\frac{y_k}{y_k^\top s_k} - \frac{B_k s_k}{s_k^\top B_k s_k}\right), \tag{3.13}
-$$
+v_k = \left(\frac{y_k}{y_k^\top s_k} - \frac{B_k s_k}{s_k^\top B_k s_k}\right), 
+$${#eq-13}
 
 y $\phi_k \in \mathbb{R}$ es un parámetro que determina el miembro particular de la familia.
 
-La fórmula (3.12) puede interpretarse como una combinación convexa de dos actualizaciones extremas:
+La fórmula @eq-broy puede interpretarse como una combinación convexa de dos actualizaciones extremas:
 
 - **BFGS**: $\phi_k = 0$,
 - **DFP**: $\phi_k = 1$.
@@ -309,34 +319,34 @@ La fórmula (3.12) puede interpretarse como una combinación convexa de dos actu
 De hecho,
 
 $$
-B_{k+1}(\phi_k) = (1 - \phi_k) B_{k+1}^{\text{BFGS}} + \phi_k B_{k+1}^{\text{DFP}}. \tag{3.14}
-$$
+B_{k+1}(\phi_k) = (1 - \phi_k) B_{k+1}^{\text{BFGS}} + \phi_k B_{k+1}^{\text{DFP}}. 
+$${#eq-14}
 
 #### Propiedades de la familia restringida de Broyden
 
 Una subclase especialmente relevante es la **familia restringida de Broyden**, asociada a $\phi_k \in [0,1]$. Bajo la **condición de curvatura**
 
 $$
-y_k^\top s_k > 0, \tag{3.15}
-$$
+y_k^\top s_k > 0, 
+$${#eq-15}
 
 garantizada si la búsqueda lineal cumple las condiciones de Wolfe, todos los miembros de esta subclase preservan la **definida positividad** de $B_k$, siempre que $B_0$ sea simétrica definida positiva. Esta propiedad asegura que la dirección de búsqueda
 
 $$
-p_k = -B_k^{-1} \nabla f(x_k) \tag{3.16}
-$$
+p_k = -B_k^{-1} \nabla f(x_k)
+$${#eq-16}
 
-sea de descenso. Además, si $f$ es una función cuadrática fuertemente convexa, cualquier método de la familia restringida de Broyden converge en a lo sumo $n$ pasos, generando direcciones conjugadas respecto al Hessiano exacto $\nabla^2 f$ @DennisMore1977.
+sea de descenso. Además, si $f$ es una función cuadrática fuertemente convexa, cualquier método de la familia restringida de Broyden converge en a lo sumo $n$ pasos, generando direcciones conjugadas respecto al Hessiano exacto $\nabla^2 f$ @DennisMore1977, Sección 5.
 
 
 #### El método BFGS como caso prototípico
 
-El método **BFGS** corresponde a $\phi_k = 0$ en (3.12). Su fórmula de actualización de la **inversa del Hessiano aproximado** $H_k = B_k^{-1}$ es
+El método **BFGS** corresponde a $\phi_k = 0$ en @eq-broy. Su fórmula de actualización de la **inversa del Hessiano aproximado** $H_k = B_k^{-1}$ es
 
 $$
 H_{k+1} = (I - \rho_k s_k y_k^\top) H_k (I - \rho_k y_k s_k^\top) + \rho_k s_k s_k^\top,
-\quad \rho_k = (y_k^\top s_k)^{-1}. \tag{3.17}
-$$
+\quad \rho_k = (y_k^\top s_k)^{-1}. 
+$${#eq-17}
 
 Esta formulación evita la inversión explícita de matrices y facilita el cálculo de la dirección de búsqueda:
 
@@ -407,14 +417,14 @@ donde $\ell = (\ell_1,\dots,\ell_n)^\top \in \mathbb{R}^n \cup \{-\infty\}^n$ y 
 La proyección ortogonal de $z$ sobre $\Omega$, denotada $P_\Omega(z)$, se define como la solución única del problema de minimización
 
 $$
-P_\Omega(z) = \arg\min_{x \in \Omega} \tfrac{1}{2}\|x - z\|^2. \tag{3.18}
-$$
+P_\Omega(z) = \arg\min_{x \in \Omega} \tfrac{1}{2}\|x - z\|^2. 
+$${#eq-18}
 
 Dado que $\Omega$ es un producto cartesiano de intervalos cerrados, la proyección se **descompone coordenada a coordenada**:
 
 $$
-[P_\Omega(z)]_i = \min\{u_i,\, \max\{\ell_i,\, z_i\}\}, \quad i = 1,\dots,n. \tag{3.19}
-$$
+[P_\Omega(z)]_i = \min\{u_i,\, \max\{\ell_i,\, z_i\}\}, \quad i = 1,\dots,n. 
+$${#eq-19}
 
 Esta expresión corresponde a la llamada *función de recorte* (*clipping function*), que restringe cada componente de $z$ al intervalo factible $[\ell_i,u_i]$.
 
@@ -423,8 +433,8 @@ Esta expresión corresponde a la llamada *función de recorte* (*clipping functi
 1. **No expansividad**
 
    $$
-   \|P_\Omega(z) - P_\Omega(w)\| \le \|z - w\|, \quad \forall z,w \in \mathbb{R}^n. \tag{3.20}
-   $$
+   \|P_\Omega(z) - P_\Omega(w)\| \le \|z - w\|, \quad \forall z,w \in \mathbb{R}^n.
+   $${#eq-20}
 
    Por tanto, $P_\Omega$ es una aplicación **Lipschitz continua con constante 1**, lo que implica estabilidad numérica.
 
@@ -433,8 +443,8 @@ Esta expresión corresponde a la llamada *función de recorte* (*clipping functi
    Un punto $x^\star \in \Omega$ satisface $x^\star = P_\Omega(z)$, si y solo si,
 
    $$
-   (z - x^\star)^\top (x - x^\star) \le 0, \quad \forall x \in \Omega. \tag{3.21}
-   $$
+   (z - x^\star)^\top (x - x^\star) \le 0, \quad \forall x \in \Omega.
+   $${#eq-21}
 
    Geométricamente, esto significa que el vector residual $z - x^\star$ forma un ángulo obtuso con cualquier dirección factible desde $x^\star$.
 
@@ -447,10 +457,10 @@ Esta expresión corresponde a la llamada *función de recorte* (*clipping functi
    x_i = \ell_i &\Rightarrow z_i \le \ell_i,\\[4pt]
    x_i = u_i &\Rightarrow z_i \ge u_i,\\[4pt]
    \ell_i < x_i < u_i &\Rightarrow z_i = x_i,
-   \end{cases} \tag{3.22}
-   $$
+   \end{cases}
+   $${#eq-22}
 
-   que equivalen a las condiciones de optimalidad de primer orden del problema cuadrático (3.18).
+   que equivalen a las condiciones de optimalidad de primer orden del problema cuadrático (@eq-18).
 
 
 #### Ejemplo: proyección en $\mathbb{R}^3$
@@ -462,7 +472,7 @@ $$
 \quad z = (0.5,\, 2.5,\, -1.2)^\top.
 $$
 
-Aplicando (3.19) coordenada a coordenada:
+Aplicando @eq-19 coordenada a coordenada:
 
 - $x_1^\star = \min\{3, \max\{1, 0.5\}\} = 1$,
 - $x_2^\star = \min\{2, \max\{-\infty, 2.5\}\} = 2$,
@@ -482,7 +492,7 @@ $$
 $$
 
 Dado que $x_1 \ge 1$, $x_2 \le 2$, $x_3 \ge 0$, cada término parcial es no positivo, y la suma total $\le 0$.  
-Asimismo, las condiciones (3.22) se satisfacen coordenada a coordenada:
+Asimismo, las condiciones @eq-22 se satisfacen coordenada a coordenada:
 $x_1^\star=1$ con $z_1=0.5\le1$, $x_2^\star=2$ con $z_2=2.5\ge2$, y $x_3^\star=0$ con $z_3=-1.2\le0$.
 
 
@@ -508,8 +518,8 @@ El método integra tres ideas fundamentales:
 Dado un punto inicial $x_0 \in \Omega$, el esquema iterativo se expresa como
 
 $$
-x_{k+1} = P_\Omega\big(x_k - \alpha_k H_k \nabla f(x_k)\big), \tag{3.23}
-$$
+x_{k+1} = P_\Omega\big(x_k - \alpha_k H_k \nabla f(x_k)\big),
+$$ {#eq-23}
 
 donde $\alpha_k > 0$ satisface las condiciones de Wolfe y $H_k$ es la aproximación de memoria limitada al inverso del Hessiano, construida mediante las $m$ actualizaciones más recientes:
 
@@ -522,20 +532,20 @@ con $y_i^\top s_i > 0$ (condición de curvatura).
 La proyección $P_\Omega$ se calcula coordenada a coordenada como
 
 $$
-[P_\Omega(z)]_i = \min\{u_i, \max\{\ell_i, z_i\}\}, \quad i=1,\dots,n. \tag{3.24}
-$$
+[P_\Omega(z)]_i = \min\{u_i, \max\{\ell_i, z_i\}\}, \quad i=1,\dots,n. 
+$${#eq-24}
 
 El producto $H_k \nabla f(x_k)$ se obtiene por la **recursión de dos bucles**, iniciada con $H_k^{(0)} = \gamma_k I$, donde
 
 $$
-\gamma_k = \frac{s_{k-1}^\top y_{k-1}}{y_{k-1}^\top y_{k-1}}. \tag{3.25}
-$$
+\gamma_k = \frac{s_{k-1}^\top y_{k-1}}{y_{k-1}^\top y_{k-1}}. 
+$${#eq-25}
 
 Este escalamiento mejora la estabilidad numérica y la aceptación de pasos unitarios.
 
 #### Justificación estructural
 
-El esquema (3.23) garantiza factibilidad a cada iteración mediante la proyección $P_\Omega$.  
+El esquema @eq-23 garantiza factibilidad a cada iteración mediante la proyección $P_\Omega$.  
 Definiendo el conjunto de índices activos
 
 $$
@@ -589,9 +599,9 @@ El método converge en dos iteraciones, demostrando que la estructura de memoria
 
 La formulación L-BFGS-B preserva las propiedades de convergencia global del BFGS bajo las hipótesis de suavidad y curvatura positiva. Para más detalles @Byrd1995; @Zhu1997, y constituye uno de los métodos estándar para problemas de gran escala con restricciones tipo caja.
 
-### Condiciones de optimalidad bajo cotas: KKT para problemas con restricciones tipo caja
+### Condiciones de optimalidad bajo cotas: KKT para problemas con restricciones tipo caja {#sec-kkt_caja}
 
-Tras haber introducido la formulación proyectada del algoritmo L-BFGS-B, resulta necesario caracterizar formalmente las condiciones de optimalidad que dicho método busca satisfacer. En particular, cuando el dominio está delimitado por cotas inferiores y superiores, las condiciones de Karush–Kuhn–Tucker (KKT) adquieren una estructura particularmente simple y separable por coordenadas. Esta sección desarrolla esa caracterización, que constituye el fundamento teórico de la convergencia de los métodos con restricciones tipo caja.
+Tras haber introducido la formulación proyectada del algoritmo L-BFGS-B, resulta necesario caracterizar formalmente las condiciones de optimalidad que dicho método busca satisfacer. En particular, cuando el dominio está delimitado por cotas inferiores y superiores, las condiciones de Karush–Kuhn–Tucker (KKT) @sec-kkt adquieren una estructura particularmente simple y separable por coordenadas. Esta sección desarrolla esa caracterización, que constituye el fundamento teórico de la convergencia de los métodos con restricciones tipo caja.
 
 
 Consideremos el problema de optimización
@@ -600,8 +610,7 @@ $$
 \min_{x \in \mathbb{R}^n} f(x)
 \quad \text{sujeto a} \quad
 \ell \le x \le u,
-\tag{3.26}
-$$
+$${#eq-26}
 
 donde $f: \mathbb{R}^n \to \mathbb{R}$ es continuamente diferenciable en un conjunto abierto que contiene al conjunto factible
 
@@ -618,8 +627,7 @@ Reescribiendo las restricciones como desigualdades estándar,
 $$
 c_i^{\ell}(x) := \ell_i - x_i \le 0, \qquad
 c_i^{u}(x) := x_i - u_i \le 0, \quad i = 1,\dots,n,
-\tag{3.27}
-$$
+$${#eq-27}
 
 y suponiendo que se cumple la condición de calificación de Mangasarian–Fromovitz (MFQC), las **condiciones necesarias de Karush–Kuhn–Tucker** establecen que si $x^\star \in \Omega$ es un minimizador local, existen multiplicadores de Lagrange $\lambda^\ell, \lambda^u \in \mathbb{R}^n$ tales que
 
@@ -641,7 +649,7 @@ $${#eq-kkt-d}
 
 
 para todo $i = 1,\dots,n$.  
-Las ecuaciones (3.28c)–(3.28d) expresan la **complementariedad** entre los multiplicadores y las restricciones activas.
+Las ecuaciones @eq-kkt-c–@eq-kkt-d expresan la **complementariedad** entre los multiplicadores y las restricciones activas.
 
 
 #### Forma equivalente sin multiplicadores
@@ -656,8 +664,7 @@ $$
 \nabla_i f(x^\star) \ge 0, & \text{si } x_i^\star = \ell_i,\\[4pt]
 \nabla_i f(x^\star) \le 0, & \text{si } x_i^\star = u_i,
 \end{cases}
-\tag{3.29}
-$$
+$${#eq-29}
 
 donde las desigualdades se interpretan componente a componente.  
 Geométricamente, esto significa que el gradiente proyectado sobre el **cono tangente** de $\Omega$ en $x^\star$ es nulo.
@@ -668,10 +675,9 @@ $$
 \nabla_\Omega f(x^\star)
 := P_\Omega\big(x^\star - \nabla f(x^\star)\big) - x^\star
 = 0.
-\tag{3.30}
-$$
+$${#eq-30}
 
-La igualdad (3.30) es **equivalente** a las condiciones KKT cuando $f$ es convexa, y constituye una **condición necesaria** de optimalidad en el caso no convexo. En la práctica, se emplea como criterio de convergencia en algoritmos proyectados como L-BFGS-B.
+La igualdad @eq-30 es **equivalente** a las condiciones KKT cuando $f$ es convexa, y constituye una **condición necesaria** de optimalidad en el caso no convexo. En la práctica, se emplea como criterio de convergencia en algoritmos proyectados como L-BFGS-B.
 
 
 #### Ejemplo: verificación explícita de KKT
@@ -682,20 +688,19 @@ $$
 \min_{x \in \mathbb{R}^2} f(x) = (x_1 - 1)^2 + (x_2 - 2)^2,
 \quad
 \text{sujeto a } 1 \le x_1 \le 3,\; x_2 \ge 0.
-\tag{3.31}
-$$
+$${#eq-31}
 
 El gradiente es $\nabla f(x) = (2(x_1 - 1),\, 2(x_2 - 2))^\top$.
 
 **Paso 1. Identificación del candidato.**  
 El minimizador irrestricto $(1,2)^\top$ pertenece a $\Omega$, por lo tanto $x^\star = (1,2)^\top$ es candidato a solución óptima.
 
-**Paso 2. Verificación de (3.29).**  
+**Paso 2. Verificación de @eq-29.**  
 - $x_1^\star = \ell_1 = 1 \Rightarrow \nabla_1 f(x^\star) = 0 \ge 0$ ✓  
 - $\ell_2 < x_2^\star < +\infty \Rightarrow \nabla_2 f(x^\star) = 0$ ✓
 
 **Paso 3. Multiplicadores KKT.**  
-De (3.28a),
+De @eq-kkt-a,
 $$
 \nabla f(x^\star) - \lambda^\ell + \lambda^u = 0
 \Rightarrow \lambda^\ell = \lambda^u = 0.
@@ -710,7 +715,7 @@ $$
 
 Así, $x^\star$ satisface todas las condiciones de Karush–Kuhn–Tucker y es el minimizador global.
 
-Este análisis demuestra que las condiciones KKT para restricciones tipo caja poseen una estructura **desacoplada y local**, lo que permite su implementación eficiente en métodos de gran escala. En particular, la condición proyectada (3.30) constituye la base teórica de los algoritmos de proyección iterativa, incluyendo el método L-BFGS-B, cuya convergencia global se verifica precisamente mediante la nulidad asintótica de $\nabla_\Omega f(x_k)$.
+Este análisis demuestra que las condiciones KKT para restricciones tipo caja poseen una estructura **desacoplada y local**, lo que permite su implementación eficiente en métodos de gran escala. En particular, la condición proyectada @eq-30 constituye la base teórica de los algoritmos de proyección iterativa, incluyendo el método L-BFGS-B, cuya convergencia global se verifica precisamente mediante la nulidad asintótica de $\nabla_\Omega f(x_k)$.
 
 ## Convergencia del método L-BFGS-B
 
@@ -730,20 +735,20 @@ con $\ell, u \in \mathbb{R}^n \cup \{\pm\infty\}^n$ y $\ell_i < u_i$ para todo $
 > **(H1) Diferenciabilidad y Lipschitz-continuidad del gradiente.**  
 > La función $f$ es continuamente diferenciable en un conjunto abierto que contiene a $\Omega$, y su gradiente $\nabla f$ es **Lipschitz continuo** en $\Omega$; es decir, existe una constante $L > 0$ tal que  
 > $$
-> \|\nabla f(x) - \nabla f(y)\| \le L \|x - y\|, \quad \forall x, y \in \Omega. \tag{3.37}
-> $$
+> \|\nabla f(x) - \nabla f(y)\| \le L \|x - y\|, \quad \forall x, y \in \Omega.
+> $${#eq-37}
 
 > **(H2) Compacidad del conjunto de nivel inicial.**  
 > Dado un punto inicial $x_0 \in \Omega$, el conjunto de nivel asociado  
 > $$
-> \mathcal{L} := \{ x \in \Omega : f(x) \le f(x_0) \} \tag{3.38}
-> $$
+> \mathcal{L} := \{ x \in \Omega : f(x) \le f(x_0) \} 
+> $${#eq-38}
 > es **no vacío, cerrado y acotado**, y por tanto **compacto**.
 
 La hipótesis (H1) implica que el gradiente no cambia bruscamente, lo que permite controlar los pasos del algoritmo mediante la cota superior $L$. Equivalentemente, la desigualdad de suavidad se cumple:
 $$
-f(y) \le f(x) + \nabla f(x)^\top (y-x) + \tfrac{L}{2}\|y-x\|^2, \quad \forall x, y \in \Omega. \tag{3.39}
-$$
+f(y) \le f(x) + \nabla f(x)^\top (y-x) + \tfrac{L}{2}\|y-x\|^2, \quad \forall x, y \in \Omega. 
+$${#eq-hipotesis}
 Esta relación garantiza que las búsquedas lineales que satisfacen las **condiciones de Wolfe** producen pasos uniformemente acotados y no degenerados.
 
 La hipótesis (H2), por su parte, asegura que las iteraciones $\{x_k\}$ permanecen en un subconjunto **compacto y factible** de $\Omega$. Esto permite aplicar resultados de convergencia por subsucesión y garantiza que las secuencias de gradientes y valores de función no divergen.
@@ -770,23 +775,23 @@ Bajo las hipótesis (H1) y (H2), la sucesión $\{x_k\}$ generada por L-BFGS-B co
 **Teorema.**  
 Supóngase que $f$ satisface (H1) y (H2), y que la búsqueda lineal cumple las condiciones de Wolfe. Si las actualizaciones de memoria limitada satisfacen $y_k^\top s_k > 0$ o son rechazadas en caso contrario (salvaguarda numérica), entonces la sucesión $\{x_k\}$ generada por L-BFGS-B verifica
 $$
-\liminf_{k \to \infty} \|\nabla_\Omega f(x_k)\| = 0, \tag{3.40}
-$$
+\liminf_{k \to \infty} \|\nabla_\Omega f(x_k)\| = 0, 
+$${#eq-40}
 donde el **gradiente proyectado** se define como
 $$
-\nabla_\Omega f(x) := P_\Omega(x - \nabla f(x)) - x. \tag{3.41}
-$$
+\nabla_\Omega f(x) := P_\Omega(x - \nabla f(x)) - x. 
+$${#eq-41}
 
 **Bosquejo de prueba.**  
-De (H2) se sigue que $\{x_k\} \subset \mathcal{L}$ es acotada, por lo que posee subsucesiones convergentes. La desigualdad (3.39) y las condiciones de Wolfe garantizan un descenso suficiente de $f$. La condición de curvatura $y_k^\top s_k > 0$ asegura que las matrices $H_k$ permanecen definidas positivas y acotadas. Por tanto, todo punto límite $\bar{x}$ de la sucesión satisface la condición de estacionariedad proyectada $\nabla_\Omega f(\bar{x}) = 0$.  @NocedalWright2006; @Byrd1995.
+De (H2) se sigue que $\{x_k\} \subset \mathcal{L}$ es acotada, por lo que posee subsucesiones convergentes. La desigualdad @eq-hipotesis y las condiciones de Wolfe garantizan un descenso suficiente de $f$. La condición de curvatura $y_k^\top s_k > 0$ asegura que las matrices $H_k$ permanecen definidas positivas y acotadas (@NocedalWright2006, Teorema 3.2 y Sección 6.1). Por tanto, todo punto límite $\bar{x}$ de la sucesión satisface la condición de estacionariedad proyectada $\nabla_\Omega f(\bar{x}) = 0$ (@Byrd1995, Teorema 4.1).
 
 #### Ejemplo de verificación de las hipótesis
 
 Consideremos el problema
 $$
 \min_{x \in \mathbb{R}^2} f(x) = x_1^4 + x_2^2
-\quad \text{sujeto a } 0 \le x_1 \le 2,\; -1 \le x_2 \le 1. \tag{3.42}
-$$
+\quad \text{sujeto a } 0 \le x_1 \le 2,\; -1 \le x_2 \le 1.
+$${#eq-42}
 
 **Paso 1. Verificación de (H1).**  
 El gradiente es
@@ -814,14 +819,14 @@ Bajo estas condiciones, la sucesión $\{x_k\}$ generada por L-BFGS-B permanece e
 
 En síntesis, las hipótesis (H1) y (H2) proporcionan el **marco teórico mínimo** para garantizar la convergencia global del método L-BFGS-B. Estas condiciones, verificables en la práctica, sustentan la robustez del algoritmo en problemas suaves y acotados típicos de la optimización aplicada.
 
-###  Teorema de convergencia global: límite de puntos estacionarios que satisfacen KKT
+###  Teorema de convergencia global: límite de puntos estacionarios que satisfacen KKT {#sec-convregencia_global}
 
 El algoritmo **L-BFGS-B** está diseñado para resolver problemas de optimización no lineal con restricciones tipo caja de la forma
 
 $$
 \min_{x \in \mathbb{R}^n} f(x)
-\quad \text{sujeto a} \quad \ell \le x \le u. \tag{3.60}
-$$
+\quad \text{sujeto a} \quad \ell \le x \le u. 
+$${#eq-teo_con}
 
 Aquí, $f : \mathbb{R}^n \to \mathbb{R}$ es continuamente diferenciable, y el conjunto factible
 
@@ -836,42 +841,42 @@ El **resultado fundamental de convergencia global**, @Byrd1995, establece que, b
 
 #### Teorema de convergencia global
 
-> **Teorema 3.2 (Convergencia global de L-BFGS-B).**  
+> **Teorema 6.2 (Convergencia global de L-BFGS-B).**  {#eq-teorema62}
 > Sea $f : \mathbb{R}^n \to \mathbb{R}$ una función continuamente diferenciable que satisface:
 >
 > 1. $\nabla f$ es **Lipschitz continuo** en $\Omega$; existe $L > 0$ tal que  
 >    $$
->    \|\nabla f(x) - \nabla f(y)\| \le L \|x - y\|, \quad \forall x, y \in \Omega; \tag{3.61}
->    $$
+>    \|\nabla f(x) - \nabla f(y)\| \le L \|x - y\|, \quad \forall x, y \in \Omega;
+>    $${#eq-61}
 > 2. El conjunto de nivel inicial  
 >    $$
->    \mathcal{L} := \{x \in \Omega : f(x) \le f(x_0)\} \tag{3.62}
->    $$
+>    \mathcal{L} := \{x \in \Omega : f(x) \le f(x_0)\} 
+>    $${#eq-62}
 >    es **compacto**.
 >
 > Supóngase que la sucesión $\{x_k\} \subset \Omega$ se genera mediante el algoritmo L-BFGS-B con direcciones de búsqueda
 > $$
-> d_k = P_\Omega(x_k - H_k \nabla f(x_k)) - x_k, \tag{3.63}
-> $$
+> d_k = P_\Omega(x_k - H_k \nabla f(x_k)) - x_k, 
+> $${#eq-63}
 > donde $H_k$ es la aproximación inversa del Hessiano obtenida mediante la recursión de dos bucles con memoria limitada $m$, y que las longitudes de paso $\alpha_k > 0$ satisfacen las **condiciones de Wolfe**:
 > $$
 > \begin{aligned}
 > f(x_k + \alpha_k d_k) &\le f(x_k) + c_1 \alpha_k \nabla f(x_k)^\top d_k, \\
 > \nabla f(x_k + \alpha_k d_k)^\top d_k &\ge c_2 \nabla f(x_k)^\top d_k,
-> \end{aligned} \tag{3.64}
-> $$
+> \end{aligned} 
+> $${#eq-64}
 > con $0 < c_1 < c_2 < 1$.
 >
 > Entonces, la sucesión $\{x_k\}$ verifica:
 > $$
-> \liminf_{k \to \infty} \|\nabla_\Omega f(x_k)\| = 0, \tag{3.65}
-> $$
+> \liminf_{k \to \infty} \|\nabla_\Omega f(x_k)\| = 0,
+> $$ {#eq-liminf}
 > donde
 > $$
-> \nabla_\Omega f(x) := P_\Omega(x - \nabla f(x)) - x \tag{3.66}
-> $$
+> \nabla_\Omega f(x) := P_\Omega(x - \nabla f(x)) - x 
+> $${#eq-66}
 > es el **gradiente proyectado**.  
-> En consecuencia, toda subsucesión convergente de $\{x_k\}$ converge a un punto $x^\star \in \Omega$ que satisface las **condiciones KKT** del problema (3.60).
+> En consecuencia, toda subsucesión convergente de $\{x_k\}$ converge a un punto $x^\star \in \Omega$ que satisface las **condiciones KKT** del problema @eq-teo_con.
 
 
 #### Bosquejo de la demostración
@@ -882,23 +887,23 @@ El **resultado fundamental de convergencia global**, @Byrd1995, establece que, b
 2. **Positividad de la curvatura.**  
    Bajo las condiciones de Wolfe, las diferencias $s_k = x_{k+1} - x_k$ y $y_k = \nabla f(x_{k+1}) - \nabla f(x_k)$ satisfacen
    $$
-   y_k^\top s_k \ge (1 - c_2)\|\nabla f(x_k)\|^2 \alpha_k > 0, \tag{3.67}
-   $$
+   y_k^\top s_k \ge (1 - c_2)\|\nabla f(x_k)\|^2 \alpha_k > 0, 
+   $${#eq-67}
    asegurando que las actualizaciones L-BFGS mantengan $H_k \succ 0$.
 
 3. **Dirección de descenso.**  
    La proyección garantiza que
    $$
-   \nabla f(x_k)^\top d_k \le -\|d_k\|^2, \tag{3.68}
-   $$
+   \nabla f(x_k)^\top d_k \le -\|d_k\|^2, 
+   $${#eq-68}
    es decir, $d_k$ es una dirección de descenso o nula solo en puntos estacionarios.
 
 4. **Aplicación del lema de Zoutendijk en problemas restringidos.** 
 
-   El lema de Zoutendijk original @Zoutendijk1970 se formuló para problemas sin restricciones, pero admite una extensión natural al caso de minimización sobre un conjunto convexo cerrado $\Omega \subset \mathbb{R}^n$ @NocedalWright2006. Bajo las hipótesis del teorema, en particular, que $f$ es continuamente diferenciable con gradiente Lipschitz en un conjunto de nivel compacto, y que los pasos $\alpha_k$ satisfacen las condiciones de Wolfe, la sucesión generada por un método de descenso proyectado verifica
+   El lema de Zoutendijk original (@Zoutendijk1970, p. 40) se formuló para problemas sin restricciones, pero admite una extensión natural al caso de minimización sobre un conjunto convexo cerrado $\Omega \subset \mathbb{R}^n$ (@NocedalWright2006, Lema 12.1, p. 333). Bajo las hipótesis del teorema, en particular, que $f$ es continuamente diferenciable con gradiente Lipschitz en un conjunto de nivel compacto, y que los pasos $\alpha_k$ satisfacen las condiciones de Wolfe, la sucesión generada por un método de descenso proyectado verifica
    $$
-   \sum_{k=0}^\infty \frac{(\nabla f(x_k)^\top d_k)^2}{\|d_k\|^2} < \infty. \tag{3.69}
-   $$
+   \sum_{k=0}^\infty \frac{(\nabla f(x_k)^\top d_k)^2}{\|d_k\|^2} < \infty. 
+   $$ {#eq-wol}
    
    En el caso del gradiente proyectado, la dirección de búsqueda se define como $d_k = P_\Omega(x_k - \nabla f(x_k)) - x_k = \nabla_\Omega f(x_k)$. Una propiedad fundamental de la proyección ortogonal sobre un conjunto convexo es que satisface la desigualdad variacional
    $$
@@ -906,9 +911,9 @@ El **resultado fundamental de convergencia global**, @Byrd1995, establece que, b
    $$
    la cual implica, en particular, que
    $$
-   \nabla f(x_k)^\top d_k = -\|d_k\|^2. \tag{3.68}
-   $$
-   Sustituyendo en (3.69), obtenemos
+   \nabla f(x_k)^\top d_k = -\|d_k\|^2. 
+   $${#eq-69}
+   Sustituyendo en @eq-wol, obtenemos
    $$
    \sum_{k=0}^\infty \|d_k\|^2 < \infty.
    $$
@@ -916,14 +921,14 @@ El **resultado fundamental de convergencia global**, @Byrd1995, establece que, b
    $$
    \lim_{k \to \infty} \|\nabla_\Omega f(x_k)\| = 0,
    $$
-   lo cual refuerza (3.65) y completa este paso del argumento.
+   lo cual refuerza @eq-liminf y completa este paso del argumento.
 
 5. **Condición KKT en el límite.**  
    Por continuidad de $P_\Omega$ y de $\nabla f$, si $x_{k_j} \to x^\star$, entonces
    $$
    P_\Omega(x^\star - \nabla f(x^\star)) = x^\star,
    $$
-   que equivale a las condiciones KKT (véase Sección 3.2.3).
+   que equivale a las condiciones KKT (véase @sec-kkt_caja).
 
 
 #### Ejemplo de convergencia hacia un punto KKT
@@ -932,8 +937,8 @@ Consideremos:
 
 $$
 \min_{x \in \mathbb{R}^2} f(x) = (x_1 - 2)^2 + (x_2 - 0.5)^2
-\quad \text{sujeto a } x_1 \ge 1,\, x_2 \ge 1. \tag{3.70}
-$$
+\quad \text{sujeto a } x_1 \ge 1,\, x_2 \ge 1. 
+$${#eq-70}
 
 El minimizador irrestricto es $x^{\text{free}} = (2, 0.5)^\top \notin \Omega$.  
 El punto más cercano factible es $x^\star = (2,1)^\top$.
@@ -971,24 +976,24 @@ Se asume que $f$ cumple las siguientes **hipótesis estructurales**:
 > **(M1) Diferenciabilidad y convexidad estricta.**  
 > $f$ es dos veces continuamente diferenciable en un conjunto abierto que contiene $\{Q \ge \mathbf{1}\}$, y es **estrictamente convexa**, es decir:
 > $$
-> (\nabla f(Q) - \nabla f(R))^\top (Q - R) > 0, \quad \forall\, Q \neq R,\; Q,R \ge \mathbf{1}. \tag{3.76}
-> $$
+> (\nabla f(Q) - \nabla f(R))^\top (Q - R) > 0, \quad \forall\, Q \neq R,\; Q,R \ge \mathbf{1}. 
+> $${#eq-76}
 
 > **(M2) Coercividad en el dominio factible.**  
 > Se cumple que
 > $$
-> \lim_{\|Q\| \to \infty,\; Q \ge \mathbf{1}} f(Q) = +\infty. \tag{3.77}
-> $$
+> \lim_{\|Q\| \to \infty,\; Q \ge \mathbf{1}} f(Q) = +\infty. 
+> $${#eq-77}
 
 > **(M3) Lipschitz-continuidad del gradiente en conjuntos de nivel.**  
 > Para todo $Q_0 \ge \mathbf{1}$ existe $L > 0$ tal que
 > $$
 > \|\nabla f(Q) - \nabla f(R)\| \le L \|Q - R\|, \quad
-> \forall Q,R \in \{Q \ge \mathbf{1} : f(Q) \le f(Q_0)\}. \tag{3.78}
-> $$
+> \forall Q,R \in \{Q \ge \mathbf{1} : f(Q) \le f(Q_0)\}. 
+> $${#eq-78}
 
-Bajo estas condiciones, el problema (3.75) admite un **único minimizador global** $Q^* \ge \mathbf{1}$.  
-Además, por las condiciones KKT (véase Sección 3.2.3):
+Bajo estas condiciones, el problema @q-min_Q_restriccion admite un **único minimizador global** $Q^* \ge \mathbf{1}$.  
+Además, por las condiciones KKT (véase @sec-kkt_caja):
 
 - Si $Q_i^* > 1$, entonces $\nabla_i f(Q^*) = 0$;  
 - Si $Q_i^* = 1$, entonces $\nabla_i f(Q^*) \ge 0$.
@@ -996,25 +1001,25 @@ Además, por las condiciones KKT (véase Sección 3.2.3):
 En el modelo propuesto, el contexto físico garantiza que la solución óptima se encuentra **estrictamente en el interior del dominio factible**, es decir,
 
 $$
-Q^* > \mathbf{1}. \tag{3.79}
-$$
+Q^* > \mathbf{1}.
+$${#eq-79}
 
 Por tanto, ninguna restricción está activa, y las condiciones KKT se reducen a la **estacionariedad irrestricta**:
 
 $$
-\nabla f(Q^*) = 0. \tag{3.80}
-$$
+\nabla f(Q^*) = 0. 
+$${#eq-80}
 
 
 #### Corolario de convergencia global
 
-> **Corolario 3.3.1 (Convergencia a $Q^* \ge \mathbf{1}$ con $\nabla f(Q^*) = 0$).**  
-> Supóngase que el problema (3.75) satisface (M1)–(M3), y que el minimizador único $Q^*$ verifica $Q^* > \mathbf{1}$.  
+> **Corolario (Convergencia a $Q^* \ge \mathbf{1}$ con $\nabla f(Q^*) = 0$).**  
+> Supóngase que el problema @eq-eq-min_Q_restriccion satisface (M1)–(M3), y que el minimizador único $Q^*$ verifica $Q^* > \mathbf{1}$.  
 > Sea $\{Q_k\}$ la sucesión generada por el algoritmo L-BFGS-B con punto inicial $Q_0 \ge \mathbf{1}$ y pasos $\alpha_k$ que cumplen las condiciones de Wolfe.  
 > Entonces:
 > $$
-> \lim_{k \to \infty} Q_k = Q^*, \qquad \nabla f(Q^*) = 0. \tag{3.81}
-> $$
+> \lim_{k \to \infty} Q_k = Q^*, \qquad \nabla f(Q^*) = 0.
+> $${#eq-81}
 
 **Demostración (esquema).**  
 Por (M2), el conjunto de nivel  
@@ -1022,7 +1027,7 @@ $$
 \mathcal{L} = \{Q \ge \mathbf{1} : f(Q) \le f(Q_0)\}
 $$
 es compacto; por (M3), el gradiente es Lipschitz en $\mathcal{L}$.  
-Por tanto, se satisfacen las hipótesis del **Teorema 3.2** (Sección 3.3.2), de donde resulta
+Por tanto, se satisfacen las hipótesis del **Teorema @eq-teorema62**  de la @sec-convregencia_global, de donde resulta
 
 $$
 \liminf_{k \to \infty} \|\nabla_\Omega f(Q_k)\| = 0.
@@ -1039,21 +1044,21 @@ Considérese el funcional
 
 $$
 f(Q) = \tfrac{1}{2}\|Q - a\|^2 - \mu \sum_{i=1}^n \log(Q_i - 1),
-\quad Q > \mathbf{1}, \tag{3.82}
-$$
+\quad Q > \mathbf{1}, 
+$${#eq-82}
 
 donde $a \in \mathbb{R}^n$ con $a > \mathbf{1}$ y $\mu > 0$ es un parámetro de regularización.  
 Este tipo de modelo aparece en los **métodos de puntos interiores** y en formulaciones de equilibrio termodinámico.
 
 - **Gradiente:**
   $$
-  \nabla_i f(Q) = Q_i - a_i - \frac{\mu}{Q_i - 1}, \quad i = 1,\dots,n. \tag{3.83}
-  $$
+  \nabla_i f(Q) = Q_i - a_i - \frac{\mu}{Q_i - 1}, \quad i = 1,\dots,n.
+  $${#eq-83}
 
 - **Hessiano:**
   $$
-  \nabla^2 f(Q) = I + \operatorname{diag}\!\left(\frac{\mu}{(Q_i - 1)^2}\right) \succ 0, \tag{3.84}
-  $$
+  \nabla^2 f(Q) = I + \operatorname{diag}\!\left(\frac{\mu}{(Q_i - 1)^2}\right) \succ 0,
+  $${#eq-84}
   por lo que $f$ es estrictamente convexa en $\{Q > \mathbf{1}\}$.
 
 - **Coercividad:**  
@@ -1066,12 +1071,12 @@ Este tipo de modelo aparece en los **métodos de puntos interiores** y en formul
   $$
   Q_i^* - a_i - \frac{\mu}{Q_i^* - 1} = 0
   \;\Longleftrightarrow\;
-  (Q_i^* - 1)^2 - (a_i - 1)(Q_i^* - 1) - \mu = 0. \tag{3.85}
-  $$
+  (Q_i^* - 1)^2 - (a_i - 1)(Q_i^* - 1) - \mu = 0. 
+  $${#eq-85}
   La raíz positiva es
   $$
-  Q_i^* = 1 + \frac{(a_i - 1) + \sqrt{(a_i - 1)^2 + 4\mu}}{2} > 1. \tag{3.86}
-  $$
+  Q_i^* = 1 + \frac{(a_i - 1) + \sqrt{(a_i - 1)^2 + 4\mu}}{2} > 1. 
+  $${#eq-86}
 
 **Simulación numérica (caso $n=2$, $a=(2,3)$, $\mu=0.1$):**
 
@@ -1086,7 +1091,7 @@ El algoritmo L-BFGS-B converge a
 $$
 Q^* \approx (1.958,\,2.968)^\top,
 $$
-en completo acuerdo con la solución analítica de (3.86).  
+en completo acuerdo con la solución analítica de @eq-86.  
 Además, $Q^* > \mathbf{1}$ y $\nabla f(Q^*) = 0$, confirmando el **corolario**.
 
 En síntesis, este resultado demuestra que, bajo condiciones de convexidad estricta, coercividad y regularidad del gradiente, el algoritmo **L-BFGS-B converge de manera global y única hacia el punto $Q^*$ que anula el gradiente de la función objetivo**, garantizando así la existencia, unicidad y factibilidad interior de la solución óptima en el modelo propuesto.
@@ -1105,7 +1110,7 @@ y_i = \nabla f(x_{i+1}) - \nabla f(x_i),
 i = k-m,\dots,k-1.
 $$
 
-Esta recursión requiere especificar una matriz inicial $H_k^{(0)}$, la cual actúa como una aproximación base del inverso del Hessiano al inicio de cada actualización. Según se ha documentado ampliamente (@LiuNocedal1989; @NocedalWright2006), la elección de $H_k^{(0)}$ influye de forma directa en la dirección de búsqueda $p_k = -H_k \nabla f(x_k)$, afectando así estabilidad y eficiencia del método.
+Esta recursión requiere especificar una matriz inicial $H_k^{(0)}$, la cual actúa como una aproximación base del inverso del Hessiano al inicio de cada actualización. Según se ha documentado ampliamente (@LiuNocedal1989, Sección 4, p. 513; @NocedalWright2006, Sección 7.2, p. 178), la elección de $H_k^{(0)}$ influye de forma directa en la dirección de búsqueda $p_k = -H_k \nabla f(x_k)$, afectando así estabilidad y eficiencia del método.
 
 #### Inicialización básica e inicialización escalada
 
@@ -1264,12 +1269,12 @@ La dirección resultante es:
 $$
 p_1 \approx (0.01, -0.01)^\top.
 $$
-
-El escalado mediante $\gamma_k$ constituye un componente esencial del desempeño de L-BFGS-B. Además de ser computacionalmente económico, estabiliza la recursión, mejora el acondicionamiento de la dirección de búsqueda y permite reproducir el comportamiento esperado en problemas con curvatura anisótropa. Estos resultados coinciden con lo reportado por @LiuNocedal1989 y por @NocedalWright2006.
+ 
+El escalado mediante $\gamma_k$ constituye un componente esencial del desempeño del método L-BFGS-B. Además de ser computacionalmente económico, estabiliza la recursión, mejora el acondicionamiento de la dirección de búsqueda y permite reproducir el comportamiento esperado en problemas con curvatura anisótropa. Esta estrategia fue propuesta originalmente por @LiuNocedal1989 [Sección 4, p. 513] para L-BFGS y posteriormente adoptada en L-BFGS-B. Su efectividad se sustenta teóricamente en su capacidad para aproximar la magnitud del inverso del Hessiano [@NocedalWright2006, Sección 7.2, p. 178].
 
 ### Estimación empírica del número de iteraciones y dependencia del parámetro de memoria $m$
 
-La variante L-BFGS-B incorpora un parámetro estructural crucial: el **tamaño de memoria limitada**, denotado $m$, el cual representa el número de pares de curvatura $(s_i, y_i)$ retenidos durante el proceso iterativo. Este parámetro determina la dimensión efectiva del subespacio en el que se aproxima el inverso del Hessiano y, por tanto, modula el equilibrio entre costo computacional y rapidez de convergencia @LiuNocedal1989.
+La variante L-BFGS-B incorpora un parámetro estructural crucial: el **tamaño de memoria limitada**, denotado $m$, el cual representa el número de pares de curvatura $(s_i, y_i)$ retenidos durante el proceso iterativo. Este parámetro determina la dimensión efectiva del subespacio en el que se aproxima el inverso del Hessiano y, por tanto, modula el equilibrio entre costo computacional y rapidez de convergencia, tal como se analiza en @LiuNocedal1989 [Sección 4, p. 512].
 
 #### Dependencia teórica de la convergencia respecto a $m$
 
@@ -1290,7 +1295,7 @@ La evidencia teórica y computacional muestra que:
 - $k_{\varepsilon}(m)$ **disminuye monótonamente** al incrementar $m$;
 - existe un umbral $m_{\text{sat}}$ tal que **incrementar $m$ más allá de dicho punto no produce mejoras significativas**.
 
-Este comportamiento se justifica porque muchas aplicaciones presentan curvatura activa en un subespacio reducido; por ello, valores de $m \in [10,20]$ suelen capturar la información esencial sin costos elevados para más detalles @LiuNocedal1989; @NocedalWright2006.
+Este comportamiento se justifica porque muchas aplicaciones presentan curvatura activa en un subespacio de dimensión reducida; por ello, valores moderados de $m$ (por ejemplo, entre 3 y 20) suelen capturar la información esencial sin incurrir en costos computacionales innecesarios, tal como se discute en @LiuNocedal1989 [Sección 4, p. 512] y @NocedalWright2006 [Sección 7.2, pp. 178–179].
 
 #### Estimación empírica del número de iteraciones
 
@@ -1482,8 +1487,7 @@ Con el objetivo de evaluar la eficacia del algoritmo **L-BFGS-B** en problemas c
 
 $$
 \min_{x\in\mathbb{R}^n} f(x)\qquad\text{sujeto a}\qquad x \ge \mathbf{1},
-\tag{3.110}
-$$
+$${#eq-110}
 
 y comparamos L-BFGS-B con tres métodos clásicos sin tratamiento directo de cotas: 
 
@@ -1529,8 +1533,7 @@ Consideramos el problema con función objetivo log-barrier:
 
 $$
 f(x) = \tfrac{1}{2}\|x-a\|^2 - \mu\sum_{i=1}^n \log(x_i - 1),\qquad x > \mathbf{1},
-\tag{3.111}
-$$
+$${#eq-111}
 
 con $n=20$, $a=(2,\dots,2)^\top$, $\mu=0.1$. Esta función es estrictamente convexa en el dominio $x>\mathbf{1}$, y $\lim_{x_i\to 1^+}f(x)=+\infty$, asegurando la existencia de un minimizador factible $x^\star> \mathbf{1}$.
 
@@ -1541,8 +1544,7 @@ $$
 \qquad
 [\nabla^2 f(x)]_{ii} = 1 + \frac{\mu}{(x_i - 1)^2},\qquad
 [\nabla^2 f(x)]_{ij}=0\;(i\ne j).
-\tag{3.112}
-$$
+$${#eq-112}
 
 **Configuración experimental común**
 
@@ -1572,13 +1574,22 @@ $$
    - GD requiere muchas iteraciones (1 842), por lo tanto su costo global es prohibitivo en problemas mal condicionados.
 
 2. **Factibilidad.**  
-   - L-BFGS-B y los métodos proyectados garantizan factibilidad en todas las iteraciones; BFGS sin restricciones produce iteraciones infactibles (p. ej. $x_3^{(5)}=0.98<1$) y por tanto es inadecuado en aplicaciones con restricciones físicas ineludibles.
+   - **L-BFGS-B** y **GD** garantizan factibilidad en todas las iteraciones.  
+   - **BFGS sin restricciones** produce iteraciones infactibles (p. ej. $x_3^{(5)} = 0.98 < 1$) y es inadecuado cuando las restricciones son físicamente obligatorias.
 
-3. **Robustez cerca de la frontera.**  
-   - Dado que el Hessiano contiene términos $\mu/(x_i-1)^2$ que crecen cuando $x_i\to 1^+$, el problema es efectivamente mal condicionado cerca de la frontera. L-BFGS-B tolera bien esta condición gracias a la proyección y al escalado implícito. El método Newton--CG también es capaz de manejar esta situación, ya que no requiere formar explícitamente el Hessiano, sino únicamente productos del tipo $\nabla^2 f(x) v$ $\textit{hessiano-vector}$, los cuales pueden evaluarse eficientemente incluso en problemas de gran escala. Sin embargo, su desempeño depende críticamente de una implementación robusta del producto hessiano-vector y, en problemas altamente mal condicionados, de un precondicionador adecuado.
+   3. **Robustez cerca de la frontera.**  
+   Dado que el Hessiano contiene términos $\mu/(x_i-1)^2$ que crecen cuando $x_i\to 1^+$, el problema es efectivamente mal condicionado cerca de la frontera. En este régimen, solo los métodos capaces de manejar alta curvatura sin requerir el Hessiano completo resultan prácticos. Por esta razón, el análisis se centra en L-BFGS-B y Newton–CG:  
+   - **L-BFGS-B** tolera bien esta condición gracias a la proyección y al escalado implícito.  
+   - **Newton–CG** también es capaz de manejar esta situación, ya que no requiere formar explícitamente el Hessiano, sino únicamente productos del tipo $\nabla^2 f(x) v$ (*hessiano-vector*), los cuales pueden evaluarse eficientemente incluso en problemas de gran escala. Sin embargo, su desempeño depende críticamente de una implementación robusta del producto hessiano-vector y, en problemas altamente mal condicionados, de un precondicionador adecuado.  
+
+   Los métodos **GD proyectado** y **BFGS sin restricciones** no se incluyen en este análisis porque, en la práctica, GD converge demasiado lentamente para acercarse significativamente a la frontera en un número razonable de iteraciones, mientras que BFGS genera iteraciones infactibles antes de alcanzar dicha región.
 
 4. **Interpretación de curvas de convergencia.**  
-   - En la gráfica de $\log_{10}\|\nabla_\Omega f(x_k)\|$ vs iteraciones se observa: GD con pendiente suave (decadencia lineal lenta), Newton–CG con caída abrupta tras pocas iteraciones, L-BFGS-B con comportamiento cuasi-superlineal desde etapas medias, y BFGS similar a L-BFGS-B en reducción teórica pero con violaciones de cotas en la trayectoria.
+   En la gráfica de $\log_{10}\|\nabla_\Omega f(x_k)\|$ vs iteraciones se observa: 
+   - GD con pendiente suave (decadencia lineal lenta)
+   - Newton–CG con caída abrupta tras pocas iteraciones
+   - L-BFGS-B con comportamiento cuasi-superlineal desde etapas medias
+   - BFGS similar a L-BFGS-B en reducción teórica pero con violaciones de cotas en la trayectoria.
 
 
 #### Observaciones prácticas y recomendaciones
@@ -1590,7 +1601,7 @@ $$
 
 
 
-El experimento con la función log-barrier (3.111) muestra que L-BFGS-B ofrece el mejor equilibrio entre **eficiencia**, **robustez** y **respeto a las restricciones físicas**, por lo que constituye la elección metodológica más adecuada para el modelo propuesto en esta tesis. Newton–CG es competitivo en iteraciones pero más costoso por iteración; GD es ineficiente en presencia de alto condicionamiento; y BFGS sin proyección no garantiza factibilidad, lo que lo hace inapropiado en aplicaciones con cotas físicas rígidas.
+El experimento con la función log-barrier @eq-111 muestra que L-BFGS-B ofrece el mejor equilibrio entre **eficiencia**, **robustez** y **respeto a las restricciones físicas**, por lo que constituye la elección metodológica más adecuada para el modelo propuesto en esta tesis. Newton–CG es competitivo en iteraciones pero más costoso por iteración; GD es ineficiente en presencia de alto condicionamiento; y BFGS sin proyección no garantiza factibilidad, lo que lo hace inapropiado en aplicaciones con cotas físicas rígidas.
 
 
 ## Discusión y perspectivas computacionales
@@ -1607,8 +1618,7 @@ $$
 s_i = x_{i+1} - x_i, 
 \qquad 
 y_i = \nabla f(x_{i+1}) - \nabla f(x_i).
-\tag{3.120}
-$$
+$${#eq-120}
 
 La dirección de búsqueda $p_k = -H_k \nabla f(x_k)$ se calcula mediante la **recursión de dos bucles** (Algoritmo 7.4 en @NocedalWright2006), que aplica secuencialmente las actualizaciones BFGS a una matriz inicial escalada $H_k^{(0)} = \gamma_k I$, sin necesidad de formar $H_k$ explícitamente. El costo computacional de esta operación es:
 
@@ -1637,8 +1647,7 @@ Consideremos un problema de regresión logística regularizada:
 $$
 f(x) = \frac{1}{N} \sum_{i=1}^N \log(1 + e^{-y_i \langle a_i, x \rangle}) 
 + \frac{\lambda}{2} \|x\|^2,
-\tag{3.121}
-$$
+$${#eq-121}
 
 con $N = 10^5$ muestras, $x \in \mathbb{R}^n$, $n = 10^5$, $\lambda = 10^{-4}$, y datos $(a_i, y_i)$ generados aleatoriamente.
 
@@ -1819,21 +1828,19 @@ En contextos más complejos, donde el Hessiano no es diagonal, pueden utilizarse
 
 ### Posibilidades de extensión a problemas con estructura parcialmente separable
 
-Una clase relevante de problemas de optimización de gran escala exhibe **estructura parcialmente separable**, lo que permite representar la función objetivo como una suma de subfunciones dependientes de subconjuntos reducidos de las variables. Dicho enfoque, analizado en profundidad por @GriewankToint1984 y sistematizado en marcos generales de optimización no lineal @ConnGouldToint1991, posibilita una construcción eficiente tanto del gradiente como del Hessiano, permitiendo algoritmos cuasi-Newton especializados con menores costos computacionales.
+Una clase relevante de problemas de optimización de gran escala exhibe **estructura parcialmente separable**, lo que permite representar la función objetivo como una suma de subfunciones dependientes de subconjuntos reducidos de las variables. Dicho enfoque, analizado en profundidad por @GriewankToint1984 y sistematizado en marcos generales de optimización no lineal @ConnGouldToint1992, posibilita una construcción eficiente tanto del gradiente como del Hessiano, permitiendo algoritmos cuasi-Newton especializados con menores costos computacionales.
 
 Formalmente, una función $f:\mathbb{R}^n \to \mathbb{R}$ es **parcialmente separable** si existen funciones elementales $f_i:\mathbb{R}^n\to\mathbb{R}$, $i=1,\dots,N_e$, tales que
 
 $$
 f(x) = \sum_{i=1}^{N_e} f_i(x),
-\tag{3.140}
-$$
+$${#eq-140}
 
 donde cada $f_i$ depende únicamente de un conjunto reducido de variables $\mathcal{I}_i \subset \{1,\dots,n\}$, con $|\mathcal{I}_i|\ll n$. Utilizando una matriz de selección $U_i\in\mathbb{R}^{|\mathcal{I}_i|\times n}$ compuesta de vectores canónicos $e_j^\top$ con $j\in\mathcal{I}_i$, se puede escribir:
 
 $$
 f_i(x)=\phi_i(U_i x),
-\tag{3.141}
-$$
+$${#eq-141}
 
 para alguna función elemental $\phi_i:\mathbb{R}^{|\mathcal{I}_i|}\to\mathbb{R}$.
 
@@ -1843,15 +1850,13 @@ $$
 \nabla f(x)=\sum_{i=1}^{N_e} U_i^\top \nabla \phi_i(U_i x), 
 \qquad
 \nabla^2 f(x)=\sum_{i=1}^{N_e} U_i^\top \nabla^2 \phi_i(U_i x) U_i.
-\tag{3.142}
-$$
+$${#eq-142}
 
 Esta estructura motiva un enfoque cuasi-Newton **por bloques**, donde en lugar de aproximar todo el Hessiano se construyen aproximaciones locales $B_k^{(i)}\in\mathbb{R}^{|\mathcal{I}_i|\times|\mathcal{I}_i|}$ y luego se ensambla una aproximación global:
 
 $$
 \widehat{B}_k = \sum_{i=1}^{N_e} U_i^\top B_k^{(i)} U_i.
-\tag{3.143}
-$$
+$${#eq-143}
 
 Este esquema posee ventajas computacionales significativas:
 
@@ -1867,8 +1872,7 @@ Consideremos
 
 $$
 f(x) = (x_1 - x_3)^2 + (x_2 - x_4)^2 + (x_3 - 1)^4 + (x_4 - 1)^4,
-\tag{3.144}
-$$
+$${#eq-144}
 
 con $x\in\mathbb{R}^4$ y restricciones $x\ge \mathbf{1}$. Esta función es parcialmente separable con $N_e=3$:
 
@@ -1964,15 +1968,13 @@ En problemas de muy alta dimensión, se combina la idea de **memoria limitada** 
 
 $$
 p_k = -\sum_{i=1}^{N_e} U_i^\top (B_k^{(i)})^{-1} U_i \nabla f(x_k).
-\tag{3.145}
-$$
-
-En software especializado como **LANCELOT** o **IPOPT**, este tipo de estrategias estructuradas han mostrado mejoras notables cuando la función presenta una separabilidad marcada @ConnGouldToint1991.
+$${#eq-145}
 
 
-La extensión de L-BFGS-B a funciones con estructura parcialmente separable resulta no solo viable, sino altamente ventajosa. La clave técnica consiste en identificar explícitamente los conjuntos $\{\mathcal{I}_i\}$ o las matrices $U_i$, ya sea mediante modelado explícito o análisis simbólico. Este marco se vuelve esencial en aplicaciones de gran escala como calibración de parámetros en sistemas físicos, modelos de elementos finitos o inferencia estadística con interacciones locales.
+La estructura parcialmente separable de la función objetivo cuya explotación se analiza en @ConnGouldToint1992 [Capítulo 2, pp. 25–26] permite mejoras notables en la eficiencia computacional para problemas de gran escala.
 
 
+ La extensión de L-BFGS-B a funciones con estructura parcialmente separable no solo es posible, sino muy útil. La clave técnica consiste en identificar explícitamente los conjuntos $\{\mathcal{I}_i\}$ o las matrices $U_i$, ya sea mediante modelado explícito o análisis simbólico. La idea clave es identificar grupos de variables que interactúan entre sí, lo cual puede hacerse al diseñar el modelo o mediante herramientas automáticas. Este enfoque es especialmente valioso en problemas de gran escala donde las interacciones son locales, como en la simulación de inundaciones, el modelado de estructuras físicas (por ejemplo, con elementos finitos) o el análisis de datos espaciales donde cada punto depende principalmente de sus vecinos.
 :::
 
 

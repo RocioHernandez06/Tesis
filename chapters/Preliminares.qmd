@@ -1,5 +1,4 @@
 ---
-title: Preliminares y notación
 lang: es
 format:
   html: default
@@ -10,21 +9,33 @@ jupyter: python3
 ---
 :::{style="text-align: justify"}
 
+Antes de presentar los modelos y algoritmos propuestos, es necesario establecer las bases matemáticas y la notación que se utilizarán a lo largo de esta tesis. Este capítulo reúne conceptos fundamentales de análisis, álgebra lineal, optimización y teoría de probabilidad que permiten formular rigurosamente el problema de localización–inventario bajo incertidumbre, caracterizar su estructura no convexa y justificar las estrategias de solución empleadas. El enfoque no es exhaustivo, sino selectivo: solo se incluyen aquellos elementos directamente relevantes para el desarrollo posterior.
+
+# Notación y preliminares
+
 ## Conjuntos y espacios vectoriales
 
 En la formulación de redes logísticas humanitarias, las decisiones suelen representarse en espacios euclidianos de dimensión finita. Dos subconjuntos relevantes son:
 
 - **$\mathbb{R}^n$**: espacio vectorial real de dimensión $n$.
 - **$\mathbb{R}_{+}^n = \{x \in \mathbb{R}^n : x_i \geq 0,\ \forall i\}$**: ortante no negativo, usado para modelar flujos, inventarios o asignaciones no negativas.
+- **Conjunto compacto**: Un subconjunto $K \subseteq \mathbb{R}^n$ es **compacto** si es **cerrado y acotado**. Esta propiedad es fundamental en optimización, ya que garantiza que toda sucesión en $K$ tiene una subsucesión convergente cuyo límite pertenece a $K$, lo cual asegura la existencia de mínimos globales para funciones continuas (teorema de Weierstrass).
 
 Estos conjuntos garantizan que las variables del modelo respeten restricciones físicas (por ejemplo, no es posible enviar una cantidad negativa de ayuda humanitaria).
 
 ## Convexidad y conjuntos especiales
 
+La convexidad juega un papel central en la teoría de optimización, ya que garantiza que cualquier mínimo local sea también un mínimo global, lo que simplifica enormemente la búsqueda de soluciones óptimas. En el contexto de redes logísticas humanitarias, muchos subproblemas como la asignación de flujos o el cálculo de inventarios dan lugar a regiones factibles convexas cuando las decisiones de apertura de almacenes están fijas. Sin embargo, la presencia de variables binarias (por ejemplo, decidir si abrir o no un centro de distribución) introduce no convexidad estructural, lo que complica el análisis y requiere métodos especializados. Comprender la geometría de los conjuntos convexos y poliedros permite identificar cuándo un subproblema es tratable, diseñar descomposiciones eficientes y justificar el uso de relajaciones convexas en algoritmos de solución.
+
 La estructura geométrica del espacio factible influye directamente en la complejidad del problema. En particular:
 
+- **Combinación convexa**: Dados dos puntos $x, y \in \mathbb{R}^n$, cualquier punto de la forma  
+  $$
+  z = \lambda x + (1 - \lambda) y, \quad \text{con } \lambda \in [0,1],
+  $$  
+  se denomina **combinación convexa** de $x$ e $y$. Esta operación genera todos los puntos en el segmento de recta que une $x$ con $y$. Un conjunto $C \subseteq \mathbb{R}^n$ es **convexo** si contiene todas las combinaciones convexas de cualesquiera dos de sus puntos.
 - **Conjunto convexo**: $C \subseteq \mathbb{R}^n$ es convexo si para todo $x, y \in C$ y $\lambda \in [0,1]$, se cumple $\lambda x + (1-\lambda)y \in C$. En logística, la convexidad permite combinar estrategias factibles sin violar restricciones. Sin embargo, la presencia de decisiones binarias (como abrir o no un almacén) rompe esta propiedad, como se discute en el Capítulo 3.
-- **Poliedro convexo**: conjunto de la forma $\{x \in \mathbb{R}^n : Ax \leq b\}$ con $A \in \mathbb{R}^{m \times n}$, $b \in \mathbb{R}^m$. Es cerrado y convexo (Bazaraa et al., 2013), y describe sistemas de restricciones lineales como límites de capacidad o cobertura de demanda.
+- **Poliedro convexo**: conjunto de la forma $\{x \in \mathbb{R}^n : Ax \leq b\}$ con $A \in \mathbb{R}^{m \times n}$, $b \in \mathbb{R}^m$. Es cerrado y convexo (@Bazaraa2013), y describe sistemas de restricciones lineales como límites de capacidad o cobertura de demanda.
 
 ```{python}
 #| label: fig-poliedro
@@ -58,14 +69,41 @@ plt.show()
 
 ## Funciones y propiedades analíticas
 
+Las propiedades analíticas de la función objetivo como su diferenciabilidad, curvatura (Hessiano) y estructura (separabilidad, convexidad) determinan directamente la elección del método de solución, la calidad de las soluciones obtenidas y la eficiencia computacional del proceso de optimización. En el contexto de la logística humanitaria bajo incertidumbre, la función de costo total combina términos no lineales (como el inventario de seguridad basado en la distribución normal) con decisiones discretas (por ejemplo, abrir o no un almacén), lo que da lugar a un paisaje no convexo y no separable. Aun así, comprender propiedades locales como la suavidad del gradiente o la Lipschitz-continuidad del Hessiano permite aplicar métodos iterativos robustos (por ejemplo, L-BFGS-B) y garantizar su convergencia. Además, cuando se fijan las decisiones discretas (es decir, se decide qué almacenes están abiertos), el problema restante suele ser fuertemente convexo o casi separable, lo que facilita el diseño de algoritmos eficientes y el análisis de sensibilidad.
+
 La formulación del costo total en inventario humanitario depende de propiedades analíticas que facilitan el análisis de optimalidad:
 
+- **Función continuamente diferenciable**: Una función $f: \mathbb{R}^n \to \mathbb{R}$ es **continuamente diferenciable** en un conjunto abierto $\mathcal{U} \subseteq \mathbb{R}^n$ si todas sus derivadas parciales existen y son funciones continuas en $\mathcal{U}$. En este caso, se dice que $f \in C^1(\mathcal{U})$. Esta propiedad garantiza que el gradiente $\nabla f(x)$ varía suavemente en $\mathcal{U}$, lo cual es esencial para la convergencia de métodos iterativos como el gradiente descendente y para la validez de las condiciones de optimalidad de primer orden (@NocedalWright2006, Sección 2.1).
+- **Hessiano**: Dada una función $f: \mathbb{R}^n \to \mathbb{R}$ dos veces continuamente diferenciable en un conjunto abierto $\mathcal{U} \subseteq \mathbb{R}^n$, su **matriz Hessiana** (o simplemente **Hessiano**) en un punto $x \in \mathcal{U}$ es la matriz simétrica de segundas derivadas parciales:
+  $$
+  \nabla^2 f(x) = \left[ \frac{\partial^2 f}{\partial x_i \partial x_j}(x) \right]_{i,j=1}^n.
+  $$
+  El Hessiano describe la curvatura local de $f$ y es fundamental en el análisis de segundo orden, en la caracterización de mínimos locales y en métodos de optimización como Newton o cuasi-Newton. Si $\nabla^2 f(x) \succ 0$ (definida positiva), entonces $x$ es un mínimo local estricto bajo condiciones de primer orden.
+  - **Hessiano Lipschitz-continuo**: Sea $f: \mathbb{R}^n \to \mathbb{R}$ una función dos veces continuamente diferenciable en un conjunto abierto $\mathcal{U} \subseteq \mathbb{R}^n$. Se dice que su **Hessiano $ \nabla^2 f $ es Lipschitz-continuo** en $\mathcal{U}$ si existe una constante $L_H > 0$ tal que  
+  $$
+  \|\nabla^2 f(x) - \nabla^2 f(y)\| \leq L_H \|x - y\|, \quad \forall x, y \in \mathcal{U},
+  $$
+  donde $ \|\cdot\| $ denota una norma matricial compatible (por ejemplo, la norma espectral). Esta propiedad garantiza que la curvatura de $ f $ no varía de forma abrupta y es clave para establecer tasas de convergencia superlineal o cuadrática en métodos de segundo orden, como Newton o BFGS (@NocedalWright2006, Sección 6.4).
+  - **Función cuadrática fuertemente convexa**: Una función $f: \mathbb{R}^n \to \mathbb{R}$ es **cuadrática fuertemente convexa** si puede escribirse como  
+  $$
+  f(x) = \tfrac{1}{2} x^\top Q x - b^\top x + c,
+  $$  
+  donde $Q \in \mathbb{R}^{n \times n}$ es una matriz **simétrica y definida positiva** ($Q \succ 0 $), $b \in \mathbb{R}^n$ y $c \in \mathbb{R}$. La condición $Q \succ 0$ implica que existe una constante $\mu > 0$ tal que  
+  $$
+  x^\top Q x \geq \mu \|x\|^2, \quad \forall x \in \mathbb{R}^n,
+  $$  
+  lo que garantiza que $f$ tiene un único mínimo global y que su paisaje de optimización es “bien condicionado”. Esta propiedad es fundamental para asegurar convergencia rápida de métodos iterativos como el gradiente descendente o BFGS.
 - **Función convexa**: $f: \mathbb{R}^n \to \mathbb{R}$ es convexa si  
   $$
   f(\lambda x + (1-\lambda)y) \leq \lambda f(x) + (1-\lambda)f(y), \quad \forall x,y, \lambda \in [0,1].
   $$
   La convexidad garantiza que todo mínimo local sea global, una propiedad deseable en diseño de redes.
 - **Función estrictamente cuadrática**: $f(x) = \tfrac{1}{2} x^\top Q x - b^\top x + c$, con $Q \in \mathbb{R}^{n \times n}$ simétrica. Si $Q$ es constante, el Hessiano $\nabla^2 f(x) = Q$ también lo es, lo que simplifica el análisis de curvatura en modelos de costo.
+- **Direcciones conjugadas**: Dada una matriz simétrica definida positiva $Q \in \mathbb{R}^{n \times n}$, un conjunto de vectores no nulos  $\{p_0, p_1, \dots, p_{k}\} \subseteq \mathbb{R}^n$ es **$Q$-conjugado** (o **conjugado respecto a $Q$**) si  
+  $$
+  p_i^\top Q p_j = 0, \quad \forall i \neq j.
+  $$
+  En el contexto de minimización de una función cuadrática $f(x) = \tfrac{1}{2} x^\top Q x - b^\top x + c$, las direcciones conjugadas permiten alcanzar el mínimo global en a lo sumo $n$ iteraciones, ya que exploran subespacios mutuamente ortogonales en la métrica inducida por $Q$. Los métodos de la familia de Broyden (incluyendo BFGS y DFP) generan tales direcciones cuando se aplican a funciones cuadráticas con búsquedas lineales exactas.
 - **Separabilidad**: $f(x)$ es separable si puede escribirse como $f(x) = \sum_{i=1}^n f_i(x_i)$. Esta propiedad permite descomponer el problema en subproblemas independientes, útil en redes con nodos débilmente acoplados. La función de costo **no es separable**, debido a la interacción entre tamaño de lote, inventario de seguridad y penalización por faltantes.
 
 ```{python}
@@ -102,19 +140,45 @@ plt.tight_layout()
 plt.show()
 ```
 
-## Notación de orden matricial
+## Matrices definidas positivas y su papel en la optimización
 
-- **$A \succ 0$**: matriz simétrica $A$ es definida positiva, es decir, $x^\top A x > 0$ para todo $x \neq 0$. Esta notación es útil al analizar la curvatura de funciones cuadráticas en modelos de inventario.
+En optimización de funciones en varias variables, la **matriz Hessiana** $\nabla^2 f(x)$ describe la curvatura local de la función objetivo $f$. Una propiedad fundamental es si esta matriz es **definida positiva**, lo cual se denota como $\nabla^2 f(x) \succ 0$.
 
-## Formulaciones de optimización mixta
+Formalmente, una matriz simétrica $A \in \mathbb{R}^{n \times n}$ es **definida positiva** si  
+$$
+x^\top A x > 0 \quad \text{para todo } x \in \mathbb{R}^n,\ x \neq 0.
+$$
 
-La integración de decisiones estratégicas (ubicación) y tácticas (inventario) da lugar a formulaciones mixtas:
+Esta condición garantiza que la función $f$ es **estrictamente convexa** en una vecindad del punto $x$, y por tanto, si además $\nabla f(x) = 0$, entonces $x$ es un **mínimo local estricto**. En modelos de inventario humanitario, donde la función de costo incluye términos cuadráticos o aproximaciones de segundo orden (por ejemplo, en el cálculo del inventario de seguridad bajo demanda normal), la definición positiva del Hessiano asegura que los métodos de optimización basados en curvatura como Newton o L-BFGS converjan a soluciones estables y únicas en subproblemas continuos.
+
+## Estructura general de problemas de optimización con restricciones
+
+Los modelos de logística humanitaria integran decisiones de naturaleza distinta: **estratégicas** (por ejemplo, dónde ubicar centros de distribución) y **tácticas/operativas** (como cuánto inventario almacenar o cuánta ayuda enviar). Esta combinación da lugar a problemas de optimización **mixtos**, que involucran variables binarias (para las decisiones de apertura/cierre) y variables continuas no negativas (para flujos, inventarios o asignaciones).
+
+En términos generales, el problema puede expresarse como:
+
+$$
+\begin{aligned}
+\min_{x,y} \quad & f(x, y) \\
+\text{sujeto a} \quad & g_i(x, y) \leq 0, \quad i = 1,\dots,m, \\
+& x \in \{0,1\}^p, \quad y \in \mathbb{R}_+^q,
+\end{aligned}
+$$
+
+donde $f$ representa el costo total esperado (incluyendo penalizaciones por faltantes y costos de operación), y las restricciones modelan capacidades, cobertura de demanda y lógica de activación.  
+
+Un componente esencial de esta estructura es la **vinculación entre variables discretas y continuas**, comúnmente implementada mediante la **formulación big-M**:
 
 - **Formulación big-M estándar**: restricción de la forma $y \leq M x$, con $x \in \{0,1\}$, $y \in \mathbb{R}_+$, y $M > 0$ suficientemente grande, usada para modelar la implicación lógica $x = 0 \Rightarrow y = 0$. Por ejemplo, si no se abre un almacén ($x = 0$), no puede enviar ayuda ($y = 0$).
 
+Esta estructura mixta introduce no convexidad y discontinuidad en el espacio de decisiones, lo que impide el uso directo de métodos basados en gradientes y motiva el uso de algoritmos especializados, como los discutidos en el Capítulo 5.
+
+
 ## Teoría de probabilidad, incertidumbre y medida de Lebesgue
 
-En contextos humanitarios, la demanda es incierta. Para modelarla rigurosamente, es necesario entender que la **medida de Lebesgue** generaliza el concepto de "volumen" y permite integrar funciones más allá del cálculo clásico. Esto sustenta la definición de **variables aleatorias absolutamente continuas**, aquellas cuya probabilidad se expresa mediante una densidad.
+## Teoría de probabilidad y variables aleatorias
+
+En la logística humanitaria, la demanda de ayuda especialmente durante o después de eventos como inundaciones es inherentemente incierta y altamente variable. Modelar esta incertidumbre de forma adecuada es crucial: usar únicamente valores promedio ignora la posibilidad de eventos extremos, lo que puede llevar a niveles insuficientes de inventario y, en consecuencia, a faltantes críticos. Por ello, es necesario representar la demanda como una **variable aleatoria**, cuyo comportamiento se describe mediante herramientas de la teoría de probabilidad. Esta formulación permite cuantificar no solo la demanda esperada, sino también su variabilidad y el riesgo asociado a sus colas (eventos raros pero severos), aspectos esenciales para el cálculo del inventario de seguridad y la toma de decisiones robustas.
 
 - **Variable aleatoria (v.a.) absolutamente continua**: $\mathbb{P}(X \in A) = \int_A f_X(x)\,dx$, donde $f_X$ es la densidad respecto a la medida de Lebesgue. Esta formulación es esencial para modelar demandas con distribuciones suaves, como la normal.
 - **Distribución normal**: si $D_L \sim \mathcal{N}(\mu_L, \sigma_L^2)$, su densidad es  
@@ -156,8 +220,10 @@ plt.show()
 
 El **valor esperado** $\mathbb{E}[d_j]$ representa la demanda media en la localidad $j$. Aunque es común usarlo como estimador puntual en modelos deterministas, como se advierte en la Sección 3.1.2.3, esta simplificación puede ser inadecuada en logística humanitaria, donde la cola de la distribución (eventos extremos) es crítica.
 
-## Optimización y condiciones de optimalidad
+
+## Optimización no lineal y condiciones de optimalidad {#sec-kkt}
+
+El problema de localización–inventario bajo incertidumbre da lugar a un modelo de optimización **no lineal**, debido a la presencia de términos como el inventario de seguridad (basado en la distribución normal) y funciones de penalización por faltantes. En este contexto, las **condiciones de Karush–Kuhn–Tucker (KKT)** proporcionan un marco teórico fundamental para caracterizar puntos candidatos a óptimos locales, siempre que se satisfagan ciertas condiciones de regularidad (calificación de restricciones). Sin embargo, dado que el problema incluye variables binarias y acoplamiento no lineal entre decisiones, el espacio factible es **no convexo y discontinuo**, lo que implica que las condiciones KKT aunque necesarias **no garantizan optimalidad global**. Esta limitación justifica el uso de métodos de solución especializados, como algoritmos de ramificación o heurísticas híbridas, que se discuten en capítulos posteriores.
 
 - **Condiciones de Karush–Kuhn–Tucker (KKT)**: condiciones necesarias de optimalidad local bajo restricciones de desigualdad y calificación de restricciones. Como se expone en @LewisOverton2013, estas condiciones **no garantizan optimalidad global** en problemas no convexos, como el propuesto, donde la no convexidad surge de las variables binarias y la no linealidad en la incertidumbre.
-
 :::
