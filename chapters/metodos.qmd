@@ -839,9 +839,9 @@ es cerrado, convexo y no vacío.
 El **resultado fundamental de convergencia global**, @Byrd1995, establece que, bajo hipótesis estándar de regularidad y condiciones adecuadas de búsqueda lineal, la sucesión generada por el algoritmo posee puntos límite que satisfacen las **condiciones necesarias de optimalidad de Karush–Kuhn–Tucker (KKT)**. Dicho de otra forma, el algoritmo converge, en el sentido de subsecuencias, hacia el conjunto de puntos estacionarios proyectados.
 
 
-#### Teorema de convergencia global
+#### Teorema de convergencia global {#sec-teorema_convergencia}
 
-> **Teorema 6.2 (Convergencia global de L-BFGS-B).**  {#eq-teorema62}
+> **Teorema 6.2 (Convergencia global de L-BFGS-B).**  
 > Sea $f : \mathbb{R}^n \to \mathbb{R}$ una función continuamente diferenciable que satisface:
 >
 > 1. $\nabla f$ es **Lipschitz continuo** en $\Omega$; existe $L > 0$ tal que  
@@ -992,7 +992,7 @@ Se asume que $f$ cumple las siguientes **hipótesis estructurales**:
 > \forall Q,R \in \{Q \ge \mathbf{1} : f(Q) \le f(Q_0)\}. 
 > $${#eq-78}
 
-Bajo estas condiciones, el problema @q-min_Q_restriccion admite un **único minimizador global** $Q^* \ge \mathbf{1}$.  
+Bajo estas condiciones, el problema @eq-min_Q_restriccion admite un **único minimizador global** $Q^* \ge \mathbf{1}$.  
 Además, por las condiciones KKT (véase @sec-kkt_caja):
 
 - Si $Q_i^* > 1$, entonces $\nabla_i f(Q^*) = 0$;  
@@ -1014,7 +1014,7 @@ $${#eq-80}
 #### Corolario de convergencia global
 
 > **Corolario (Convergencia a $Q^* \ge \mathbf{1}$ con $\nabla f(Q^*) = 0$).**  
-> Supóngase que el problema @eq-eq-min_Q_restriccion satisface (M1)–(M3), y que el minimizador único $Q^*$ verifica $Q^* > \mathbf{1}$.  
+> Supóngase que el problema @eq-min_Q_restriccion satisface (M1)–(M3), y que el minimizador único $Q^*$ verifica $Q^* > \mathbf{1}$.  
 > Sea $\{Q_k\}$ la sucesión generada por el algoritmo L-BFGS-B con punto inicial $Q_0 \ge \mathbf{1}$ y pasos $\alpha_k$ que cumplen las condiciones de Wolfe.  
 > Entonces:
 > $$
@@ -1027,7 +1027,7 @@ $$
 \mathcal{L} = \{Q \ge \mathbf{1} : f(Q) \le f(Q_0)\}
 $$
 es compacto; por (M3), el gradiente es Lipschitz en $\mathcal{L}$.  
-Por tanto, se satisfacen las hipótesis del **Teorema @eq-teorema62**  de la @sec-convregencia_global, de donde resulta
+Por tanto, se satisfacen las hipótesis del **Teorema 6.2 @#sec-teorema_convergencia**  de la @sec-convregencia_global, de donde resulta
 
 $$
 \liminf_{k \to \infty} \|\nabla_\Omega f(Q_k)\| = 0.
