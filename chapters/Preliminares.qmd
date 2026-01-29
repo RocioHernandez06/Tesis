@@ -23,7 +23,7 @@ En la formulación de redes logísticas humanitarias, las decisiones suelen repr
 
 Estos conjuntos garantizan que las variables del modelo respeten restricciones físicas (por ejemplo, no es posible enviar una cantidad negativa de ayuda humanitaria).
 
-## Convexidad y conjuntos especiales
+## Convexidad y conjuntos especiales {#sec-conjuntosE}
 
 La convexidad juega un papel central en la teoría de optimización, ya que garantiza que cualquier mínimo local sea también un mínimo global, lo que simplifica enormemente la búsqueda de soluciones óptimas. En el contexto de redes logísticas humanitarias, muchos subproblemas como la asignación de flujos o el cálculo de inventarios dan lugar a regiones factibles convexas cuando las decisiones de apertura de almacenes están fijas. Sin embargo, la presencia de variables binarias (por ejemplo, decidir si abrir o no un centro de distribución) introduce no convexidad estructural, lo que complica el análisis y requiere métodos especializados. Comprender la geometría de los conjuntos convexos y poliedros permite identificar cuándo un subproblema es tratable, diseñar descomposiciones eficientes y justificar el uso de relajaciones convexas en algoritmos de solución.
 
@@ -165,7 +165,7 @@ $$
 
 Esta condición garantiza que la función $f$ es **estrictamente convexa** en una vecindad del punto $x$, y por tanto, si además $\nabla f(x) = 0$, entonces $x$ es un **mínimo local estricto**. En modelos de inventario humanitario, donde la función de costo incluye términos cuadráticos o aproximaciones de segundo orden (por ejemplo, en el cálculo del inventario de seguridad bajo demanda normal), la definición positiva del Hessiano asegura que los métodos de optimización basados en curvatura como Newton o L-BFGS converjan a soluciones estables y únicas en subproblemas continuos.
 
-## Estructura general de problemas de optimización con restricciones
+## Estructura general de problemas de optimización con restricciones {#sec-bigM}
 
 Los modelos de logística humanitaria integran decisiones de naturaleza distinta: **estratégicas** (por ejemplo, dónde ubicar centros de distribución) y **tácticas/operativas** (como cuánto inventario almacenar o cuánta ayuda enviar). Esta combinación da lugar a problemas de optimización **mixtos**, que involucran variables binarias (para las decisiones de apertura/cierre) y variables continuas no negativas (para flujos, inventarios o asignaciones).
 

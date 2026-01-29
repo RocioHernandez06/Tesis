@@ -161,7 +161,7 @@ El método BFGS posee propiedades teóricas destacadas:
   \lim_{k \to \infty} \frac{\|(B_k - \nabla^2 f(x^\star)) s_k\|}{\|s_k\|} = 0.
   $$
 
-- Si además $f$ es cuadrática y fuertemente convexa, BFGS converge en a lo sumo $n$ pasos, generando direcciones conjugadas respecto al Hessiano exacto. Nos referimos a que, si 
+- Si además $f$ es cuadrática y fuertemente convexa, BFGS converge en a lo sumo $n$ pasos, generando direcciones conjugadas (@sec-funcion_CD) respecto al Hessiano exacto. Nos referimos a que, si 
 $$
 f(x) = \tfrac{1}{2} x^\top Q x - b^\top x + c,
 $$
@@ -1273,8 +1273,8 @@ La dirección resultante es:
 $$
 p_1 \approx (0.01, -0.01)^\top.
 $$
- 
-El escalado mediante $\gamma_k$ constituye un componente esencial del desempeño del método L-BFGS-B. Además de ser computacionalmente económico, estabiliza la recursión, mejora el acondicionamiento de la dirección de búsqueda y permite reproducir el comportamiento esperado en problemas con curvatura anisótropa. Esta estrategia fue propuesta originalmente por @LiuNocedal1989 [Sección 4, p. 513] para L-BFGS y posteriormente adoptada en L-BFGS-B. Su efectividad se sustenta teóricamente en su capacidad para aproximar la magnitud del inverso del Hessiano como se presenta en @NocedalWright2006, Sección 7.2.
+
+El escalado mediante $\gamma_k$ constituye un componente esencial del desempeño del método L-BFGS-B. Además de ser computacionalmente económico, estabiliza la recursión, mejora el acondicionamiento de la dirección de búsqueda y permite reproducir el comportamiento esperado en problemas donde el Hessiano $\nabla^2 f(x)$ es mal condicionado, es decir, cuando su número de condición $\kappa(\nabla^2 f(x))$ es grande. Esta estrategia fue propuesta originalmente por @LiuNocedal1989, seccion 4, para L-BFGS y posteriormente adoptada en L-BFGS-B. Su efectividad se sustenta teóricamente en su capacidad para aproximar la magnitud del inverso del Hessiano, como se presenta en @NocedalWright2006, Sección 7.2.
 
 ### Estimación empírica del número de iteraciones y dependencia del parámetro de memoria $m$
 
@@ -1829,7 +1829,7 @@ L-BFGS-B mantiene un desempeño sobresaliente en problemas moderadamente condici
 
 En contextos más complejos, donde el Hessiano no es diagonal, pueden utilizarse precondicionadores como factorizaciones incompletas de Cholesky o aproximaciones de banda, ofreciendo un balance adecuado entre calidad y eficiencia numérica.
 
-### Posibilidades de extensión a problemas con estructura parcialmente separable
+### Posibilidades de extensión a problemas con estructura parcialmente separable {#sec-parcialmenteS}
 
 Una clase relevante de problemas de optimización de gran escala exhibe **estructura parcialmente separable**, lo que permite representar la función objetivo como una suma de subfunciones dependientes de subconjuntos reducidos de las variables. Dicho enfoque, analizado en profundidad por @GriewankToint1984 y sistematizado en marcos generales de optimización no lineal como puede concluirse en el trabajo de @ConnGouldToint1992, posibilita una construcción eficiente tanto del gradiente como del Hessiano, permitiendo algoritmos cuasi-Newton especializados con menores costos computacionales.
 
