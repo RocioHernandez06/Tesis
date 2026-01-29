@@ -10,9 +10,9 @@ jupyter: python3
 ---
 
 :::{style="text-align: justify"}
-En este capítulo se presentan los fundamentos teóricos y computacionales de los métodos de optimización aplicados a problemas con restricciones tipo caja, es decir, aquellos en los que las variables de decisión se encuentran acotadas superior e inferiormente dentro de un dominio compacto. Este tipo de problemas es común en la modelación de sistemas físicos, económicos y logísticos, donde las condiciones naturales o estructurales limitan el espacio de búsqueda de soluciones, para más detalles sobre este tipo de problemas de optimizacion ver por ejemplo el capitulo 3 de @Bertsekas2016, el @Luenberger2016, el @BazaraaSheraliShetty2013 y el @NocedalWright2006.
+En este capítulo se presentan los fundamentos teóricos y computacionales de los métodos de optimización aplicados a problemas con restricciones tipo caja, es decir, aquellos en los que las variables de decisión se encuentran acotadas superior e inferiormente dentro de un dominio compacto. Este tipo de problemas es común en la modelación de sistemas físicos, económicos y logísticos, donde las condiciones naturales o estructurales limitan el espacio de búsqueda de soluciones. Siguiendo la metodología descrita por @Bertsekas2016, Capítulo 2; @Luenberger2016, Sección 8.4; @BazaraaSheraliShetty2013, Sección 8.7 y @NocedalWright2006, Sección 12.2, se adopta un enfoque basado en proyección, condiciones de optimalidad de Karush–Kuhn–Tucker y métodos de memoria limitada para resolver eficientemente estos problemas.
 
-El desarrollo del capítulo se organiza en cinco secciones. En primer lugar, se introducen los fundamentos de los métodos iterativos de primer y segundo orden, enfatizando los mecanismos de actualización del gradiente y la aproximación del Hessiano. Posteriormente, se extiende el análisis hacia dominios con restricciones tipo caja, detallando la formulación y justificación estructural del algoritmo **L-BFGS-B**, uno de los más eficientes para resolver problemas de gran escala con cotas bajo el esquema de @Byrd1995 y el @NocedalWright2006 capítulo 6. En la tercera sección se analizan los resultados teóricos de convergencia del método bajo hipótesis de regularidad, presentando un teorema global que garantiza la existencia de puntos estacionarios que satisfacen las condiciones de Karush-Kuhn-Tucker (KKT) @sec-kkt. En seguida, la cuarta parte describe la implementación computacional del algoritmo y los experimentos numéricos realizados para evaluar su desempeño frente a otros métodos clásicos de optimización sin restricciones. Finalmente, se incluye una discusión crítica acerca de las ventajas, limitaciones y posibles extensiones del enfoque propuesto.
+El desarrollo del capítulo se organiza en cinco secciones. En primer lugar, se introducen los fundamentos de los métodos iterativos de primer y segundo orden, enfatizando los mecanismos de actualización del gradiente y la aproximación del Hessiano. Posteriormente, se extiende el análisis hacia dominios con restricciones tipo caja, detallando la formulación y justificación estructural del algoritmo **L-BFGS-B**, uno de los más eficientes para resolver problemas de gran escala con cotas bajo el esquema de @Byrd1995 y @NocedalWright2006 capítulo 6. En la tercera sección se analizan los resultados teóricos de convergencia del método bajo hipótesis de regularidad, presentando un teorema global que garantiza la existencia de puntos estacionarios que satisfacen las condiciones de Karush-Kuhn-Tucker (KKT) @sec-kkt. En seguida, la cuarta parte describe la implementación computacional del algoritmo y los experimentos numéricos realizados para evaluar su desempeño frente a otros métodos clásicos de optimización sin restricciones. Finalmente, se incluye una discusión crítica acerca de las ventajas, limitaciones y posibles extensiones del enfoque propuesto.
 
 El propósito de este capítulo es ofrecer una comprensión integral del método **L-BFGS-B**, integrando su base matemática, su estructura computacional y su relevancia práctica para la resolución eficiente de problemas con restricciones tipo caja.
 
@@ -45,8 +45,8 @@ donde $0 < c_1 < c_2 < 1$. La primera asegura un descenso suficiente y la segund
 
 Bajo las hipótesis:
 
-1. $f$ es continuamente diferenciable en un conjunto abierto que contiene al conjunto de nivel $\mathcal{L} = \{x \in \mathbb{R}^n : f(x) \le f(x_0)\}$,
-2. $\mathcal{L}$ es compacto,
+1. $f$ es continuamente diferenciable (@sec-funcion_CD) en un conjunto abierto que contiene al conjunto de nivel $\mathcal{L} = \{x \in \mathbb{R}^n : f(x) \le f(x_0)\}$,
+2. $\mathcal{L}$ es compacto @sec-compacto,
 
 el método de gradiente descendente con pasos que satisfacen las condiciones de Wolfe garantiza que  
 
@@ -84,7 +84,7 @@ La trayectoria oscila hacia $x^\star = (0,0)^\top$, evidenciando la convergencia
 
 Este comportamiento justifica la necesidad de métodos que incorporen información de segundo orden, como los métodos de tipo cuasi-Newton, presentados en la siguiente sección.
 
-### Métodos cuasi-Newton: aproximación del Hessiano y convergencia superlineal
+### Métodos cuasi-Newton: aproximación del Hessiano y convergencia superlineal {#sec-convergenciasuperlineal}
 
 Antes de describir el esquema algorítmico, introducimos la noción de **convergencia superlineal**, que caracteriza la eficiencia asintótica de esta clase de métodos.
 
@@ -94,9 +94,9 @@ $$
 $$
 Esta tasa es más rápida que la convergencia lineal y refleja una aceleración progresiva del algoritmo cerca de la solución. Los métodos cuasi-Newton, como BFGS, alcanzan esta tasa bajo hipótesis de regularidad (por ejemplo, $f \in C^2$ con Hessiano Lipschitz-continuo) y búsquedas lineales que satisfagan las condiciones de Wolfe (@NocedalWright2006, Sección 6.4).
 
-Los métodos cuasi-Newton constituyen una clase fundamental de algoritmos iterativos para la minimización de funciones diferenciables sin restricciones, diseñados para emular el comportamiento del método de Newton sin requerir la evaluación explícita del Hessiano...
+Los métodos cuasi-Newton constituyen una clase fundamental de algoritmos iterativos para la minimización de funciones diferenciables sin restricciones, diseñados para emular el comportamiento del método de Newton sin requerir la evaluación explícita del Hessiano.
 
-Los métodos cuasi-Newton constituyen una clase fundamental de algoritmos iterativos para la minimización de funciones diferenciables sin restricciones, diseñados para emular el comportamiento del método de Newton sin requerir la evaluación explícita del Hessiano $\nabla^2 f(x_k)$. En lugar de ello, estos métodos construyen **aproximaciones sucesivas** $B_k \in \mathbb{R}^{n \times n}$ (o $H_k \approx (\nabla^2 f(x_k))^{-1}$) a partir de la información de gradientes acumulada durante la iteración, logrando así tasas de convergencia **superlineales** bajo hipótesis razonables @NocedalWright2006, Sección 6.4.
+Los métodos cuasi-Newton constituyen una clase fundamental de algoritmos iterativos para la minimización de funciones diferenciables sin restricciones, diseñados para emular el comportamiento del método de Newton sin requerir la evaluación explícita del Hessiano $\nabla^2 f(x_k)$. En lugar de ello, estos métodos construyen **aproximaciones sucesivas** $B_k \in \mathbb{R}^{n \times n}$ (o $H_k \approx (\nabla^2 f(x_k))^{-1}$) a partir de la información de gradientes acumulada durante la iteración, logrando así tasas de convergencia **superlineales** bajo hipótesis razonables, como puede verse en la Sección 6.4 de @NocedalWright2006.
 
 Sea $f : \mathbb{R}^n \to \mathbb{R}$ una función continuamente diferenciable. El esquema genérico de un método cuasi-Newton se expresa como
 
@@ -124,7 +124,7 @@ $$
 B_{k+1} s_k = y_k.
 $$
 
-Dado que esta ecuación impone solo $n$ restricciones lineales sobre los $\tfrac{n(n+1)}{2}$ grados de libertad de una matriz simétrica, se requiere un criterio adicional para determinar $B_{k+1}$ de forma única. Los métodos cuasi-Newton clásicos surgen al imponer que $B_{k+1}$ sea la **matriz más cercana a $B_k$** en alguna norma matricial adecuada, sujeta a la ecuación secante y a la simetría.
+Dado que esta ecuación impone solo $n$ restricciones lineales sobre las $\tfrac{n(n+1)}{2}$ entradas independientes de una matriz simétrica, se requiere un criterio adicional para determinar $B_{k+1}$ de forma única. Los métodos cuasi-Newton clásicos surgen al imponer que $B_{k+1}$ sea la **matriz más cercana a $B_k$** en alguna norma matricial adecuada, sujeta a la ecuación secante y a la simetría.
 
 
 #### El método BFGS
@@ -143,7 +143,7 @@ donde $$\rho_k = (y_k^\top s_k)^{-1}$$ y se asume $$y_k^\top s_k > 0$$ (condici�
 
 El método BFGS posee propiedades teóricas destacadas:
 
-- Si $f$ es dos veces continuamente diferenciable y su Hessiano $\nabla^2 f$ es Lipschitz-continuo en una vecindad de un minimizador $x^\star$, y la búsqueda lineal satisface las condiciones de Wolfe, entonces la sucesión $\{x_k\}$ cumple
+- Si $f$ es dos veces continuamente diferenciable y su Hessiano $\nabla^2 f$ es Lipschitz-continuo @sec-funcion_CD en una vecindad de un minimizador $x^\star$, y la búsqueda lineal satisface las condiciones de Wolfe, entonces la sucesión $\{x_k\}$ cumple
 
   $$
   \lim_{k \to \infty} \|x_k - x^\star\| = 0,
@@ -155,7 +155,7 @@ El método BFGS posee propiedades teóricas destacadas:
   \lim_{k \to \infty} \frac{\|x_{k+1} - x^\star\|}{\|x_k - x^\star\|} = 0.
   $$
 
-  Este resultado se basa en la caracterización de @DennisMore1977:
+  Este resultado se basa en la caracterización contenida en la investigacion de @DennisMore1977:
 
   $$
   \lim_{k \to \infty} \frac{\|(B_k - \nabla^2 f(x^\star)) s_k\|}{\|s_k\|} = 0.
@@ -278,11 +278,11 @@ Partimos de $x_0 = (0, 0)^\top$ y elegimos $H_0 = I$ como aproximación inicial 
 - Paso óptimo: $\alpha_1 \approx 1.033$.
 - Nuevo punto: $x_2 \approx (1.022, 0.999)^\top$, muy cercano a $x^\star = (1,1)^\top$.
 
-En solo dos iteraciones el algoritmo reduce el error residual en más de un orden de magnitud, demostrando la **convergencia superlineal** del método BFGS para funciones cuadráticas. Este comportamiento se mantiene en problemas no cuadráticos siempre que el condicionamiento sea razonable y la búsqueda lineal sea suficientemente precisa.
+En solo dos iteraciones el algoritmo reduce el error residual en más de un orden de magnitud, demostrando la **convergencia superlineal** @sec-convergenciasuperlineal del método BFGS para funciones cuadráticas. Este comportamiento se mantiene en problemas no cuadráticos siempre que el condicionamiento sea razonable y la búsqueda lineal sea suficientemente precisa.
 
 ### Familia Broyden y el método BFGS como caso prototípico
 
-La clase de métodos cuasi-Newton puede organizarse en torno a la **familia de actualizaciones de Broyden**, un conjunto paramétrico de fórmulas que preservan la ecuación secante y generan matrices simétricas actualizadas a partir de la información de gradiente acumulada. Esta familia engloba los métodos más relevantes en la práctica, entre ellos el **BFGS** (Broyden–Fletcher–Goldfarb–Shanno) y el **DFP** (Davidon–Fletcher–Powell), y permite, como se expone en la Sección 6.3 de @NocedalWright2006 analizar de forma unificada sus propiedades de convergencia, estabilidad y eficiencia computacional.
+La clase de métodos cuasi-Newton puede organizarse en torno a la **familia de actualizaciones de Broyden**, un conjunto paramétrico de fórmulas que preservan la ecuación secante y generan matrices simétricas actualizadas a partir de la información de gradiente acumulada. Esta familia engloba los métodos más relevantes en la práctica, entre ellos el **BFGS** (Broyden–Fletcher–Goldfarb–Shanno) y el **DFP** (Davidon–Fletcher–Powell), y permite, como se expone en la Sección 6.3 de @NocedalWright2006, analizar de forma unificada sus propiedades de convergencia, estabilidad y eficiencia computacional.
 
 Sea $f : \mathbb{R}^n \to \mathbb{R}$ una función dos veces continuamente diferenciable. En cada iteración $k$, se dispone de los incrementos
 
@@ -336,7 +336,7 @@ $$
 p_k = -B_k^{-1} \nabla f(x_k)
 $${#eq-16}
 
-sea de descenso. Además, si $f$ es una función cuadrática fuertemente convexa, cualquier método de la familia restringida de Broyden converge en a lo sumo $n$ pasos, generando direcciones conjugadas respecto al Hessiano exacto $\nabla^2 f$ @DennisMore1977, Sección 5.
+sea de descenso. Además, si $f$ es una función cuadrática fuertemente convexa @sec-funcion_CD, cualquier método de la familia restringida de Broyden converge en a lo sumo $n$ pasos, generando direcciones conjugadas @sec-funcion_CD respecto al Hessiano exacto $\nabla^2 f$ @DennisMore1977, Sección 5.
 
 
 #### El método BFGS como caso prototípico
@@ -358,7 +358,7 @@ El método BFGS se distingue por:
 
 - Su **invariancia afín**: el comportamiento es independiente de escalas y transformaciones lineales.
 - Su **propiedad de autocorrección** (*self-scaling*): si $H_k$ es una mala aproximación, la iteración corrige rápidamente la orientación de la matriz.
-- Su **convergencia superlineal** está garantizada bajo hipótesis estándar de suavidad, es decir, que $f$ sea dos veces continuamente diferenciable y que su gradiente (o, equivalentemente, su Hessiano) sea Lipschitz continuo en una vecindad del minimizador, junto con el uso de una búsqueda lineal que satisfaga las condiciones de Wolfe, como se establece en @Fletcher1987.
+- Su **convergencia superlineal** está garantizada bajo hipótesis estándar de suavidad, es decir, que $f$ sea dos veces continuamente diferenciable y que su gradiente (o, equivalentemente, su Hessiano) sea Lipschitz continuo en una vecindad del minimizador, junto con el uso de una búsqueda lineal que satisfaga las condiciones de Wolfe, como se establece en @Fletcher1987, Sección 3.4.
 
 
 #### Ejemplo ilustrativo: actualización BFGS en $\mathbb{R}^2$
@@ -436,7 +436,7 @@ Esta expresión corresponde a la llamada *función de recorte* (*clipping functi
    \|P_\Omega(z) - P_\Omega(w)\| \le \|z - w\|, \quad \forall z,w \in \mathbb{R}^n.
    $${#eq-20}
 
-   Por tanto, $P_\Omega$ es una aplicación **Lipschitz continua con constante 1**, lo que implica estabilidad numérica.
+   Por tanto, $P_\Omega$ es una aplicación **Lipschitz continua (@sec-funcion_CD) con constante 1**, lo que implica estabilidad numérica.
 
 2. **Caracterización variacional**
 
@@ -1027,7 +1027,7 @@ $$
 \mathcal{L} = \{Q \ge \mathbf{1} : f(Q) \le f(Q_0)\}
 $$
 es compacto; por (M3), el gradiente es Lipschitz en $\mathcal{L}$.  
-Por tanto, se satisfacen las hipótesis del **Teorema 6.2 @#sec-teorema_convergencia**  de la @sec-convregencia_global, de donde resulta
+Por tanto, se satisfacen las hipótesis del **Teorema 6.2 @sec-teorema_convergencia**  de la @sec-convregencia_global, de donde resulta
 
 $$
 \liminf_{k \to \infty} \|\nabla_\Omega f(Q_k)\| = 0.
@@ -1119,12 +1119,16 @@ $$
 H_k^{(0)} = I.
 $$
 
-Aunque esta elección simplifica la implementación, puede inducir direcciones de búsqueda mal escaladas cuando las variables tienen magnitudes físicas o numéricas diferentes o cuando la curvatura de $f$ es altamente anisótropa. Nos referimos a que el Hessiano $\nabla^2 f(x)$ posee autovalores que difieren en varios órdenes de magnitud; es decir, existen direcciones en $\mathbb{R}^n$ a lo largo de las cuales la función crece o decrece mucho más rápidamente que en otras. Esta anisotropía implica que una matriz de precondicionamiento isotrópica, como la identidad, no refleja adecuadamente la geometría local del problema, lo que puede ralentizar significativamente la convergencia. Para mitigar este efecto, las implementaciones modernas de L-BFGS-B emplean una identidad escalada:
+Aunque esta elección simplifica la implementación, puede inducir direcciones de búsqueda mal escaladas cuando las variables tienen magnitudes numéricas diferentes o cuando el Hessiano $\nabla^2 f(x)$ es mal condicionado, es decir, cuando su número de condición  
+$$
+\kappa(\nabla^2 f(x)) = \frac{\lambda_{\max}(\nabla^2 f(x))}{\lambda_{\min}(\nabla^2 f(x))}
+$$  
+es grande. Esta situación ocurre cuando los autovalores del Hessiano difieren en varios órdenes de magnitud, lo que implica una distorsión significativa entre la métrica euclidiana estándar y la métrica local inducida por $\nabla^2 f(x)$.En tales casos, una matriz de precondicionamiento escalar como la identidad no refleja adecuadamente la geometría local del problema, lo que puede ralentizar significativamente la convergencia. Para mitigar este efecto, las implementaciones modernas de L-BFGS-B emplean una identidad escalada:
 
 $$
 H_k^{(0)} = \gamma_k I,
 $$
-donde el factor positivo $\gamma_k$ captura una estimación escalar de la curvatura observada en la iteración previa. La regla recomendada por @LiuNocedal1989 define:
+donde el factor positivo $\gamma_k$ captura una estimación escalar de la curvatura observada en la iteración previa. La regla recomendada en la publicación de @LiuNocedal1989 define:
 $$
 \gamma_k = \frac{s_{k-1}^{\top} y_{k-1}}{y_{k-1}^{\top} y_{k-1}}.
 $$
@@ -1270,11 +1274,11 @@ $$
 p_1 \approx (0.01, -0.01)^\top.
 $$
  
-El escalado mediante $\gamma_k$ constituye un componente esencial del desempeño del método L-BFGS-B. Además de ser computacionalmente económico, estabiliza la recursión, mejora el acondicionamiento de la dirección de búsqueda y permite reproducir el comportamiento esperado en problemas con curvatura anisótropa. Esta estrategia fue propuesta originalmente por @LiuNocedal1989 [Sección 4, p. 513] para L-BFGS y posteriormente adoptada en L-BFGS-B. Su efectividad se sustenta teóricamente en su capacidad para aproximar la magnitud del inverso del Hessiano [@NocedalWright2006, Sección 7.2, p. 178].
+El escalado mediante $\gamma_k$ constituye un componente esencial del desempeño del método L-BFGS-B. Además de ser computacionalmente económico, estabiliza la recursión, mejora el acondicionamiento de la dirección de búsqueda y permite reproducir el comportamiento esperado en problemas con curvatura anisótropa. Esta estrategia fue propuesta originalmente por @LiuNocedal1989 [Sección 4, p. 513] para L-BFGS y posteriormente adoptada en L-BFGS-B. Su efectividad se sustenta teóricamente en su capacidad para aproximar la magnitud del inverso del Hessiano como se presenta en @NocedalWright2006, Sección 7.2.
 
 ### Estimación empírica del número de iteraciones y dependencia del parámetro de memoria $m$
 
-La variante L-BFGS-B incorpora un parámetro estructural crucial: el **tamaño de memoria limitada**, denotado $m$, el cual representa el número de pares de curvatura $(s_i, y_i)$ retenidos durante el proceso iterativo. Este parámetro determina la dimensión efectiva del subespacio en el que se aproxima el inverso del Hessiano y, por tanto, modula el equilibrio entre costo computacional y rapidez de convergencia, tal como se analiza en @LiuNocedal1989 [Sección 4, p. 512].
+La variante L-BFGS-B incorpora un parámetro estructural crucial: el **tamaño de memoria limitada**, denotado $m$, el cual representa el número de pares de curvatura $(s_i, y_i)$ retenidos durante el proceso iterativo. Este parámetro determina la dimensión efectiva del subespacio en el que se aproxima el inverso del Hessiano y, por tanto, modula el equilibrio entre costo computacional y rapidez de convergencia @sec-funcion_CD, tal como se analiza en @LiuNocedal1989, Sección 4.
 
 #### Dependencia teórica de la convergencia respecto a $m$
 
@@ -1284,7 +1288,7 @@ $$
 f(x) = \tfrac{1}{2} x^\top A x - b^\top x, \qquad A \succ 0,
 $$
 
-puede resolverse con BFGS clásico reconstruyendo exactamente el Hessiano en a lo sumo $n$ iteraciones @Nocedal1980. Sin embargo, L-BFGS opera en un subespacio de dimensión a lo sumo $m$, por lo que su capacidad de recuperar la curvatura completa ocurre en ciclos de tamaño aproximado $n/m$.
+puede resolverse con BFGS clásico reconstruyendo exactamente el Hessiano en a lo sumo $n$ iteraciones como lo presenta @Nocedal1980. Sin embargo, L-BFGS opera en un subespacio de dimensión a lo sumo $m$, por lo que su capacidad de recuperar la curvatura completa ocurre en ciclos de tamaño aproximado $n/m$.
 
 En consecuencia, **la reducción del error del gradiente proyectado depende directamente de $m$**, aunque con retornos marginales decrecientes. Sea:
 
@@ -1313,7 +1317,7 @@ $$
 k_{\varepsilon}(m) \approx \frac{\log(C/\varepsilon)}{\rho(m)}.
 $$
 
-Este modelo permite cuantificar cómo $m$ regula el equilibrio entre **rapidez de convergencia** y **costo computacional por iteración**, especialmente relevante en problemas de gran escala.
+Este modelo permite cuantificar cómo $m$ regula el equilibrio entre **rapidez de convergencia** @sec-funcion_CD y **costo computacional por iteración**, especialmente relevante en problemas de gran escala.
 
 
 #### Ejemplo numérico: función de Rosenbrock extendida
@@ -1366,7 +1370,7 @@ k_{10^{-6}}(10) \approx \frac{\log(0.03 / 10^{-6})}{0.493} \approx \frac{10.4}{0
 $$
 en perfecta concordancia con el valor observado. Esta coincidencia refleja que, en este problema, el régimen asintótico de convergencia se alcanza desde las primeras iteraciones, sin una fase transitoria prolongada.
 
-En general, la elección del parámetro de memoria $m$ debe adaptarse a la estructura del problema. En instancias con curvatura anisótropa pero localmente bien aproximable (como la presente), valores modestos $m \in [5,10]$ suelen ser óptimos. En problemas altamente mal condicionados o con fuertes acoplamientos (por ejemplo, la versión clásica de Rosenbrock), podría requerirse $m \in [20,50]$. En aplicaciones de gran escala ($n \gg 10^4$), sin embargo, se prefieren valores pequeños ($m \in [3,7]$) para mantener el costo computacional lineal en $n$.
+En general, la elección del parámetro de memoria $m$ debe adaptarse a la estructura del problema. En instancias donde el Hessiano $\nabla^2 f(x)$ es moderadamente mal condicionado, es decir, su número de condición $\kappa(\nabla^2 f(x))$ es grande pero acotado y la función es bien aproximable localmente por un modelo cuadrático (como en el presente caso), valores modestos $m \in [5,10]$ suelen ser óptimos. En problemas altamente mal condicionados o con fuertes acoplamientos entre variables, por ejemplo, la versión clásica de Rosenbrock (@Rosenbrock1960; véase también @NocedalWright2006, Sección 2.1), podría requerirse $m \in [20,50]$. En aplicaciones de gran escala ($n \gg 10^4$), sin embargo, se prefieren valores pequeños ($m \in [3,7]$) para mantener el costo computacional lineal en $n$.
 
 En resumen, la estrategia de memoria limitada ofrece un compromiso eficaz entre precisión en la aproximación cuasi-Newton y eficiencia computacional, ajustable según las características espectrales del problema subyacente.
 
@@ -1385,9 +1389,9 @@ donde $k_\varepsilon(x_0)$ denota el número de iteraciones necesarias para sati
 
 En términos teóricos:
 
-- Cuando $f$ es **convexa y fuertemente convexa**, el minimizador es único y cualquier algoritmo de descenso suficientemente estable converge a él, aunque la velocidad y las trayectorias puedan variar (@NocedalWright2006).
-- Cuando $f$ es **no convexa**, surgen cuencas de atracción múltiples; la robustez es entonces una propiedad **local**, dependiente del comportamiento de las iteraciones en regiones específicas del dominio (@NocedalWright2006).
-- L-BFGS-B exhibe **baja sensibilidad al escalamiento** debido al factor de corrección automático en la matriz inversa aproximada del Hessiano y a la invariancia de las condiciones de Wolfe bajo transformaciones afines (@LiuNocedal1989, @NocedalWright2006).
+- Cuando $f$ es **convexa y fuertemente convexa**, el minimizador es único y cualquier algoritmo de descenso suficientemente estable converge a él, aunque la velocidad y las trayectorias puedan variar, como se expone en @NocedalWright2006, Caps. 2 y 3.
+- Cuando $f$ es **no convexa**, surgen cuencas de atracción múltiples; la robustez es entonces una propiedad **local**, dependiente del comportamiento de las iteraciones en regiones específicas del dominio, siguiendo el esquema de @NocedalWright2006, Secciones 2.1 y 3.2.
+- L-BFGS-B exhibe **baja sensibilidad al escalamiento** debido al factor de corrección automático en la matriz inversa aproximada del Hessiano y a la invariancia de las condiciones de Wolfe bajo transformaciones lineales, como se presenta en @LiuNocedal1989, @NocedalWright2006, Sección 7.2.
 
 
 #### Ejemplo: función cuadrática mal condicionada
@@ -1454,7 +1458,7 @@ La robustez observada se explica por:
 
 #### Contraste: función de Rosenbrock acotada
 
-Consideremos ahora la función de Rosenbrock con restricción de caja:
+Consideremos ahora la función de Rosenbrock con restricción de caja, tal como se plantea en @Byrd1995:
 
 $$
 f(x) = 100(x_2 - x_1^2)^2 + (1 - x_1)^2,
@@ -1495,8 +1499,7 @@ y comparamos L-BFGS-B con tres métodos clásicos sin tratamiento directo de cot
 (ii) Newton inexacto (Newton–CG) resolviendo las ecuaciones lineales por CG; 
 (iii) BFGS sin proyección. La comparación se realiza mediante las métricas: número de iteraciones hasta $\|\nabla_\Omega f(x_k)\|\le\varepsilon$, número de evaluaciones de gradiente y factibilidad de la solución final (satisfacción de KKT bajo cotas).
 
-Las referencias metodológicas que sustentan este análisis son bien conocidas en la literatura sobre optimización numérica (p. ej., @NocedalWright2006; @LiuNocedal1989; @Zhu1997).
-
+Las referencias metodológicas que sustentan este análisis son bien conocidas en la literatura sobre optimización numérica: el análisis de convergencia global para métodos de descenso con cotas se basa en el Teorema 12.1 de @NocedalWright2006 [Sección 12.2]; los fundamentos del método BFGS y su convergencia superlineal se encuentran en @NocedalWright2006 [Sección 6.4]; el método de Newton inexacto se describe en @NocedalWright2006 [Sección 7.1]; y las condiciones de Wolfe en @NocedalWright2006 [Sección 3.1]. Los aspectos computacionales específicos de L-BFGS-B se toman de @LiuNocedal1989, @Zhu1997 y @Byrd1995.
 
 #### Descripción formal de los métodos comparados
 
@@ -1524,7 +1527,7 @@ Las referencias metodológicas que sustentan este análisis son bien conocidas e
 
 - **BFGS sin restricciones.** Actualización BFGS estándar sobre $f$ sin proyección; las iteraciones pueden salir de $\Omega$, por lo que su uso en problemas con cotas físicas es cuestionable salvo que se modifique.
 
-- **L-BFGS-B (referencia).** L-BFGS con manejo directo de cotas y memoria limitada $m$, usando dos-bucle y proyección activa por bloque; eficiente para $n$ grande y restricciones tipo caja (@Zhu1997; @LiuNocedal1989).
+- **L-BFGS-B (referencia).** L-BFGS con manejo directo de cotas y memoria limitada $m$, usando dos-bucle y proyección activa por bloque; eficiente para $n$ grande y restricciones tipo caja, como se incluye en @Zhu1997; @LiuNocedal1989.
 
 
 #### Ejemplo numérico (función log-barrier con cotas)
@@ -1577,7 +1580,7 @@ $${#eq-112}
    - **L-BFGS-B** y **GD** garantizan factibilidad en todas las iteraciones.  
    - **BFGS sin restricciones** produce iteraciones infactibles (p. ej. $x_3^{(5)} = 0.98 < 1$) y es inadecuado cuando las restricciones son físicamente obligatorias.
 
-   3. **Robustez cerca de la frontera.**  
+3. **Robustez cerca de la frontera.**  
    Dado que el Hessiano contiene términos $\mu/(x_i-1)^2$ que crecen cuando $x_i\to 1^+$, el problema es efectivamente mal condicionado cerca de la frontera. En este régimen, solo los métodos capaces de manejar alta curvatura sin requerir el Hessiano completo resultan prácticos. Por esta razón, el análisis se centra en L-BFGS-B y Newton–CG:  
    - **L-BFGS-B** tolera bien esta condición gracias a la proyección y al escalado implícito.  
    - **Newton–CG** también es capaz de manejar esta situación, ya que no requiere formar explícitamente el Hessiano, sino únicamente productos del tipo $\nabla^2 f(x) v$ (*hessiano-vector*), los cuales pueden evaluarse eficientemente incluso en problemas de gran escala. Sin embargo, su desempeño depende críticamente de una implementación robusta del producto hessiano-vector y, en problemas altamente mal condicionados, de un precondicionador adecuado.  
@@ -1595,7 +1598,7 @@ $${#eq-112}
 #### Observaciones prácticas y recomendaciones
 
 - **Cuando el hessiano-vector está disponible y el problema no es extremadamente grande**, Newton–CG es una opción potente por su baja cuenta de iteraciones; sin embargo, su coste por iteración y la necesidad de precondicionamiento lo hacen menos atractivo si solo se dispone de gradientes.  
-- **En problemas de gran escala con cotas físicas**, L-BFGS-B es la alternativa más equilibrada: conserva la robustez de los métodos cuasi-Newton, respeta las restricciones en cada iteración y mantiene costos por iteración modestos (@Zhu1997; @LiuNocedal1989).  
+- **En problemas de gran escala con cotas físicas**, L-BFGS-B es la alternativa más equilibrada: conserva la robustez de los métodos cuasi-Newton, respeta las restricciones en cada iteración y mantiene costos por iteración modestos, tal como se menciona en @Zhu1997; @LiuNocedal1989.  
 - **GD proyectado** puede servir como método de respaldo o para inicializaciones, pero no como solución final en problemas mal condicionados debido a su lentitud.  
 - **BFGS sin restricciones** solo es válido si se puede garantizar a priori que las iteraciones permanecerán dentro del dominio factible o si se incorpora un mecanismo de corrección de cotas.
 
@@ -1608,7 +1611,7 @@ El experimento con la función log-barrier @eq-111 muestra que L-BFGS-B ofrece e
 
 ### Ventajas del enfoque de memoria limitada en problemas de gran escala
 
-Los métodos cuasi-Newton clásicos, como BFGS, construyen y actualizan explícitamente una matriz densa $B_k \in \mathbb{R}^{n \times n}$ (o su inversa $H_k$) en cada iteración, con el objetivo de aproximar el Hessiano $\nabla^2 f(x_k)$ o su inversa. Si bien esta estrategia produce convergencia superlineal en problemas de dimensión moderada, su costo computacional y de almacenamiento crece como $\mathcal{O}(n^2)$, lo que los hace **inviables para problemas de gran escala** ($n \gtrsim 10^4$) (@NocedalWright2006).
+Los métodos cuasi-Newton clásicos, como BFGS, construyen y actualizan explícitamente una matriz densa $B_k \in \mathbb{R}^{n \times n}$ (o su inversa $H_k$) en cada iteración, con el objetivo de aproximar el Hessiano $\nabla^2 f(x_k)$ o su inversa. Si bien esta estrategia produce convergencia superlineal en problemas de dimensión moderada, su costo computacional y de almacenamiento crece como $\mathcal{O}(n^2)$, lo que los hace **inviables para problemas de gran escala** ($n \gtrsim 10^4$) como presentan @NocedalWright2006, Sección 7.2.
 
 El enfoque de **memoria limitada** (limited-memory), implementado en el algoritmo **L-BFGS** y su extensión con cotas **L-BFGS-B**, resuelve esta limitación mediante una representación **implícita y compacta** de la aproximación del inverso del Hessiano. En lugar de almacenar una matriz densa, el algoritmo retiene únicamente las $m \ll n$ parejas más recientes de desplazamientos y variaciones del gradiente:
 
@@ -1706,7 +1709,7 @@ Aunque L-BFGS-B utiliza actualizaciones cuasi-Newton implícitas para aproximar 
 - Si $m$ es pequeño, la aproximación $H_k$ es incapaz de capturar esta estructura con suficiente fidelidad.
 - Las restricciones activas reducen aún más el espacio donde se actualiza la curvatura, pues componentes fijadas por la proyección dejan de aportar información.
 
-Como consecuencia, el algoritmo puede caer en **estancamiento progresivo**, reduciendo su eficacia incluso en casos donde no hay degeneración estructural (@Zhu1997).
+Como consecuencia, el algoritmo puede caer en **estancamiento progresivo**, reduciendo su eficacia incluso en casos donde no hay degeneración estructural como lo concluye @Zhu1997.
 
 Este fenómeno es especialmente relevante en aplicaciones como:  
 - inversión de parámetros en EDPs,  
@@ -1828,7 +1831,7 @@ En contextos más complejos, donde el Hessiano no es diagonal, pueden utilizarse
 
 ### Posibilidades de extensión a problemas con estructura parcialmente separable
 
-Una clase relevante de problemas de optimización de gran escala exhibe **estructura parcialmente separable**, lo que permite representar la función objetivo como una suma de subfunciones dependientes de subconjuntos reducidos de las variables. Dicho enfoque, analizado en profundidad por @GriewankToint1984 y sistematizado en marcos generales de optimización no lineal @ConnGouldToint1992, posibilita una construcción eficiente tanto del gradiente como del Hessiano, permitiendo algoritmos cuasi-Newton especializados con menores costos computacionales.
+Una clase relevante de problemas de optimización de gran escala exhibe **estructura parcialmente separable**, lo que permite representar la función objetivo como una suma de subfunciones dependientes de subconjuntos reducidos de las variables. Dicho enfoque, analizado en profundidad por @GriewankToint1984 y sistematizado en marcos generales de optimización no lineal como puede concluirse en el trabajo de @ConnGouldToint1992, posibilita una construcción eficiente tanto del gradiente como del Hessiano, permitiendo algoritmos cuasi-Newton especializados con menores costos computacionales.
 
 Formalmente, una función $f:\mathbb{R}^n \to \mathbb{R}$ es **parcialmente separable** si existen funciones elementales $f_i:\mathbb{R}^n\to\mathbb{R}$, $i=1,\dots,N_e$, tales que
 
@@ -1971,7 +1974,7 @@ p_k = -\sum_{i=1}^{N_e} U_i^\top (B_k^{(i)})^{-1} U_i \nabla f(x_k).
 $${#eq-145}
 
 
-La estructura parcialmente separable de la función objetivo cuya explotación se analiza en @ConnGouldToint1992 [Capítulo 2, pp. 25–26] permite mejoras notables en la eficiencia computacional para problemas de gran escala.
+La estructura parcialmente separable de la función objetivo cuya explotación se analiza en @ConnGouldToint1992, Capítulo 2, permite mejoras notables en la eficiencia computacional para problemas de gran escala.
 
 
  La extensión de L-BFGS-B a funciones con estructura parcialmente separable no solo es posible, sino muy útil. La clave técnica consiste en identificar explícitamente los conjuntos $\{\mathcal{I}_i\}$ o las matrices $U_i$, ya sea mediante modelado explícito o análisis simbólico. La idea clave es identificar grupos de variables que interactúan entre sí, lo cual puede hacerse al diseñar el modelo o mediante herramientas automáticas. Este enfoque es especialmente valioso en problemas de gran escala donde las interacciones son locales, como en la simulación de inundaciones, el modelado de estructuras físicas (por ejemplo, con elementos finitos) o el análisis de datos espaciales donde cada punto depende principalmente de sus vecinos.

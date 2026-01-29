@@ -13,7 +13,7 @@ Antes de presentar los modelos y algoritmos propuestos, es necesario establecer 
 
 # Notación y preliminares
 
-## Conjuntos y espacios vectoriales
+## Conjuntos y espacios vectoriales {#sec-compacto}
 
 En la formulación de redes logísticas humanitarias, las decisiones suelen representarse en espacios euclidianos de dimensión finita. Dos subconjuntos relevantes son:
 
@@ -67,7 +67,7 @@ plt.show()
 ```
 - **Conjunto cerrado en dimensión finita**: En $\mathbb{R}^n$ con la topología euclidiana, un conjunto es **cerrado** si contiene todos sus puntos límite. Todo subespacio vectorial de $\mathbb{R}^n$ es cerrado, y en dimensión finita, los conjuntos cerrados y acotados son compactos (teorema de Heine–Borel). Esta propiedad es clave para garantizar existencia de soluciones en optimización.
 
-## Funciones y propiedades analíticas
+## Funciones y propiedades analíticas {#sec-funcion_CD}
 
 Las propiedades analíticas de la función objetivo como su diferenciabilidad, curvatura (Hessiano) y estructura (separabilidad, convexidad) determinan directamente la elección del método de solución, la calidad de las soluciones obtenidas y la eficiencia computacional del proceso de optimización. En el contexto de la logística humanitaria bajo incertidumbre, la función de costo total combina términos no lineales (como el inventario de seguridad basado en la distribución normal) con decisiones discretas (por ejemplo, abrir o no un almacén), lo que da lugar a un paisaje no convexo y no separable. Aun así, comprender propiedades locales como la suavidad del gradiente o la Lipschitz-continuidad del Hessiano permite aplicar métodos iterativos robustos (por ejemplo, L-BFGS-B) y garantizar su convergencia. Además, cuando se fijan las decisiones discretas (es decir, se decide qué almacenes están abiertos), el problema restante suele ser fuertemente convexo o casi separable, lo que facilita el diseño de algoritmos eficientes y el análisis de sensibilidad.
 
@@ -79,11 +79,11 @@ La formulación del costo total en inventario humanitario depende de propiedades
   \nabla^2 f(x) = \left[ \frac{\partial^2 f}{\partial x_i \partial x_j}(x) \right]_{i,j=1}^n.
   $$
   El Hessiano describe la curvatura local de $f$ y es fundamental en el análisis de segundo orden, en la caracterización de mínimos locales y en métodos de optimización como Newton o cuasi-Newton. Si $\nabla^2 f(x) \succ 0$ (definida positiva), entonces $x$ es un mínimo local estricto bajo condiciones de primer orden.
-  - **Hessiano Lipschitz-continuo**: Sea $f: \mathbb{R}^n \to \mathbb{R}$ una función dos veces continuamente diferenciable en un conjunto abierto $\mathcal{U} \subseteq \mathbb{R}^n$. Se dice que su **Hessiano $ \nabla^2 f $ es Lipschitz-continuo** en $\mathcal{U}$ si existe una constante $L_H > 0$ tal que  
+  - **Hessiano Lipschitz-continuo**: Sea $f: \mathbb{R}^n \to \mathbb{R}$ una función dos veces continuamente diferenciable en un conjunto abierto $\mathcal{U} \subseteq \mathbb{R}^n$. Se dice que su **Hessiano $\nabla^2 f$ es Lipschitz-continuo** en $\mathcal{U}$ si existe una constante $L_H > 0$ tal que  
   $$
   \|\nabla^2 f(x) - \nabla^2 f(y)\| \leq L_H \|x - y\|, \quad \forall x, y \in \mathcal{U},
   $$
-  donde $ \|\cdot\| $ denota una norma matricial compatible (por ejemplo, la norma espectral). Esta propiedad garantiza que la curvatura de $ f $ no varía de forma abrupta y es clave para establecer tasas de convergencia superlineal o cuadrática en métodos de segundo orden, como Newton o BFGS (@NocedalWright2006, Sección 6.4).
+  donde $\|\cdot\|$ denota una norma matricial compatible (por ejemplo, la norma espectral). Esta propiedad garantiza que la curvatura de $ f $ no varía de forma abrupta y es clave para establecer tasas de convergencia superlineal o cuadrática en métodos de segundo orden, como Newton o BFGS (@NocedalWright2006, Sección 6.4).
   - **Función cuadrática fuertemente convexa**: Una función $f: \mathbb{R}^n \to \mathbb{R}$ es **cuadrática fuertemente convexa** si puede escribirse como  
   $$
   f(x) = \tfrac{1}{2} x^\top Q x - b^\top x + c,
@@ -104,6 +104,20 @@ La formulación del costo total en inventario humanitario depende de propiedades
   p_i^\top Q p_j = 0, \quad \forall i \neq j.
   $$
   En el contexto de minimización de una función cuadrática $f(x) = \tfrac{1}{2} x^\top Q x - b^\top x + c$, las direcciones conjugadas permiten alcanzar el mínimo global en a lo sumo $n$ iteraciones, ya que exploran subespacios mutuamente ortogonales en la métrica inducida por $Q$. Los métodos de la familia de Broyden (incluyendo BFGS y DFP) generan tales direcciones cuando se aplican a funciones cuadráticas con búsquedas lineales exactas.
+  - **Rapidez de convergencia**: Sea $\{x_k\}$ una sucesión que converge a un punto $x^\star$. La **rapidez de convergencia** describe qué tan rápido $\|x_k - x^\star\|$ tiende a cero cuando $k \to \infty$. Las tasas más comunes son:
+   - **Lineal**: existe $r \in (0,1)$ tal que  
+    $$
+    \limsup_{k \to \infty} \frac{\|x_{k+1} - x^\star\|}{\|x_k - x^\star\|} \leq r.
+    $$
+   - **Superlineal**:  
+    $$
+    \lim_{k \to \infty} \frac{\|x_{k+1} - x^\star\|}{\|x_k - x^\star\|} = 0.
+    $$
+   - **Cuadrática**: existe $C > 0$ tal que  
+    $$
+    \limsup_{k \to \infty} \frac{\|x_{k+1} - x^\star\|}{\|x_k - x^\star\|^2} \leq C.
+    $$
+  Estas definiciones permiten comparar la eficiencia asintótica de métodos iterativos (@NocedalWright2006, Sección 2.3).
 - **Separabilidad**: $f(x)$ es separable si puede escribirse como $f(x) = \sum_{i=1}^n f_i(x_i)$. Esta propiedad permite descomponer el problema en subproblemas independientes, útil en redes con nodos débilmente acoplados. La función de costo **no es separable**, debido a la interacción entre tamaño de lote, inventario de seguridad y penalización por faltantes.
 
 ```{python}
@@ -172,9 +186,6 @@ Un componente esencial de esta estructura es la **vinculación entre variables d
 - **Formulación big-M estándar**: restricción de la forma $y \leq M x$, con $x \in \{0,1\}$, $y \in \mathbb{R}_+$, y $M > 0$ suficientemente grande, usada para modelar la implicación lógica $x = 0 \Rightarrow y = 0$. Por ejemplo, si no se abre un almacén ($x = 0$), no puede enviar ayuda ($y = 0$).
 
 Esta estructura mixta introduce no convexidad y discontinuidad en el espacio de decisiones, lo que impide el uso directo de métodos basados en gradientes y motiva el uso de algoritmos especializados, como los discutidos en el Capítulo 5.
-
-
-## Teoría de probabilidad, incertidumbre y medida de Lebesgue
 
 ## Teoría de probabilidad y variables aleatorias
 

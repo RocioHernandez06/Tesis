@@ -280,7 +280,7 @@
 \title{Inundaciones}
 \author{Yulissa del Rocío Hernández Vázquez \and Asesor: Dr.~Yofre
 Hernán García Gómez}
-\date{2026-01-22}
+\date{2026-01-28}
 \begin{document}
 \begin{titlepage}
 \hspace{-1.7cm} %Este comando es para mandar a la izquierda ;)
@@ -632,8 +632,7 @@ cuando las decisiones de apertura de almacenes están fijas.}
   garantizar existencia de soluciones en optimización.
 \end{itemize}
 
-\section{Funciones y propiedades
-analíticas}\label{funciones-y-propiedades-analuxedticas}
+\section{Funciones y propiedades analíticas}\label{sec-funcion_CD}
 
 Las propiedades analíticas de la función objetivo como su
 diferenciabilidad, curvatura (Hessiano) y estructura (separabilidad,
@@ -689,16 +688,16 @@ propiedades analíticas que facilitan el análisis de optimalidad:
     \(f: \mathbb{R}^n \to \mathbb{R}\) una función dos veces
     continuamente diferenciable en un conjunto abierto
     \(\mathcal{U} \subseteq \mathbb{R}^n\). Se dice que su
-    \textbf{Hessiano \$ \nabla\^{}2 f \$ es Lipschitz-continuo} en
+    \textbf{Hessiano \(\nabla^2 f\) es Lipschitz-continuo} en
     \(\mathcal{U}\) si existe una constante \(L_H > 0\) tal que\\
     \[
     \|\nabla^2 f(x) - \nabla^2 f(y)\| \leq L_H \|x - y\|, \quad \forall x, y \in \mathcal{U},
-    \] donde \$ \textbar{}\cdot\textbar{} \$ denota una norma matricial
-    compatible (por ejemplo, la norma espectral). Esta propiedad
-    garantiza que la curvatura de \$ f \$ no varía de forma abrupta y es
-    clave para establecer tasas de convergencia superlineal o cuadrática
-    en métodos de segundo orden, como Newton o BFGS (Nocedal y Wright
-    (2006), Sección 6.4).
+    \] donde \(\|\cdot\|\) denota una norma matricial compatible (por
+    ejemplo, la norma espectral). Esta propiedad garantiza que la
+    curvatura de \$ f \$ no varía de forma abrupta y es clave para
+    establecer tasas de convergencia superlineal o cuadrática en métodos
+    de segundo orden, como Newton o BFGS (Nocedal y Wright (2006),
+    Sección 6.4).
   \item
     \textbf{Función cuadrática fuertemente convexa}: Una función
     \(f: \mathbb{R}^n \to \mathbb{R}\) es \textbf{cuadrática fuertemente
@@ -843,9 +842,6 @@ Esta estructura mixta introduce no convexidad y discontinuidad en el
 espacio de decisiones, lo que impide el uso directo de métodos basados
 en gradientes y motiva el uso de algoritmos especializados, como los
 discutidos en el Capítulo 5.
-
-\section{Teoría de probabilidad, incertidumbre y medida de
-Lebesgue}\label{teoruxeda-de-probabilidad-incertidumbre-y-medida-de-lebesgue}
 
 \section{Teoría de probabilidad y variables
 aleatorias}\label{teoruxeda-de-probabilidad-y-variables-aleatorias}
@@ -4915,10 +4911,12 @@ tipo caja, es decir, aquellos en los que las variables de decisión se
 encuentran acotadas superior e inferiormente dentro de un dominio
 compacto. Este tipo de problemas es común en la modelación de sistemas
 físicos, económicos y logísticos, donde las condiciones naturales o
-estructurales limitan el espacio de búsqueda de soluciones, para más
-detalles sobre este tipo de problemas de optimizacion ver por ejemplo el
-capitulo 3 de Bertsekas (2016), el Luenberger y Ye (2016), el Bazaraa,
-Sherali, y Shetty (2013b) y el Nocedal y Wright (2006).
+estructurales limitan el espacio de búsqueda de soluciones. Siguiendo la
+metodología descrita por Bertsekas (2016), Capítulo 2; Luenberger y Ye
+(2016), Sección 8.4; Bazaraa, Sherali, y Shetty (2013b), Sección 8.7 y
+Nocedal y Wright (2006), Sección 12.2, se adopta un enfoque basado en
+proyección, condiciones de optimalidad de Karush--Kuhn--Tucker y métodos
+de memoria limitada para resolver eficientemente estos problemas.
 
 El desarrollo del capítulo se organiza en cinco secciones. En primer
 lugar, se introducen los fundamentos de los métodos iterativos de primer
@@ -4927,7 +4925,7 @@ gradiente y la aproximación del Hessiano. Posteriormente, se extiende el
 análisis hacia dominios con restricciones tipo caja, detallando la
 formulación y justificación estructural del algoritmo \textbf{L-BFGS-B},
 uno de los más eficientes para resolver problemas de gran escala con
-cotas bajo el esquema de Byrd et~al. (1995) y el Nocedal y Wright (2006)
+cotas bajo el esquema de Byrd et~al. (1995) y Nocedal y Wright (2006)
 capítulo 6. En la tercera sección se analizan los resultados teóricos de
 convergencia del método bajo hipótesis de regularidad, presentando un
 teorema global que garantiza la existencia de puntos estacionarios que
@@ -4993,8 +4991,8 @@ Bajo las hipótesis:
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  \(f\) es continuamente diferenciable en un conjunto abierto que
-  contiene al conjunto de nivel
+  \(f\) es continuamente diferenciable (Sección~\ref{sec-funcion_CD}) en
+  un conjunto abierto que contiene al conjunto de nivel
   \(\mathcal{L} = \{x \in \mathbb{R}^n : f(x) \le f(x_0)\}\),
 \item
   \(\mathcal{L}\) es compacto,
