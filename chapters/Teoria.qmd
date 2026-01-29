@@ -10,7 +10,7 @@ jupyter: python3
 ---
 
 :::{style="text-align: justify"}
-## Introducción al problema integrado de localización e inventario {#sec-sec-problemas}
+## Introducción al problema integrado de localización e inventario {#sec-problemas}
 
 ###  Relevancia en logística humanitaria y gestión de emergencias {#sec-problema}
 
@@ -75,7 +75,7 @@ Con ello, la función de costo extendida se vuelve:
 
 $$
 Z(Q)=\frac{D}{Q}S+\left(\frac{Q}{2}+Z_\alpha\sigma_L\right)H+DC+\frac{D}{Q}\beta C. 
-$$ {#eq-Z(q)}
+$$ {#eq-Zq}
 
 Esta función **no es convexa globalmente** cuando $\sigma_L$ depende de $Q$, como ocurre cuando existe congestión en transporte o variabilidad dependiente del tamaño del pedido, aspectos estudiados por @BertsimasThiele2006 y @ShapiroDentchevaRuszczynski2021.
 
@@ -180,7 +180,7 @@ Los problemas integrados de localización e inventario pertenecen a la clase de 
 
 Como argumentan @Wolsey1998, @Grossmann2002 y @Daskin2013, esta pérdida de convexidad impide la aplicación directa de técnicas clásicas de optimización convexa, tales como las condiciones de Karush–Kuhn–Tucker(KKT @sec-kkt) para garantizar optimalidad global, y exige el uso de métodos especializados para problemas mixtos entero-continuos.
 
-####  Formulación matemática del espacio de decisiones
+####  Formulación matemática del espacio de decisiones {#sec-noconvexidad}
 
 Sea:
 
@@ -211,7 +211,7 @@ Este acoplamiento, combinado con la naturaleza **binaria** de las variables $x_i
 
 > **Proposición (No convexidad).**  
 > El conjunto $\mathcal{X}$ definido en (@eq-EF) **no es convexo**.  
-> *Demostración.* Considérense las configuraciones factibles con $x^{(1)} = (1,0,\dots,0)$, $s^{(1)} = (d^\top \mathbf{1}, 0, \dots, 0)^\top$, $y^{(1)}$ asignando toda la demanda al almacén 1, y análogamente $x^{(2)} = (0,1,0,\dots,0)$ con asignación al almacén 2. Ambos puntos pertenecen a $\mathcal{X}$. Sin embargo, su punto medio tiene $x_i = 1/2$ para $i=1,2$, lo cual viola $x_i \in \{0,1\}$. Por lo tanto, $\mathcal{X}$ no es convexo. ∎ {#eq-noconvexidad}
+> *Demostración.* Considérense las configuraciones factibles con $x^{(1)} = (1,0,\dots,0)$, $s^{(1)} = (d^\top \mathbf{1}, 0, \dots, 0)^\top$, $y^{(1)}$ asignando toda la demanda al almacén 1, y análogamente $x^{(2)} = (0,1,0,\dots,0)$ con asignación al almacén 2. Ambos puntos pertenecen a $\mathcal{X}$. Sin embargo, su punto medio tiene $x_i = 1/2$ para $i=1,2$, lo cual viola $x_i \in \{0,1\}$. Por lo tanto, $\mathcal{X}$ no es convexo. ∎ 
 
 Debido a esta no convexidad, el problema **no pertenece a la clase de optimización convexa**, y en consecuencia **no es posible garantizar optimalidad global mediante condiciones de optimalidad basadas en el análisis convexo clásico**.
 
@@ -292,7 +292,7 @@ La mejor configuración es abrir únicamente el almacén 2. Este resultado ilust
 
 A este fenómeno, la dependencia discontinua de la solución óptima respecto a los datos del problema, causada por la naturaleza combinatoria de las decisiones binarias, nos referiremos como sensibilidad discreta. Esta característica distingue claramente a los modelos mixtos entero-continuos de los problemas puramente continuos, donde bajo condiciones de regularidad la solución óptima varía de forma suave como se puede ver en @Daskin2013.
 
-El conjunto factible de este tipo de problemas, definido por la combinación de variables binarias y continuas junto con restricciones de activación lógica, **no es convexo** (como se demostró en la @eq-noconvexidad). Esta no convexidad, junto con la interacción entre decisiones estratégicas y operativas, exige el uso de técnicas propias de la programación entera mixta y de la optimización combinatoria. Estas bases teóricas sustentan el modelo propuesto en las secciones siguientes, donde se integra esta estructura con un componente de inventario no lineal bajo incertidumbre parametrizada.
+El conjunto factible de este tipo de problemas, definido por la combinación de variables binarias y continuas junto con restricciones de activación lógica, **no es convexo** (como se demostró en la @sec-noconvexidad). Esta no convexidad, junto con la interacción entre decisiones estratégicas y operativas, exige el uso de técnicas propias de la programación entera mixta y de la optimización combinatoria. Estas bases teóricas sustentan el modelo propuesto en las secciones siguientes, donde se integra esta estructura con un componente de inventario no lineal bajo incertidumbre parametrizada.
 
 ## Marco general de modelado: variables, parámetros y espacio de decisión
 
@@ -1097,7 +1097,7 @@ $$
 La **función de costo total extendida**, denotada $Z(Q)$, se define como el valor esperado del costo total:
 $$
 Z(Q) := \mathbb{E}\big[ C(Q, \tilde{D}) \big] = K + c Q + h \, \mathbb{E}\big[(Q - \tilde{D})^{+}\big] + \mathbb{E}\Big[\phi\big((\tilde{D} - Q)^{+}\big)\Big].
-$$
+$$ 
 
 Descomponiendo las expectativas en integrales, y asumiendo que $\tilde{D}$ tiene densidad $f_D$, obtenemos la representación analítica:
 $$
@@ -1578,7 +1578,7 @@ Estas propiedades se desarrollan en las subsecciones siguientes, sustentadas en 
 
 #### Ejemplo ilustrativo: formulación explícita del problema
 
-Retomando los parámetros del ejemplo de la @sec-nolinealidad:
+Retomando los parámetros del ejemplo de la @sec-Nolinealidad:
 
 - $D = 1000$,
 - $S = 100$,
@@ -1608,7 +1608,7 @@ La formulación @eq-pou constituye la base analítica para el estudio riguroso d
 
 ### Continuidad y coercividad: garantía de existencia del mínimo {#sec-cyc}
 
-En la @ec-formulacion se formuló el problema de optimización unidimensional como:
+En la @sec-formulacion se formuló el problema de optimización unidimensional como:
 
 $$
 \min_{Q \geq 1} f(Q) = \min_{Q \geq 1} \left( \frac{K}{Q} + a Q \right),
@@ -1854,11 +1854,11 @@ $$
 Z(Q) = \frac{D}{Q} S + \left( \frac{Q}{2} + Z_\alpha \sigma_L \right) H + D C + \frac{D}{Q} \beta C,
 $$ {#eq-ZQ_extendida}
 
-que corresponde a la ecuación (@eq-Z(q)) en este documento. Aunque los parámetros $Z_\alpha$ y $\sigma_L$ se derivan de un análisis estocástico (stock de seguridad bajo demanda aleatoria), **el modelo de optimización es determinista**, conforme al enfoque robusto adoptado en este trabajo (ver @sec-Nolinealidad). En consecuencia, $Z(Q)$ se trata como una función real diferenciable en $(0,\infty)$, cuyos parámetros reflejan una parametrización de la incertidumbre, pero no su modelación explícita.
+que corresponde a la ecuación @eq-Zq en este documento. Aunque los parámetros $Z_\alpha$ y $\sigma_L$ se derivan de un análisis estocástico (stock de seguridad bajo demanda aleatoria), **el modelo de optimización es determinista**, conforme al enfoque robusto adoptado en este trabajo (ver @sec-Nolinealidad). En consecuencia, $Z(Q)$ se trata como una función real diferenciable en $(0,\infty)$, cuyos parámetros reflejan una parametrización de la incertidumbre, pero no su modelación explícita.
 
 En el análisis que sigue, suponemos que $\sigma_L$ es constante (es decir, independiente de $Q$). Esta hipótesis es común en formulaciones iniciales de inventario bajo incertidumbre y permite preservar cierto grado de tratabilidad analítica, aun cuando se incorporen penalizaciones explícitas por faltante. Bajo esta condición, la función $Z(Q)$ es diferenciable en $(0, \infty)$ y su derivada puede obtenerse aplicando reglas elementales del cálculo.
 
-Agrupando los términos proporcionales a $1/Q$, reescribimos la parte no constante de la ecuación (@eq-Z(q)) como:
+Agrupando los términos proporcionales a $1/Q$, reescribimos la parte no constante de la ecuación @eq-Zq como:
 
 $$
 f(Q) := \frac{D(S + \beta C)}{Q} + \frac{H}{2} Q,
@@ -1945,7 +1945,7 @@ Esta ecuación constituye la **condición de primer orden** del problema de opti
 
 #### Ejemplo ilustrativo
 
-Retomamos los parámetros numéricos del ejemplo de la @sec-nolinealidad:
+Retomamos los parámetros numéricos del ejemplo de la @sec-Nolinealidad:
 
 - $D = 1000$,
 - $S = 100$,
@@ -2032,7 +2032,7 @@ La existencia de $Q^* > 0$ está garantizada por la positividad de todos los par
 
 #### Ejemplo ilustrativo 
 
-Retomamos los parámetros del ejemplo de la Sección @sec-nolinealidad:
+Retomamos los parámetros del ejemplo de la Sección @sec-Nolinealidad:
 
 - Demanda esperada: $D = 1000$,
 - Costo fijo de pedido: $S = 100$,
@@ -2091,7 +2091,7 @@ La proyección (@eq-Qstar_proyectado) garantiza que la solución óptima sea **f
 
 #### Ejemplo ilustrativo 
 
-Retomamos los parámetros del ejemplo de la @sec-nolinealidad:
+Retomamos los parámetros del ejemplo de la @sec-Nolinealidad:
 
 - Demanda esperada: $D = 1000$,
 - Costo fijo de pedido: $S = 100$,
@@ -2195,7 +2195,7 @@ Estas elasticidades son **constantes en signo**, pero **dependen del balance rel
 
 #### Ejemplo ilustrativo paso a paso
 
-Retomamos los parámetros del ejemplo de la @sec-nolinealidad:
+Retomamos los parámetros del ejemplo de la @sec-Nolinealidad:
 
 - $D = 1000$,
 - $S = 100$,
@@ -2236,7 +2236,7 @@ Si cambiamos $Z_\alpha$ de 1.645 a 2.33 (pasando de 95 % a 99 % de nivel de serv
 
 Este análisis de sensibilidad no solo valida la robustez del modelo, sino que también proporciona **directrices operativas** para la recolección de datos y la toma de decisiones: es prioritario estimar con precisión $\beta$ y $D$, mientras que $S$ y $H$ pueden aproximarse con mayor tolerancia. Además, confirma que el parámetro $Z_\alpha$ puede ajustarse **a posteriori** para satisfacer requisitos de nivel de servicio sin alterar la solución óptima de $Q^*$, siempre que $\sigma_L$ sea independiente de $Q$.
 
-En conjunto, las @sec-serivacion–@sec-sensibilidad establecen que, bajo el enfoque determinista robusto adoptado en este trabajo, el problema de optimización unidimensional $\min_{Q \geq 1} Z(Q)$ admite una **solución cerrada explícita**, dada por la proyección $Q^* = \max\{1, \sqrt{2D(S + \beta C)/H}\}$. Esta solución es **única, estable y sensible** a los parámetros críticos del modelo, especialmente a la penalización por faltante $\beta$. El análisis de sensibilidad confirma que, en contextos humanitarios, el tamaño óptimo de lote está dominado por la aversión al riesgo, lo que justifica el abandono del modelo EOQ clásico en favor de formulaciones que internalicen explícitamente la incertidumbre mediante parámetros de penalización y servicio. Estos resultados teóricos sientan las bases para la integración del componente de inventario en el modelo híbrido de localización-inventario. 
+En conjunto, las @sec-derivacion–@sec-sensibilidad establecen que, bajo el enfoque determinista robusto adoptado en este trabajo, el problema de optimización unidimensional $\min_{Q \geq 1} Z(Q)$ admite una **solución cerrada explícita**, dada por la proyección $Q^* = \max\{1, \sqrt{2D(S + \beta C)/H}\}$. Esta solución es **única, estable y sensible** a los parámetros críticos del modelo, especialmente a la penalización por faltante $\beta$. El análisis de sensibilidad confirma que, en contextos humanitarios, el tamaño óptimo de lote está dominado por la aversión al riesgo, lo que justifica el abandono del modelo EOQ clásico en favor de formulaciones que internalicen explícitamente la incertidumbre mediante parámetros de penalización y servicio. Estos resultados teóricos sientan las bases para la integración del componente de inventario en el modelo híbrido de localización-inventario. 
 
 ## Conclusiones del capítulo
 Este capítulo ha presentado un modelo matemático determinista robusto para el problema integrado de localización e inventario en contextos humanitarios, caracterizado por la interacción entre decisiones binarias (ubicación de almacenes) y continuas (niveles de inventario y asignación de flujos). La formulación incorpora de forma paramétrica la incertidumbre en la demanda mediante un stock de seguridad y una penalización explícita por faltantes, lo que introduce no linealidad y rompe la convexidad global del problema, aun cuando la función de costo sea convexa condicionalmente para configuraciones fijas de infraestructura. Esta estructura híbrida, que combina no convexidad combinatoria, no linealidad inducida por la incertidumbre y una formulación de riesgo implícita a través de la penalización, constituye una contribución teórica que extiende los modelos clásicos de EOQ y localización, haciéndolos pertinentes para entornos donde la insatisfacción de la demanda tiene consecuencias éticas y operativas críticas. Al establecer propiedades analíticas fundamentales (existencia, unicidad y sensibilidad del óptimo en el subproblema de inventario) y al caracterizar formalmente el espacio factible mixto, el capítulo sienta las bases para el desarrollo de métodos de solución especializados.
