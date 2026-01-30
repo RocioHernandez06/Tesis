@@ -280,7 +280,7 @@
 \title{Inundaciones}
 \author{Yulissa del Rocío Hernández Vázquez \and Asesor: Dr.~Yofre
 Hernán García Gómez}
-\date{2026-01-29}
+\date{2026-01-30}
 \begin{document}
 \begin{titlepage}
 \hspace{-1.7cm} %Este comando es para mandar a la izquierda ;)
@@ -1130,7 +1130,7 @@ lo que justifica la inclusión del término \(Z_\alpha \sigma_L\) en la
 función de costo. Con ello, la función de costo extendida adopta la
 forma: Con ello, la función de costo extendida se vuelve:
 
-\begin{equation}\phantomsection\label{eq-Zux28qux29}{
+\begin{equation}\phantomsection\label{eq-Zq}{
 Z(Q)=\frac{D}{Q}S+\left(\frac{Q}{2}+Z_\alpha\sigma_L\right)H+DC+\frac{D}{Q}\beta C. 
 }\end{equation}
 
@@ -1288,7 +1288,7 @@ optimalidad global, y exige el uso de métodos especializados para
 problemas mixtos entero-continuos.
 
 \subsubsection{Formulación matemática del espacio de
-decisiones}\label{formulaciuxf3n-matemuxe1tica-del-espacio-de-decisiones}
+decisiones}\label{sec-noconvexidad}
 
 Sea:
 
@@ -1353,7 +1353,7 @@ asignando toda la demanda al almacén 1, y análogamente
 \(x^{(2)} = (0,1,0,\dots,0)\) con asignación al almacén 2. Ambos puntos
 pertenecen a \(\mathcal{X}\). Sin embargo, su punto medio tiene
 \(x_i = 1/2\) para \(i=1,2\), lo cual viola \(x_i \in \{0,1\}\). Por lo
-tanto, \(\mathcal{X}\) no es convexo. ∎ \{\#sec-noconvexidad\}
+tanto, \(\mathcal{X}\) no es convexo. ∎
 \end{quote}
 
 Debido a esta no convexidad, el problema \textbf{no pertenece a la clase
@@ -1507,7 +1507,7 @@ suave como se puede ver en Daskin (2013).
 El conjunto factible de este tipo de problemas, definido por la
 combinación de variables binarias y continuas junto con restricciones de
 activación lógica, \textbf{no es convexo} (como se demostró en la
-\textbf{?@sec-noconvexidad}). Esta no convexidad, junto con la
+Sección~\ref{sec-noconvexidad}). Esta no convexidad, junto con la
 interacción entre decisiones estratégicas y operativas, exige el uso de
 técnicas propias de la programación entera mixta y de la optimización
 combinatoria. Estas bases teóricas sustentan el modelo propuesto en las
@@ -4320,7 +4320,7 @@ Sección~\ref{sec-Nolinealidad}:
 Z(Q) = \frac{D}{Q} S + \left( \frac{Q}{2} + Z_\alpha \sigma_L \right) H + D C + \frac{D}{Q} \beta C,
 }\end{equation}
 
-que corresponde a la ecuación \textbf{?@eq-Z}(q) en este documento.
+que corresponde a la ecuación Ecuación~\ref{eq-Zq} en este documento.
 Aunque los parámetros \(Z_\alpha\) y \(\sigma_L\) se derivan de un
 análisis estocástico (stock de seguridad bajo demanda aleatoria),
 \textbf{el modelo de optimización es determinista}, conforme al enfoque
@@ -4338,7 +4338,7 @@ diferenciable en \((0, \infty)\) y su derivada puede obtenerse aplicando
 reglas elementales del cálculo.
 
 Agrupando los términos proporcionales a \(1/Q\), reescribimos la parte
-no constante de la ecuación \textbf{?@eq-Z}(q) como:
+no constante de la ecuación Ecuación~\ref{eq-Zq} como:
 
 \begin{equation}\phantomsection\label{eq-fQ_no_constante}{
 f(Q) := \frac{D(S + \beta C)}{Q} + \frac{H}{2} Q,
@@ -5045,7 +5045,7 @@ Bajo las hipótesis:
   un conjunto abierto que contiene al conjunto de nivel
   \(\mathcal{L} = \{x \in \mathbb{R}^n : f(x) \le f(x_0)\}\),
 \item
-  \(\mathcal{L}\) es compacto Sección~\ref{sec-compacto},
+  \(\mathcal{L}\) es compacto (ver Sección~\ref{sec-compacto}),
 \end{enumerate}
 
 el método de gradiente descendente con pasos que satisfacen las
@@ -5196,10 +5196,10 @@ El método BFGS posee propiedades teóricas destacadas:
 \begin{itemize}
 \item
   Si \(f\) es dos veces continuamente diferenciable y su Hessiano
-  \(\nabla^2 f\) es Lipschitz-continuo Sección~\ref{sec-funcion_CD} en
-  una vecindad de un minimizador \(x^\star\), y la búsqueda lineal
-  satisface las condiciones de Wolfe, entonces la sucesión \(\{x_k\}\)
-  cumple
+  \(\nabla^2 f\) es Lipschitz-continuo (ver
+  Sección~\ref{sec-funcion_CD}) en una vecindad de un minimizador
+  \(x^\star\), y la búsqueda lineal satisface las condiciones de Wolfe,
+  entonces la sucesión \(\{x_k\}\) cumple
 
   \[
   \lim_{k \to \infty} \|x_k - x^\star\| = 0,
@@ -5315,10 +5315,10 @@ lineal exacta.
 
 En solo dos iteraciones el algoritmo reduce el error residual en más de
 un orden de magnitud, demostrando la \textbf{convergencia superlineal}
-Sección~\ref{sec-convergenciasuperlineal} del método BFGS para funciones
-cuadráticas. Este comportamiento se mantiene en problemas no cuadráticos
-siempre que el condicionamiento sea razonable y la búsqueda lineal sea
-suficientemente precisa.
+(ver Sección~\ref{sec-convergenciasuperlineal}) del método BFGS para
+funciones cuadráticas. Este comportamiento se mantiene en problemas no
+cuadráticos siempre que el condicionamiento sea razonable y la búsqueda
+lineal sea suficientemente precisa.
 
 \subsection{Familia Broyden y el método BFGS como caso
 prototípico}\label{familia-broyden-y-el-muxe9todo-bfgs-como-caso-prototuxedpico}
@@ -5404,10 +5404,11 @@ p_k = -B_k^{-1} \nabla f(x_k)
 }\end{equation}
 
 sea de descenso. Además, si \(f\) es una función cuadrática fuertemente
-convexa Sección~\ref{sec-funcion_CD}, cualquier método de la familia
-restringida de Broyden converge en a lo sumo \(n\) pasos, generando
-direcciones conjugadas Sección~\ref{sec-funcion_CD} respecto al Hessiano
-exacto \(\nabla^2 f\) Dennis y Moré (1977), Sección 5.
+convexa(ver Sección~\ref{sec-funcion_CD}), cualquier método de la
+familia restringida de Broyden converge en a lo sumo \(n\) pasos,
+generando direcciones conjugadas (ver Sección~\ref{sec-funcion_CD})
+respecto al Hessiano exacto \(\nabla^2 f\) Dennis y Moré (1977), Sección
+5.
 
 \subsubsection{El método BFGS como caso
 prototípico}\label{el-muxe9todo-bfgs-como-caso-prototuxedpico}
@@ -5577,7 +5578,7 @@ fundamentales}\label{propiedades-fundamentales}
   }\end{equation}
 
   Por tanto, \(P_\Omega\) es una aplicación \textbf{Lipschitz continua
-  (Sección~\ref{sec-funcion_CD}) con constante 1}, lo que implica
+  (ver Sección~\ref{sec-funcion_CD}) con constante 1}, lo que implica
   estabilidad numérica.
 \item
   \textbf{Caracterización variacional}

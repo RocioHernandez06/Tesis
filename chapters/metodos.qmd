@@ -46,7 +46,7 @@ donde $0 < c_1 < c_2 < 1$. La primera asegura un descenso suficiente y la segund
 Bajo las hipótesis:
 
 1. $f$ es continuamente diferenciable (@sec-funcion_CD) en un conjunto abierto que contiene al conjunto de nivel $\mathcal{L} = \{x \in \mathbb{R}^n : f(x) \le f(x_0)\}$,
-2. $\mathcal{L}$ es compacto @sec-compacto,
+2. $\mathcal{L}$ es compacto (ver @sec-compacto),
 
 el método de gradiente descendente con pasos que satisfacen las condiciones de Wolfe garantiza que  
 
@@ -143,7 +143,7 @@ donde $$\rho_k = (y_k^\top s_k)^{-1}$$ y se asume $$y_k^\top s_k > 0$$ (condici�
 
 El método BFGS posee propiedades teóricas destacadas:
 
-- Si $f$ es dos veces continuamente diferenciable y su Hessiano $\nabla^2 f$ es Lipschitz-continuo @sec-funcion_CD en una vecindad de un minimizador $x^\star$, y la búsqueda lineal satisface las condiciones de Wolfe, entonces la sucesión $\{x_k\}$ cumple
+- Si $f$ es dos veces continuamente diferenciable y su Hessiano $\nabla^2 f$ es Lipschitz-continuo (ver @sec-funcion_CD) en una vecindad de un minimizador $x^\star$, y la búsqueda lineal satisface las condiciones de Wolfe, entonces la sucesión $\{x_k\}$ cumple
 
   $$
   \lim_{k \to \infty} \|x_k - x^\star\| = 0,
@@ -278,7 +278,7 @@ Partimos de $x_0 = (0, 0)^\top$ y elegimos $H_0 = I$ como aproximación inicial 
 - Paso óptimo: $\alpha_1 \approx 1.033$.
 - Nuevo punto: $x_2 \approx (1.022, 0.999)^\top$, muy cercano a $x^\star = (1,1)^\top$.
 
-En solo dos iteraciones el algoritmo reduce el error residual en más de un orden de magnitud, demostrando la **convergencia superlineal** @sec-convergenciasuperlineal del método BFGS para funciones cuadráticas. Este comportamiento se mantiene en problemas no cuadráticos siempre que el condicionamiento sea razonable y la búsqueda lineal sea suficientemente precisa.
+En solo dos iteraciones el algoritmo reduce el error residual en más de un orden de magnitud, demostrando la **convergencia superlineal** (ver @sec-convergenciasuperlineal) del método BFGS para funciones cuadráticas. Este comportamiento se mantiene en problemas no cuadráticos siempre que el condicionamiento sea razonable y la búsqueda lineal sea suficientemente precisa.
 
 ### Familia Broyden y el método BFGS como caso prototípico
 
@@ -336,7 +336,7 @@ $$
 p_k = -B_k^{-1} \nabla f(x_k)
 $${#eq-16}
 
-sea de descenso. Además, si $f$ es una función cuadrática fuertemente convexa @sec-funcion_CD, cualquier método de la familia restringida de Broyden converge en a lo sumo $n$ pasos, generando direcciones conjugadas @sec-funcion_CD respecto al Hessiano exacto $\nabla^2 f$ @DennisMore1977, Sección 5.
+sea de descenso. Además, si $f$ es una función cuadrática fuertemente convexa(ver @sec-funcion_CD), cualquier método de la familia restringida de Broyden converge en a lo sumo $n$ pasos, generando direcciones conjugadas (ver @sec-funcion_CD) respecto al Hessiano exacto $\nabla^2 f$ @DennisMore1977, Sección 5.
 
 
 #### El método BFGS como caso prototípico
@@ -436,7 +436,7 @@ Esta expresión corresponde a la llamada *función de recorte* (*clipping functi
    \|P_\Omega(z) - P_\Omega(w)\| \le \|z - w\|, \quad \forall z,w \in \mathbb{R}^n.
    $${#eq-20}
 
-   Por tanto, $P_\Omega$ es una aplicación **Lipschitz continua (@sec-funcion_CD) con constante 1**, lo que implica estabilidad numérica.
+   Por tanto, $P_\Omega$ es una aplicación **Lipschitz continua (ver @sec-funcion_CD) con constante 1**, lo que implica estabilidad numérica.
 
 2. **Caracterización variacional**
 
