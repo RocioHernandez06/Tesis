@@ -45,7 +45,7 @@ donde $0 < c_1 < c_2 < 1$. La primera asegura un descenso suficiente y la segund
 
 Bajo las hipótesis:
 
-1. $f$ es continuamente diferenciable (@sec-funcion_CD) en un conjunto abierto que contiene al conjunto de nivel $\mathcal{L} = \{x \in \mathbb{R}^n : f(x) \le f(x_0)\}$,
+1. $f$ es continuamente diferenciable (ver @sec-funcion_CD) en un conjunto abierto que contiene al conjunto de nivel $\mathcal{L} = \{x \in \mathbb{R}^n : f(x) \le f(x_0)\}$,
 2. $\mathcal{L}$ es compacto (ver @sec-compacto),
 
 el método de gradiente descendente con pasos que satisfacen las condiciones de Wolfe garantiza que  
@@ -161,7 +161,7 @@ El método BFGS posee propiedades teóricas destacadas:
   \lim_{k \to \infty} \frac{\|(B_k - \nabla^2 f(x^\star)) s_k\|}{\|s_k\|} = 0.
   $$
 
-- Si además $f$ es cuadrática y fuertemente convexa, BFGS converge en a lo sumo $n$ pasos, generando direcciones conjugadas (@sec-funcion_CD) respecto al Hessiano exacto. Nos referimos a que, si 
+- Si además $f$ es cuadrática y fuertemente convexa, BFGS converge en a lo sumo $n$ pasos, generando direcciones conjugadas (ver @sec-funcion_CD) respecto al Hessiano exacto. Nos referimos a que, si 
 $$
 f(x) = \tfrac{1}{2} x^\top Q x - b^\top x + c,
 $$
@@ -336,7 +336,7 @@ $$
 p_k = -B_k^{-1} \nabla f(x_k)
 $${#eq-16}
 
-sea de descenso. Además, si $f$ es una función cuadrática fuertemente convexa(ver @sec-funcion_CD), cualquier método de la familia restringida de Broyden converge en a lo sumo $n$ pasos, generando direcciones conjugadas (ver @sec-funcion_CD) respecto al Hessiano exacto $\nabla^2 f$ @DennisMore1977, Sección 5.
+sea de descenso. Además, si $f$ es una función cuadrática fuertemente convexa (ver @sec-funcion_CD), cualquier método de la familia restringida de Broyden converge en a lo sumo $n$ pasos, generando direcciones conjugadas (ver @sec-funcion_CD) respecto al Hessiano exacto $\nabla^2 f$ @DennisMore1977, Sección 5.
 
 
 #### El método BFGS como caso prototípico
@@ -612,7 +612,7 @@ $$
 \ell \le x \le u,
 $${#eq-26}
 
-donde $f: \mathbb{R}^n \to \mathbb{R}$ es continuamente diferenciable en un conjunto abierto que contiene al conjunto factible
+donde $f: \mathbb{R}^n \to \mathbb{R}$ es continuamente diferenciable (ver @sec-funcion_CD) en un conjunto abierto que contiene al conjunto factible
 
 $$
 \Omega = \{x \in \mathbb{R}^n : \ell_i \le x_i \le u_i,\; i=1,\dots,n\},
@@ -733,7 +733,7 @@ $$
 con $\ell, u \in \mathbb{R}^n \cup \{\pm\infty\}^n$ y $\ell_i < u_i$ para todo $i$. Supondremos que $f$ satisface las siguientes condiciones:
 
 > **(H1) Diferenciabilidad y Lipschitz-continuidad del gradiente.**  
-> La función $f$ es continuamente diferenciable en un conjunto abierto que contiene a $\Omega$, y su gradiente $\nabla f$ es **Lipschitz continuo** en $\Omega$; es decir, existe una constante $L > 0$ tal que  
+> La función $f$ es continuamente diferenciable (ver @sec-funcion_CD) en un conjunto abierto que contiene a $\Omega$, y su gradiente $\nabla f$ es **Lipschitz continuo** en $\Omega$; es decir, existe una constante $L > 0$ tal que  
 > $$
 > \|\nabla f(x) - \nabla f(y)\| \le L \|x - y\|, \quad \forall x, y \in \Omega.
 > $${#eq-37}
@@ -974,7 +974,7 @@ donde $\mathbf{1} \in \mathbb{R}^n$ es el vector de unos, y $f : \mathbb{R}^n \t
 Se asume que $f$ cumple las siguientes **hipótesis estructurales**:
 
 > **(M1) Diferenciabilidad y convexidad estricta.**  
-> $f$ es dos veces continuamente diferenciable en un conjunto abierto que contiene $\{Q \ge \mathbf{1}\}$, y es **estrictamente convexa**, es decir:
+> $f$ es dos veces continuamente diferenciable (ver @sec-funcion_CD) en un conjunto abierto que contiene $\{Q \ge \mathbf{1}\}$, y es **estrictamente convexa**, es decir:
 > $$
 > (\nabla f(Q) - \nabla f(R))^\top (Q - R) > 0, \quad \forall\, Q \neq R,\; Q,R \ge \mathbf{1}. 
 > $${#eq-76}
@@ -1278,7 +1278,7 @@ El escalado mediante $\gamma_k$ constituye un componente esencial del desempeño
 
 ### Estimación empírica del número de iteraciones y dependencia del parámetro de memoria $m$
 
-La variante L-BFGS-B incorpora un parámetro estructural crucial: el **tamaño de memoria limitada**, denotado $m$, el cual representa el número de pares de curvatura $(s_i, y_i)$ retenidos durante el proceso iterativo. Este parámetro determina la dimensión efectiva del subespacio en el que se aproxima el inverso del Hessiano y, por tanto, modula el equilibrio entre costo computacional y rapidez de convergencia @sec-funcion_CD, tal como se analiza en @LiuNocedal1989, Sección 4.
+La variante L-BFGS-B incorpora un parámetro estructural crucial: el **tamaño de memoria limitada**, denotado $m$, el cual representa el número de pares de curvatura $(s_i, y_i)$ retenidos durante el proceso iterativo. Este parámetro determina la dimensión efectiva del subespacio en el que se aproxima el inverso del Hessiano y, por tanto, modula el equilibrio entre costo computacional y rapidez de convergencia (ver @sec-funcion_CD), tal como se analiza en @LiuNocedal1989, Sección 4.
 
 #### Dependencia teórica de la convergencia respecto a $m$
 
@@ -1317,7 +1317,7 @@ $$
 k_{\varepsilon}(m) \approx \frac{\log(C/\varepsilon)}{\rho(m)}.
 $$
 
-Este modelo permite cuantificar cómo $m$ regula el equilibrio entre **rapidez de convergencia** @sec-funcion_CD y **costo computacional por iteración**, especialmente relevante en problemas de gran escala.
+Este modelo permite cuantificar cómo $m$ regula el equilibrio entre **rapidez de convergencia** (ver @sec-funcion_CD) y **costo computacional por iteración**, especialmente relevante en problemas de gran escala.
 
 
 #### Ejemplo numérico: función de Rosenbrock extendida
@@ -1418,9 +1418,7 @@ b =
 \end{pmatrix}.
 $$
 
-El minimizador irrestricto es $x^\star = (1,1)^\top$, el cual pertenece al conjunto factible. El número de condición es $\kappa(A) = 10^4$, lo que induce anisotropía marcada.
-
-Se aplica L-BFGS-B con memoria $m = 10$, tolerancia $\varepsilon = 10^{-8}$ y condiciones de Wolfe con $c_1 = 10^{-4}$ y $c_2 = 0.9$.
+El minimizador irrestricto es $x^\star = (1,1)^\top$, el cual pertenece al conjunto factible. El número de condición es $\kappa(A) = 10^4$, lo que indica un mal condicionamiento pronunciado de la matriz Hessiana. Esta propiedad se manifiesta geométricamente en curvas de nivel fuertemente elongadas y provoca una convergencia lenta de los métodos de primer orden basados únicamente en el gradiente. Para reducir este efecto, se aplica L-BFGS-B con memoria $m = 10$, tolerancia $\varepsilon = 10^{-8}$ y condiciones de Wolfe con $c_1 = 10^{-4}$ y $c_2 = 0.9$.
 
 #### Conjunto de puntos iniciales
 
@@ -1452,7 +1450,7 @@ Los resultados muestran que:
 La robustez observada se explica por:
 
 1. El escalamiento automático del Hessiano aproximado,
-2. La corrección iterativa basada en pares $(s_k, y_k)$ que reduce la anisotropía,
+2. La corrección iterativa basada en pares $(s_k, y_k)$ que reduce el mal condicionamiento de la Hessiana aproximada,
 3. La estabilidad introducida por la proyección factible.
 
 
@@ -1825,7 +1823,7 @@ $$
 | L-BFGS-B precondicionado (diagonal)    | 15          | $3.8 \times 10^{-12}$              | Convergencia casi exacta |
 
 
-L-BFGS-B mantiene un desempeño sobresaliente en problemas moderadamente condicionados, pero su eficacia disminuye de forma considerable cuando el Hessiano presenta alta anisotropía o cuando un número significativo de componentes está sujeto a restricciones activas. Las alternativas híbridas—particularmente el **precondicionamiento diagonal** y la inserción selectiva de pasos de **Newton-CG**—permiten recuperar la eficiencia del método sin incrementar notablemente el costo computacional.
+L-BFGS-B mantiene un desempeño sobresaliente en problemas moderadamente condicionados, pero su eficacia disminuye de forma considerable cuando el Hessiano presenta mal condicionamiento o cuando un número significativo de componentes está sujeto a restricciones activas. Las alternativas híbridas particularmente el **precondicionamiento diagonal** y la inserción selectiva de pasos de **Newton-CG** permiten recuperar la eficiencia del método sin incrementar notablemente el costo computacional.
 
 En contextos más complejos, donde el Hessiano no es diagonal, pueden utilizarse precondicionadores como factorizaciones incompletas de Cholesky o aproximaciones de banda, ofreciendo un balance adecuado entre calidad y eficiencia numérica.
 

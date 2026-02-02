@@ -83,12 +83,12 @@ La formulación del costo total en inventario humanitario depende de propiedades
   $$
   \|\nabla^2 f(x) - \nabla^2 f(y)\| \leq L_H \|x - y\|, \quad \forall x, y \in \mathcal{U},
   $$
-  donde $\|\cdot\|$ denota una norma matricial compatible (por ejemplo, la norma espectral). Esta propiedad garantiza que la curvatura de $ f $ no varía de forma abrupta y es clave para establecer tasas de convergencia superlineal o cuadrática en métodos de segundo orden, como Newton o BFGS (@NocedalWright2006, Sección 6.4).
+  donde $\|\cdot\|$ denota una norma matricial compatible (por ejemplo, la norma espectral). Esta propiedad garantiza que la curvatura de $f$ no varía de forma abrupta y es clave para establecer tasas de convergencia superlineal o cuadrática en métodos de segundo orden, como Newton o BFGS (@NocedalWright2006, Sección 6.4).
   - **Función cuadrática fuertemente convexa**: Una función $f: \mathbb{R}^n \to \mathbb{R}$ es **cuadrática fuertemente convexa** si puede escribirse como  
   $$
   f(x) = \tfrac{1}{2} x^\top Q x - b^\top x + c,
   $$  
-  donde $Q \in \mathbb{R}^{n \times n}$ es una matriz **simétrica y definida positiva** ($Q \succ 0 $), $b \in \mathbb{R}^n$ y $c \in \mathbb{R}$. La condición $Q \succ 0$ implica que existe una constante $\mu > 0$ tal que  
+  donde $Q \in \mathbb{R}^{n \times n}$ es una matriz **simétrica y definida positiva** ($Q \succ 0$), $b \in \mathbb{R}^n$ y $c \in \mathbb{R}$. La condición $Q \succ 0$ implica que existe una constante $\mu > 0$ tal que  
   $$
   x^\top Q x \geq \mu \|x\|^2, \quad \forall x \in \mathbb{R}^n,
   $$  

@@ -87,7 +87,7 @@ Esta función **no es convexa globalmente** cuando $\sigma_L$ depende de $Q$, co
 > $$
 > Pero si $\sigma_L=\sigma\sqrt{L(Q)}$ y $L(Q)$ es no lineal, entonces $Z(Q)$ pierde convexidad.
 
-Esto demuestra que muchos métodos clásicos basados en convexidad y separabilidad @sec-funcion_CD resultan inaplicables en condiciones realistas.
+Esto demuestra que muchos métodos clásicos basados en convexidad y separabilidad (ver @sec-funcion_CD) resultan inaplicables en condiciones realistas.
 
 ####  Limitaciones de modelos de localización deterministas
 
@@ -386,7 +386,7 @@ $$
 
 que representa la cantidad de unidades asignadas desde la instalación $i$ a la localidad de demanda $j$.
 
-El tensor $y = (y_{ij})_{(i,j) \in \mathcal{I} \times \mathcal{J}} \in \mathbb{R}_+^{m \times n}$ describe la **estructura de asignación de suministros desde almacenes candidatos a localidades de demanda**, y pertenece a un espacio vectorial convexo, cerrado @sec-conjuntosE y de dimensión finita.
+El tensor $y = (y_{ij})_{(i,j) \in \mathcal{I} \times \mathcal{J}} \in \mathbb{R}_+^{m \times n}$ describe la **estructura de asignación de suministros desde almacenes candidatos a localidades de demanda**, y pertenece a un espacio vectorial convexo, cerrado (ver @sec-conjuntosE) y de dimensión finita.
 
 > **Observación  (Naturaleza híbrida del espacio de decisiones).**  
 > El espacio total de decisiones es el producto cartesiano  
@@ -401,7 +401,7 @@ $$
 y_{ij} \le M x_i,
 $$ {#eq-y_ij}
 
-donde $M > 0$ es una constante suficientemente grande (por ejemplo, $M = \sum_{j \in \mathcal{J}} d_j$). La restricción @eq-y_ij es una formulación *big-M* estándar @sec-bigM que modela la implicación lógica:
+donde $M > 0$ es una constante suficientemente grande (por ejemplo, $M = \sum_{j \in \mathcal{J}} d_j$). La restricción @eq-y_ij es una formulación *big-M* estándar (ver @sec-bigM) que modela la implicación lógica:
 
 $$
 x_i = 0 \;\Rightarrow\; y_{ij} = 0 \quad \forall j \in \mathcal{J}.
@@ -693,7 +693,7 @@ y \in \mathbb{R}_+^{m \times n}
 \right\}
 $$
 
-es un **poliedro convexo** @sec-conjuntosE (posiblemente vacío).
+es un **poliedro convexo** (ver @sec-conjuntosE) posiblemente vacío.
 
 **Demostración.**  
 Para $\bar{x}$ fijo, las restricciones que definen $\mathcal{Y}(\bar{x})$ son lineales en $y$, por lo que el conjunto es convexo y cerrado.  
@@ -734,7 +734,7 @@ El conjunto $\mathcal{X}$ posee una estructura combinatoria compleja: es no conv
 
 ###  Función objetivo general en problemas de localización–inventario
 
-La **función objetivo** de un modelo de optimización encapsula el criterio de desempeño que se busca minimizar o maximizar. En problemas de localización–inventario para logística humanitaria, este criterio suele ser una medida **económica agregada** que refleja los costos totales del sistema, ponderando compromisos entre infraestructura fija, operación logística y servicio a la demanda. A continuación, se define formalmente la función objetivo general, se descompone en sus componentes estructurales y se analizan sus propiedades matemáticas.
+La **función objetivo** de un modelo de optimización encapsula el criterio de desempeño que se busca minimizar o maximizar. En problemas de localización–inventario para logística humanitaria, este criterio suele ser una medida **económica agregada** que refleja los costos totales del problema, ponderando compromisos entre infraestructura fija, operación logística y servicio a la demanda. A continuación, se define formalmente la función objetivo general, se descompone en sus componentes estructurales y se analizan sus propiedades matemáticas.
 
 #### **Definición (Función objetivo total)**
 
@@ -845,7 +845,8 @@ El modelo de lote económico (*Economic Order Quantity*, EOQ) constituye uno de 
 
 El modelo EOQ se fundamenta en los siguientes supuestos deterministas, los cuales garantizan la existencia de una solución analítica cerrada y convexa:
 
-1. **Demanda constante y conocida**: La tasa de demanda $d > 0$ (unidades por unidad de tiempo) es fija, continua y perfectamente previsible a lo largo del horizonte de planificación. Esto implica que no existe variabilidad ni estacionalidad en la demanda.
+1. **Demanda constante y conocida**: La tasa de demanda $d > 0$ (unidades por unidad de tiempo) es fija, continua y perfectamente previsible.
+ Este supuesto implica estacionariedad estricta: la demanda no presenta variabilidad ni estacionalidad en el tiempo.
 
 2. **Tiempo de reposición nulo**: El pedido realizado se recibe de forma inmediata; es decir, el tiempo de entrega (*lead time*) es igual a cero. En consecuencia, no se consideran inventarios en tránsito ni la posibilidad de desabastecimiento durante el tiempo de espera.
 
@@ -1519,7 +1520,7 @@ Q^\star \approx 871 \quad < \quad Q^{\text{EOQ}} \approx 2236,
 $$
 lo que ilustra que, bajo alta incertidumbre y baja penalización marginal, el modelo estocástico recomienda pedidos **más pequeños** que el modelo determinista, incluso cuando este último sugiere un lote grande por el alto costo fijo.
 
-**Interpretación**: Aunque el EOQ sugiere almacenar más de dos veces la demanda media, el modelo estocástico que reconoce que el costo marginal de comprar una unidad adicional ($24$) es casi tan alto como la penalización por no satisfacerla ($25$) prefiere aceptar faltantes frecuentes a incurrir en altos costos de compra e inventario. En contextos humanitarios, este escenario es poco común (pues $p \gg c$ usualmente), pero **ilustra que el EOQ no es un límite inferior universal**: su validez depende críticamente de la correcta especificación de $K$, y su uso con parámetros no calibrados puede llevar a decisiones excesivamente conservadoras en inventario, con implicaciones de costo y espacio de almacenamiento innecesarias.
+**Interpretación**: Aunque el EOQ sugiere almacenar más de dos veces la demanda media, el modelo estocástico que reconoce que el costo marginal de comprar una unidad adicional ($c=24$) es casi tan alto como la penalización por no satisfacerla ($p=25$) prefiere aceptar faltantes frecuentes a incurrir en altos costos de compra e inventario. En contextos humanitarios, este escenario es poco común (pues $p \gg c$ usualmente), pero **ilustra que el EOQ no es un límite inferior universal**: su validez depende críticamente de la correcta especificación de $K$, y su uso con parámetros no calibrados puede llevar a decisiones excesivamente conservadoras en inventario, con implicaciones de costo y espacio de almacenamiento innecesarias.
 
 #### Caso con penalización no lineal
 

@@ -280,7 +280,7 @@
 \title{Inundaciones}
 \author{Yulissa del Rocío Hernández Vázquez \and Asesor: Dr.~Yofre
 Hernán García Gómez}
-\date{2026-01-30}
+\date{2026-02-01}
 \begin{document}
 \begin{titlepage}
 \hspace{-1.7cm} %Este comando es para mandar a la izquierda ;)
@@ -692,7 +692,7 @@ propiedades analíticas que facilitan el análisis de optimalidad:
     \|\nabla^2 f(x) - \nabla^2 f(y)\| \leq L_H \|x - y\|, \quad \forall x, y \in \mathcal{U},
     \] donde \(\|\cdot\|\) denota una norma matricial compatible (por
     ejemplo, la norma espectral). Esta propiedad garantiza que la
-    curvatura de \$ f \$ no varía de forma abrupta y es clave para
+    curvatura de \(f\) no varía de forma abrupta y es clave para
     establecer tasas de convergencia superlineal o cuadrática en métodos
     de segundo orden, como Newton o BFGS (Nocedal y Wright (2006),
     Sección 6.4).
@@ -704,7 +704,7 @@ propiedades analíticas que facilitan el análisis de optimalidad:
     f(x) = \tfrac{1}{2} x^\top Q x - b^\top x + c,
     \]\\
     donde \(Q \in \mathbb{R}^{n \times n}\) es una matriz
-    \textbf{simétrica y definida positiva} (\$Q \succ 0 \$),
+    \textbf{simétrica y definida positiva} (\(Q \succ 0\)),
     \(b \in \mathbb{R}^n\) y \(c \in \mathbb{R}\). La condición
     \(Q \succ 0\) implica que existe una constante \(\mu > 0\) tal que\\
     \[
@@ -1151,8 +1151,8 @@ entonces \(Z(Q)\) pierde convexidad.
 \end{quote}
 
 Esto demuestra que muchos métodos clásicos basados en convexidad y
-separabilidad Sección~\ref{sec-funcion_CD} resultan inaplicables en
-condiciones realistas.
+separabilidad (ver Sección~\ref{sec-funcion_CD}) resultan inaplicables
+en condiciones realistas.
 
 \subsubsection{Limitaciones de modelos de localización
 deterministas}\label{limitaciones-de-modelos-de-localizaciuxf3n-deterministas}
@@ -1707,8 +1707,8 @@ El tensor
 \(y = (y_{ij})_{(i,j) \in \mathcal{I} \times \mathcal{J}} \in \mathbb{R}_+^{m \times n}\)
 describe la \textbf{estructura de asignación de suministros desde
 almacenes candidatos a localidades de demanda}, y pertenece a un espacio
-vectorial convexo, cerrado Sección~\ref{sec-conjuntosE} y de dimensión
-finita.
+vectorial convexo, cerrado (ver Sección~\ref{sec-conjuntosE}) y de
+dimensión finita.
 
 \begin{quote}
 \textbf{Observación (Naturaleza híbrida del espacio de decisiones).}\\
@@ -1732,8 +1732,8 @@ y_{ij} \le M x_i,
 
 donde \(M > 0\) es una constante suficientemente grande (por ejemplo,
 \(M = \sum_{j \in \mathcal{J}} d_j\)). La restricción
-Ecuación~\ref{eq-y_ij} es una formulación \emph{big-M} estándar
-Sección~\ref{sec-bigM} que modela la implicación lógica:
+Ecuación~\ref{eq-y_ij} es una formulación \emph{big-M} estándar (ver
+Sección~\ref{sec-bigM}) que modela la implicación lógica:
 
 \[
 x_i = 0 \;\Rightarrow\; y_{ij} = 0 \quad \forall j \in \mathcal{J}.
@@ -2224,8 +2224,8 @@ y \in \mathbb{R}_+^{m \times n}
 \right\}
 \]
 
-es un \textbf{poliedro convexo} Sección~\ref{sec-conjuntosE}
-(posiblemente vacío).
+es un \textbf{poliedro convexo} (ver Sección~\ref{sec-conjuntosE})
+posiblemente vacío.
 
 \textbf{Demostración.}\\
 Para \(\bar{x}\) fijo, las restricciones que definen
@@ -2295,7 +2295,7 @@ La \textbf{función objetivo} de un modelo de optimización encapsula el
 criterio de desempeño que se busca minimizar o maximizar. En problemas
 de localización--inventario para logística humanitaria, este criterio
 suele ser una medida \textbf{económica agregada} que refleja los costos
-totales del sistema, ponderando compromisos entre infraestructura fija,
+totales del problema, ponderando compromisos entre infraestructura fija,
 operación logística y servicio a la demanda. A continuación, se define
 formalmente la función objetivo general, se descompone en sus
 componentes estructurales y se analizan sus propiedades matemáticas.
@@ -2480,8 +2480,8 @@ convexa:
 \item
   \textbf{Demanda constante y conocida}: La tasa de demanda \(d > 0\)
   (unidades por unidad de tiempo) es fija, continua y perfectamente
-  previsible a lo largo del horizonte de planificación. Esto implica que
-  no existe variabilidad ni estacionalidad en la demanda.
+  previsible. Este supuesto implica estacionariedad estricta: la demanda
+  no presenta variabilidad ni estacionalidad en el tiempo.
 \item
   \textbf{Tiempo de reposición nulo}: El pedido realizado se recibe de
   forma inmediata; es decir, el tiempo de entrega (\emph{lead time}) es
@@ -3785,12 +3785,12 @@ grande por el alto costo fijo.
 
 \textbf{Interpretación}: Aunque el EOQ sugiere almacenar más de dos
 veces la demanda media, el modelo estocástico que reconoce que el costo
-marginal de comprar una unidad adicional (\(24\)) es casi tan alto como
-la penalización por no satisfacerla (\(25\)) prefiere aceptar faltantes
-frecuentes a incurrir en altos costos de compra e inventario. En
-contextos humanitarios, este escenario es poco común (pues \(p \gg c\)
-usualmente), pero \textbf{ilustra que el EOQ no es un límite inferior
-universal}: su validez depende críticamente de la correcta
+marginal de comprar una unidad adicional (\(c=24\)) es casi tan alto
+como la penalización por no satisfacerla (\(p=25\)) prefiere aceptar
+faltantes frecuentes a incurrir en altos costos de compra e inventario.
+En contextos humanitarios, este escenario es poco común (pues
+\(p \gg c\) usualmente), pero \textbf{ilustra que el EOQ no es un límite
+inferior universal}: su validez depende críticamente de la correcta
 especificación de \(K\), y su uso con parámetros no calibrados puede
 llevar a decisiones excesivamente conservadoras en inventario, con
 implicaciones de costo y espacio de almacenamiento innecesarias.
@@ -5041,8 +5041,9 @@ Bajo las hipótesis:
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  \(f\) es continuamente diferenciable (Sección~\ref{sec-funcion_CD}) en
-  un conjunto abierto que contiene al conjunto de nivel
+  \(f\) es continuamente diferenciable (ver
+  Sección~\ref{sec-funcion_CD}) en un conjunto abierto que contiene al
+  conjunto de nivel
   \(\mathcal{L} = \{x \in \mathbb{R}^n : f(x) \le f(x_0)\}\),
 \item
   \(\mathcal{L}\) es compacto (ver Sección~\ref{sec-compacto}),
@@ -5219,8 +5220,8 @@ El método BFGS posee propiedades teóricas destacadas:
   \]
 \item
   Si además \(f\) es cuadrática y fuertemente convexa, BFGS converge en
-  a lo sumo \(n\) pasos, generando direcciones conjugadas
-  (Sección~\ref{sec-funcion_CD}) respecto al Hessiano exacto. Nos
+  a lo sumo \(n\) pasos, generando direcciones conjugadas (ver
+  Sección~\ref{sec-funcion_CD}) respecto al Hessiano exacto. Nos
   referimos a que, si \[
   f(x) = \tfrac{1}{2} x^\top Q x - b^\top x + c,
   \] con \(Q = \nabla^2 f\) simétrica definida positiva, entonces las
@@ -5404,7 +5405,7 @@ p_k = -B_k^{-1} \nabla f(x_k)
 }\end{equation}
 
 sea de descenso. Además, si \(f\) es una función cuadrática fuertemente
-convexa(ver Sección~\ref{sec-funcion_CD}), cualquier método de la
+convexa (ver Sección~\ref{sec-funcion_CD}), cualquier método de la
 familia restringida de Broyden converge en a lo sumo \(n\) pasos,
 generando direcciones conjugadas (ver Sección~\ref{sec-funcion_CD})
 respecto al Hessiano exacto \(\nabla^2 f\) Dennis y Moré (1977), Sección
@@ -5835,7 +5836,8 @@ Consideremos el problema de optimización
 }\end{equation}
 
 donde \(f: \mathbb{R}^n \to \mathbb{R}\) es continuamente diferenciable
-en un conjunto abierto que contiene al conjunto factible
+(ver Sección~\ref{sec-funcion_CD}) en un conjunto abierto que contiene
+al conjunto factible
 
 \[
 \Omega = \{x \in \mathbb{R}^n : \ell_i \le x_i \le u_i,\; i=1,\dots,n\},
@@ -5992,10 +5994,10 @@ condiciones:
 
 \begin{quote}
 \textbf{(H1) Diferenciabilidad y Lipschitz-continuidad del gradiente.}\\
-La función \(f\) es continuamente diferenciable en un conjunto abierto
-que contiene a \(\Omega\), y su gradiente \(\nabla f\) es
-\textbf{Lipschitz continuo} en \(\Omega\); es decir, existe una
-constante \(L > 0\) tal que\\
+La función \(f\) es continuamente diferenciable (ver
+Sección~\ref{sec-funcion_CD}) en un conjunto abierto que contiene a
+\(\Omega\), y su gradiente \(\nabla f\) es \textbf{Lipschitz continuo}
+en \(\Omega\); es decir, existe una constante \(L > 0\) tal que\\
 \begin{equation}\phantomsection\label{eq-37}{
 \|\nabla f(x) - \nabla f(y)\| \le L \|x - y\|, \quad \forall x, y \in \Omega.
 }\end{equation}
@@ -6336,9 +6338,10 @@ estructurales}:
 
 \begin{quote}
 \textbf{(M1) Diferenciabilidad y convexidad estricta.}\\
-\(f\) es dos veces continuamente diferenciable en un conjunto abierto
-que contiene \(\{Q \ge \mathbf{1}\}\), y es \textbf{estrictamente
-convexa}, es decir: \begin{equation}\phantomsection\label{eq-76}{
+\(f\) es dos veces continuamente diferenciable (ver
+Sección~\ref{sec-funcion_CD}) en un conjunto abierto que contiene
+\(\{Q \ge \mathbf{1}\}\), y es \textbf{estrictamente convexa}, es decir:
+\begin{equation}\phantomsection\label{eq-76}{
 (\nabla f(Q) - \nabla f(R))^\top (Q - R) > 0, \quad \forall\, Q \neq R,\; Q,R \ge \mathbf{1}. 
 }\end{equation}
 \end{quote}
@@ -6758,7 +6761,7 @@ el número de pares de curvatura \((s_i, y_i)\) retenidos durante el
 proceso iterativo. Este parámetro determina la dimensión efectiva del
 subespacio en el que se aproxima el inverso del Hessiano y, por tanto,
 modula el equilibrio entre costo computacional y rapidez de convergencia
-Sección~\ref{sec-funcion_CD}, tal como se analiza en Liu y Nocedal
+(ver Sección~\ref{sec-funcion_CD}), tal como se analiza en Liu y Nocedal
 (1989), Sección 4.
 
 \subsubsection{\texorpdfstring{Dependencia teórica de la convergencia
@@ -6828,7 +6831,7 @@ k_{\varepsilon}(m) \approx \frac{\log(C/\varepsilon)}{\rho(m)}.
 \]
 
 Este modelo permite cuantificar cómo \(m\) regula el equilibrio entre
-\textbf{rapidez de convergencia} Sección~\ref{sec-funcion_CD} y
+\textbf{rapidez de convergencia} (ver Sección~\ref{sec-funcion_CD}) y
 \textbf{costo computacional por iteración}, especialmente relevante en
 problemas de gran escala.
 
@@ -7010,11 +7013,13 @@ b =
 
 El minimizador irrestricto es \(x^\star = (1,1)^\top\), el cual
 pertenece al conjunto factible. El número de condición es
-\(\kappa(A) = 10^4\), lo que induce anisotropía marcada.
-
-Se aplica L-BFGS-B con memoria \(m = 10\), tolerancia
-\(\varepsilon = 10^{-8}\) y condiciones de Wolfe con \(c_1 = 10^{-4}\) y
-\(c_2 = 0.9\).
+\(\kappa(A) = 10^4\), lo que indica un mal condicionamiento pronunciado
+de la matriz Hessiana. Esta propiedad se manifiesta geométricamente en
+curvas de nivel fuertemente elongadas y provoca una convergencia lenta
+de los métodos de primer orden basados únicamente en el gradiente. Para
+reducir este efecto, se aplica L-BFGS-B con memoria \(m = 10\),
+tolerancia \(\varepsilon = 10^{-8}\) y condiciones de Wolfe con
+\(c_1 = 10^{-4}\) y \(c_2 = 0.9\).
 
 \subsubsection{Conjunto de puntos
 iniciales}\label{conjunto-de-puntos-iniciales}
@@ -7082,8 +7087,8 @@ La robustez observada se explica por:
 \item
   El escalamiento automático del Hessiano aproximado,
 \item
-  La corrección iterativa basada en pares \((s_k, y_k)\) que reduce la
-  anisotropía,
+  La corrección iterativa basada en pares \((s_k, y_k)\) que reduce el
+  mal condicionamiento de la Hessiana aproximada,
 \item
   La estabilidad introducida por la proyección factible.
 \end{enumerate}
@@ -7819,12 +7824,12 @@ Convergencia casi exacta \\
 
 L-BFGS-B mantiene un desempeño sobresaliente en problemas moderadamente
 condicionados, pero su eficacia disminuye de forma considerable cuando
-el Hessiano presenta alta anisotropía o cuando un número significativo
-de componentes está sujeto a restricciones activas. Las alternativas
-híbridas---particularmente el \textbf{precondicionamiento diagonal} y la
-inserción selectiva de pasos de \textbf{Newton-CG}---permiten recuperar
-la eficiencia del método sin incrementar notablemente el costo
-computacional.
+el Hessiano presenta mal condicionamiento o cuando un número
+significativo de componentes está sujeto a restricciones activas. Las
+alternativas híbridas particularmente el \textbf{precondicionamiento
+diagonal} y la inserción selectiva de pasos de \textbf{Newton-CG}
+permiten recuperar la eficiencia del método sin incrementar notablemente
+el costo computacional.
 
 En contextos más complejos, donde el Hessiano no es diagonal, pueden
 utilizarse precondicionadores como factorizaciones incompletas de
