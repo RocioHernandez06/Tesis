@@ -80,7 +80,7 @@ $$ {#eq-Zq}
 Esta función **no es convexa globalmente** cuando $\sigma_L$ depende de $Q$, como ocurre cuando existe congestión en transporte o variabilidad dependiente del tamaño del pedido, aspectos estudiados por @BertsimasThiele2006 y @ShapiroDentchevaRuszczynski2021.
 
 > **Proposición  (No linealidad estricta).**  
-> La función $Z(Q)$ definida en @sec-ZEOQ es diferenciable en $(0,\infty)$, pero no es convexa globalmente (@sec-funcion_CD) si $\beta>0$ y $\sigma_L>0$.  
+> La función $Z(Q)$ definida en @sec-ZEOQ es diferenciable en $(0,\infty)$, pero no es convexa globalmente (ver @sec-funcion_CD) si $\beta>0$ y $\sigma_L>0$.  
 > Si $\sigma_L$ es constante:
 > $$
 > \frac{d^2 Z}{dQ^2}=\frac{2D(S+\beta C)}{Q^3}>0.
@@ -103,7 +103,7 @@ bajo restricciones de asignación deterministas. Sin embargo:
 - Los costos pueden variar según accesibilidad o daños.
 - Las capacidades reales son inciertas.
 
-Modelar $d_j$ mediante $\mathbb{E}[d_j]$ genera soluciones frágiles frente a escenarios adversos (@Snyder2006).
+Modelar $d_j$ mediante $\mathbb{E}[d_j]$ genera soluciones frágiles frente a escenarios adversos @Snyder2006.
 
 #### Ejemplo ilustrativo: EOQ clásico vs. EOQ extendido con stock de seguridad y penalización
 
@@ -178,7 +178,7 @@ Este contraste demuestra que los modelos deterministas que ignoran la variabilid
 
 Los problemas integrados de localización e inventario pertenecen a la clase de **modelos de optimización mixta**, en los que coexisten variables discretas (por ejemplo, decisiones binarias de apertura de almacenes) y variables continuas (como flujos de asignación o niveles de inventario). Esta combinación induce una **estructura no convexa y no conexa en el conjunto factible**, debido a la naturaleza combinatoria de las variables binarias.  
 
-Como argumentan @Wolsey1998, @Grossmann2002 y @Daskin2013, esta pérdida de convexidad impide la aplicación directa de técnicas clásicas de optimización convexa, tales como las condiciones de Karush–Kuhn–Tucker(KKT @sec-kkt) para garantizar optimalidad global, y exige el uso de métodos especializados para problemas mixtos entero-continuos.
+Como argumentan @Wolsey1998, @Grossmann2002 y @Daskin2013, esta pérdida de convexidad impide la aplicación directa de técnicas clásicas de optimización convexa, tales como las condiciones de Karush–Kuhn–Tucker (KKT @sec-kkt) para garantizar optimalidad global, y exige el uso de métodos especializados para problemas mixtos entero-continuos.
 
 ####  Formulación matemática del espacio de decisiones {#sec-noconvexidad}
 
@@ -216,7 +216,7 @@ Este acoplamiento, combinado con la naturaleza **binaria** de las variables $x_i
 Debido a esta no convexidad, el problema **no pertenece a la clase de optimización convexa**, y en consecuencia **no es posible garantizar optimalidad global mediante condiciones de optimalidad basadas en el análisis convexo clásico**.
 
 
-####  Función objetivo y acoplamiento estructural
+####  Función objetivo y acoplamiento estructural {#sec-acoplamiento}
 
 La función objetivo del modelo de ubicación de almacenes e inventario humanitario se define como:
 
@@ -1431,7 +1431,7 @@ La no linealidad en los modelos de inventario tiene dos orígenes complementario
 
 Reconocer y modelar ambas fuentes de no linealidad es esencial para formular modelos rigurosos y realistas en logística humanitaria. En el Capítulo 3, esta comprensión se integrará en un modelo de localización-inventario donde tanto $Q_i$ como la exposición efectiva $L_i$ variarán por localidad, dando lugar a una estructura de optimización no lineal y estocástica de alta dimensionalidad.
 
-###  Comparación cuantitativa con EOQ clásico: efecto descendente en $Q^*$
+###  Comparación cuantitativa con EOQ clásico: efecto descendente en $Q^*$ {#sec-cuantitativa}
 
 Una crítica frecuente a la aplicación directa del modelo EOQ en contextos de alta incertidumbre, como la logística humanitaria es que, al ignorar la variabilidad de la demanda y el costo asimétrico de los faltantes, **subestima sistemáticamente** el nivel de inventario necesario para una respuesta efectiva. Sin embargo, en ciertos regímenes paramétricos, una observación menos intuitiva emerge: **cuando el costo fijo de pedido $K$ es muy pequeño o nulo**, la solución del modelo EOQ puede, paradójicamente, sobreestimar el tamaño óptimo de inventario en comparación con un modelo estocástico bien calibrado. Este fenómeno, al que denominamos *efecto descendente en $Q^*$*, surge de la interacción entre la estructura de costos del EOQ y la penalización convexa de faltantes, y tiene implicaciones importantes para la planificación humanitaria, donde los "costos fijos" de pre-posicionamiento pueden ser marginales frente al riesgo de insatisfacción.
 
@@ -1538,7 +1538,7 @@ Este análisis refuerza la necesidad de adoptar formulaciones estocásticas rigu
 
 ## Propiedades analíticas del problema unidimensional {#sec-propiedades}
 
-Tras formular la función de costo total extendida en la @sec-extension y derivar su expresión determinista efectiva en la @sec-derivacion, es necesario establecer las propiedades analíticas fundamentales del problema de optimización unidimensional resultante. En esta sección, se analiza rigurosamente el problema $\min_{Q \geq 1} f(Q)$, demostrando la existencia y unicidad del minimizador, así como el comportamiento asintótico de la función objetivo en los extremos del dominio. Estas propiedades son esenciales para justificar la aplicabilidad de las condiciones de optimalidad clásicas y para garantizar la estabilidad de los métodos numéricos empleados en la resolución.
+Tras formular la función de costo total extendida en la @sec-extension se deriva su expresión determinista efectiva en la presente sección, estableciendo las propiedades analíticas fundamentales del problema de optimización unidimensional resultante. En esta sección, se analiza rigurosamente el problema $\min_{Q \geq 1} f(Q)$, demostrando la existencia y unicidad del minimizador, así como el comportamiento asintótico de la función objetivo en los extremos del dominio. Estas propiedades son esenciales para justificar la aplicabilidad de las condiciones de optimalidad clásicas y para garantizar la estabilidad de los métodos numéricos empleados en la resolución.
 
 
 ### Formulación del problema de optimización: minimización de $f(Q)$ sujeto a $Q \geq 1$ {#sec-formulacion}

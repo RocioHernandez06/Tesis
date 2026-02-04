@@ -27,7 +27,7 @@ La logística humanitaria en contextos de desastre requiere estrategias robustas
 
 **Palabras clave**: logística humanitaria, ubicación–inventario, EOQ robusto, incertidumbre parametrizada, MINLP, L-BFGS-B, inundaciones.
 
-# Abstract
+## Abstract
 
 Humanitarian logistics in disaster contexts demands robust strategies that account for operational uncertainty. This work proposes a robust deterministic optimization model for the integrated management of prepositioned warehouse location and inventory control under flood risk in Mexico. The model extends the classical Economic Order Quantity (EOQ) problem by incorporating safety stock, shortage penalties, and binary warehouse opening decisions, using expected demand and its variability derived from a normal distribution as fixed parameters. The resulting formulation is a mixed integer nonlinear programming (MINLP) problem with a non convex and non separable objective function. A hybrid solution scheme is employed, combining enumeration over binary variables with the L-BFGS-B algorithm for continuous subproblems. The model is evaluated through case studies in flood prone regions of Chiapas and Veracruz. Results show that incorporating parametrized uncertainty significantly reduces the expected total cost and enhances robustness against extreme events, compared to deterministic approaches that neglect demand or lead time variability.
 

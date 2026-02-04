@@ -196,7 +196,7 @@ donde:
 
 - $\mu_i$: Demanda promedio estimada para la zona cubierta por el almacén $i$, basada en datos históricos y proyecciones de impacto.
 - $\sigma_i$: Desviación estándar de la demanda, que refleja la incertidumbre y variabilidad en las necesidades.
-- $z_{\alpha}$: Valor crítico de la distribución normal que define el nivel de confianza deseado (por ejemplo, para un 95 % de confianza se utiliza $z_{0.95} \approx 1.64$).
+- $z_{\alpha}$: Valor crítico de la distribución normal que define el nivel de confianza deseado (por ejemplo, para un $95 \%$ de confianza se utiliza $z_{0.95} \approx 1.64$).
 
 Este enfoque permite diseñar inventarios que no solo atiendan la demanda base, sino que también estén preparados para escenarios adversos sin sobredimensionar innecesariamente la capacidad.
 
@@ -346,13 +346,16 @@ mapa1
 
 ::: {.content-visible when-format="html"}
 ```{python}
+#| label: fig-veracruz-esc1
+#| fig-cap: " Red logística optimizada para el estado de Veracruz bajo el Escenario 1 (único almacén). El mapa muestra la ubicación del almacén principal en Las Choapas 🔵 y las localidades afectadas simuladas 🔴 atendidas desde este nodo central. Las líneas verdes representan las rutas óptimas de distribución calculadas mediante el algoritmo de camino más corto de Dijkstra sobre la red vial real del estado, obtenida mediante la biblioteca OSMnx. Este escenario demuestra la cobertura territorial alcanzable con una configuración logística centralizada, evidenciando las distancias de transporte y tiempos de respuesta asociados a una única instalación de preposicionamiento."
 #| echo: false
+
 mapa1
 ```
 :::
 
 ::: {.content-visible when-format="pdf"}
-![Mapa de Veracruz](mapa_veracruz1.png){width=90%}
+![Red logística optimizada para el estado de Veracruz bajo el Escenario 1 (único almacén). El mapa muestra la ubicación del almacén principal en Las Choapas (ícono azul) y las localidades afectadas simuladas (íconos rojos) atendidas desde este nodo central. Las líneas verdes representan las rutas óptimas de distribución calculadas mediante el algoritmo de camino más corto de Dijkstra sobre la red vial real del estado, obtenida mediante la biblioteca OSMnx. Este escenario demuestra la cobertura territorial alcanzable con una configuración logística centralizada, evidenciando las distancias de transporte y tiempos de respuesta asociados a una única instalación de preposicionamiento.](mapa_veracruz1.png){width=90%}
 :::
 
 2. **Escenario 2: dos almacenes**  
@@ -462,20 +465,23 @@ mapa
 ```
 ::: {.content-visible when-format="html"}
 ```{python}
+#| label: fig-veracruz-esc2
+#| fig-cap: " Red logística optimizada para el estado de Veracruz bajo el Escenario 2 (dos almacenes). El mapa muestra la configuración descentralizada con almacenes en Las Choapas (ícono azul inferior) y Almacén Norte (ícono azul superior), cada uno atendiendo su zona de influencia mediante rutas verdes y azules respectivamente. Las localidades afectadas simuladas (íconos rojos) son asignadas al almacén más cercano según distancia euclidiana. Esta configuración reduce en 23% los costos de transporte respecto al Escenario 1 y eleva el fill rate promedio al 95%, demostrando la ventaja operativa de la descentralización logística en territorios extensos como Veracruz."
 #| echo: false
+
 mapa
 ```
 :::
 
 ::: {.content-visible when-format="pdf"}
-![Mapa de Veracruz](mapa_veracruz2.png){width=90%}
+![Red logística optimizada para el estado de Veracruz bajo el Escenario 2 (dos almacenes). El mapa muestra la configuración descentralizada con almacenes en Las Choapas (ícono azul inferior) y Almacén Norte (ícono azul superior), cada uno atendiendo su zona de influencia mediante rutas verdes y azules respectivamente. Las localidades afectadas simuladas (íconos rojos) son asignadas al almacén más cercano según distancia. Esta configuración reduce en 23% los costos de transporte respecto al Escenario 1 y eleva el fill rate promedio al 95%, demostrando la ventaja operativa de la descentralización logística en territorios extensos como Veracruz.](mapa_veracruz2.png){width=90%}
 :::
 
 3. **Variaciones de demanda**  
-   Se analizaron incrementos y reducciones del 10 % en la demanda de zonas críticas, simulando cambios bruscos por intensificación o atenuación del desastre.
+   Se analizaron incrementos y reducciones del $10 \%$ en la demanda de zonas críticas, simulando cambios bruscos por intensificación o atenuación del desastre.
 
 4. **Requisito mínimo de servicio**  
-   Se impuso como meta operativa alcanzar un *fill rate* ≥ 90 % para todas las zonas afectadas.
+   Se impuso como meta operativa alcanzar un *fill rate* ≥ $90 \%$ para todas las zonas afectadas.
 
 5. **Restricciones geográficas y de accesibilidad vial**  
    Se aplicaron límites basados en la infraestructura real disponible y en la factibilidad de transporte en condiciones de desastre.
@@ -486,9 +492,9 @@ mapa
 
 Los resultados muestran que:
 
-- **Escenario 1 (un solo almacén)**: aunque se logra cubrir gran parte de la demanda, los tiempos de entrega y el costo de transporte aumentan significativamente, y el *fill rate* promedio se sitúa en 88 %.
-- **Escenario 2 (dos almacenes)**: la descentralización logística reduce un 23 % los costos de transporte y eleva el *fill rate* promedio a 95 %, cumpliendo la meta establecida.
-- **Variaciones de demanda**: el modelo mantiene un *fill rate* superior al 90 % para aumentos de hasta un 10 % de la demanda, aunque el costo total se incrementa proporcionalmente.
+- **Escenario 1 (un solo almacén)**: aunque se logra cubrir gran parte de la demanda, los tiempos de entrega y el costo de transporte aumentan significativamente, y el *fill rate* promedio se sitúa en $ 88 \%$.
+- **Escenario 2 (dos almacenes)**: la descentralización logística reduce un $23 \%$ los costos de transporte y eleva el *fill rate* promedio a $95 \%$, cumpliendo la meta establecida.
+- **Variaciones de demanda**: el modelo mantiene un *fill rate* superior al $90 \%$ para aumentos de hasta un $10 \%$ de la demanda, aunque el costo total se incrementa proporcionalmente.
 - La inclusión de restricciones geográficas mejora el realismo del modelo, aunque limita la asignación óptima en algunos casos.
 
 Estos hallazgos permiten concluir que la diversificación de almacenes mejora sustancialmente la cobertura y eficiencia logística en contextos de desastre.

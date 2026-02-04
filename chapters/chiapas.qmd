@@ -1055,7 +1055,7 @@ display(m)
 :::
 
 ::: {.content-visible when-format="pdf"}
-![Mapa interactivo del modelo logístico para Cacahoatán, que muestra las localidades afectadas por inundaciones, los almacenes estratégicos seleccionados y las rutas de conexión optimizadas entre ambos. Las líneas representan los caminos más cortos calculados con NetworkX, mientras que los íconos indican los tipos de nodos: 🔴 localidades inundables y 🔵 almacenes activos. Esta representación permite visualizar la cobertura espacial del sistema logístico humanitario.](almacen.png){width=55%}
+![Mapa interactivo del modelo logístico para Cacahoatán, que muestra las localidades afectadas por inundaciones, los almacenes estratégicos seleccionados y las rutas de conexión optimizadas entre ambos. Las líneas representan los caminos más cortos calculados con NetworkX, mientras que los íconos indican los tipos de nodos: localidades inundables (íconos rojos) y almacenes activos (íconos azules). Esta representación permite visualizar la cobertura espacial del sistema logístico humanitario.](almacen.png){width=55%}
 :::
 
 ## Diseño de la red logística optimizada
@@ -1384,7 +1384,7 @@ Para garantizar que el modelo logístico propuesto sea confiable y útil en situ
 
 El modelo demostró robustez operativa mediante la evaluación de múltiples escenarios adversos. La configuración de un solo almacén activo mostró capacidad para mantener la cobertura total bajo diversas condiciones de estrés operativo.
 
-### Métricas de desempeño en condiciones estándar
+### Métricas de desempeño en condiciones estándar {#sec-metricas}
 
 - **Fill rate alcanzado**: $100\%$
 - **Cobertura poblacional**: $100\%$

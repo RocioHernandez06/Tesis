@@ -284,7 +284,7 @@ En solo dos iteraciones el algoritmo reduce el error residual en más de un orde
 
 La clase de métodos cuasi-Newton puede organizarse en torno a la **familia de actualizaciones de Broyden**, un conjunto paramétrico de fórmulas que preservan la ecuación secante y generan matrices simétricas actualizadas a partir de la información de gradiente acumulada. Esta familia engloba los métodos más relevantes en la práctica, entre ellos el **BFGS** (Broyden–Fletcher–Goldfarb–Shanno) y el **DFP** (Davidon–Fletcher–Powell), y permite, como se expone en la Sección 6.3 de @NocedalWright2006, analizar de forma unificada sus propiedades de convergencia, estabilidad y eficiencia computacional.
 
-Sea $f : \mathbb{R}^n \to \mathbb{R}$ una función dos veces continuamente diferenciable. En cada iteración $k$, se dispone de los incrementos
+Sea $f : \mathbb{R}^n \to \mathbb{R}$ una función dos veces continuamente diferenciable (ver @sec-funcion_CD). En cada iteración $k$, se dispone de los incrementos
 
 $$
 s_k := x_{k+1} - x_k, \quad y_k := \nabla f(x_{k+1}) - \nabla f(x_k),
@@ -358,7 +358,7 @@ El método BFGS se distingue por:
 
 - Su **invariancia afín**: el comportamiento es independiente de escalas y transformaciones lineales.
 - Su **propiedad de autocorrección** (*self-scaling*): si $H_k$ es una mala aproximación, la iteración corrige rápidamente la orientación de la matriz.
-- Su **convergencia superlineal** está garantizada bajo hipótesis estándar de suavidad, es decir, que $f$ sea dos veces continuamente diferenciable y que su gradiente (o, equivalentemente, su Hessiano) sea Lipschitz continuo en una vecindad del minimizador, junto con el uso de una búsqueda lineal que satisfaga las condiciones de Wolfe, como se establece en @Fletcher1987, Sección 3.4.
+- Su **convergencia superlineal** está garantizada bajo hipótesis estándar de suavidad, es decir, que $f$ sea dos veces continuamente diferenciable (ver @sec-funcion_CD) y que su gradiente (o, equivalentemente, su Hessiano) sea Lipschitz continuo en una vecindad del minimizador, junto con el uso de una búsqueda lineal que satisfaga las condiciones de Wolfe, como se establece en @Fletcher1987, Sección 3.4.
 
 
 #### Ejemplo ilustrativo: actualización BFGS en $\mathbb{R}^2$
@@ -828,7 +828,7 @@ $$
 \quad \text{sujeto a} \quad \ell \le x \le u. 
 $${#eq-teo_con}
 
-Aquí, $f : \mathbb{R}^n \to \mathbb{R}$ es continuamente diferenciable, y el conjunto factible
+Aquí, $f : \mathbb{R}^n \to \mathbb{R}$ es continuamente diferenciable (ver @sec-funcion_CD), y el conjunto factible
 
 $$
 \Omega = \{x \in \mathbb{R}^n : \ell \le x \le u\}
@@ -900,7 +900,7 @@ El **resultado fundamental de convergencia global**, @Byrd1995, establece que, b
 
 4. **Aplicación del lema de Zoutendijk en problemas restringidos.** 
 
-   El lema de Zoutendijk original (@Zoutendijk1970, p. 40) se formuló para problemas sin restricciones, pero admite una extensión natural al caso de minimización sobre un conjunto convexo cerrado $\Omega \subset \mathbb{R}^n$ (@NocedalWright2006, Lema 12.1, p. 333). Bajo las hipótesis del teorema, en particular, que $f$ es continuamente diferenciable con gradiente Lipschitz en un conjunto de nivel compacto, y que los pasos $\alpha_k$ satisfacen las condiciones de Wolfe, la sucesión generada por un método de descenso proyectado verifica
+   El lema de Zoutendijk original (@Zoutendijk1970, p. 40) se formuló para problemas sin restricciones, pero admite una extensión natural al caso de minimización sobre un conjunto convexo cerrado $\Omega \subset \mathbb{R}^n$ (@NocedalWright2006, Lema 12.1, p. 333). Bajo las hipótesis del teorema, en particular, que $f$ es continuamente diferenciable (ver @sec-funcion_CD) con gradiente Lipschitz en un conjunto de nivel compacto, y que los pasos $\alpha_k$ satisfacen las condiciones de Wolfe, la sucesión generada por un método de descenso proyectado verifica
    $$
    \sum_{k=0}^\infty \frac{(\nabla f(x_k)^\top d_k)^2}{\|d_k\|^2} < \infty. 
    $$ {#eq-wol}
@@ -1276,7 +1276,7 @@ $$
 
 El escalado mediante $\gamma_k$ constituye un componente esencial del desempeño del método L-BFGS-B. Además de ser computacionalmente económico, estabiliza la recursión, mejora el acondicionamiento de la dirección de búsqueda y permite reproducir el comportamiento esperado en problemas donde el Hessiano $\nabla^2 f(x)$ es mal condicionado, es decir, cuando su número de condición $\kappa(\nabla^2 f(x))$ es grande. Esta estrategia fue propuesta originalmente por @LiuNocedal1989, seccion 4, para L-BFGS y posteriormente adoptada en L-BFGS-B. Su efectividad se sustenta teóricamente en su capacidad para aproximar la magnitud del inverso del Hessiano, como se presenta en @NocedalWright2006, Sección 7.2.
 
-### Estimación empírica del número de iteraciones y dependencia del parámetro de memoria $m$
+### Estimación empírica del número de iteraciones y dependencia del parámetro de memoria $m$ {#sec-memoria}
 
 La variante L-BFGS-B incorpora un parámetro estructural crucial: el **tamaño de memoria limitada**, denotado $m$, el cual representa el número de pares de curvatura $(s_i, y_i)$ retenidos durante el proceso iterativo. Este parámetro determina la dimensión efectiva del subespacio en el que se aproxima el inverso del Hessiano y, por tanto, modula el equilibrio entre costo computacional y rapidez de convergencia (ver @sec-funcion_CD), tal como se analiza en @LiuNocedal1989, Sección 4.
 
@@ -1483,7 +1483,7 @@ La sensibilidad del algoritmo al punto inicial depende de la estructura de $f$. 
 
 Estas propiedades justifican el uso de L-BFGS-B en aplicaciones con incertidumbre significativa en el punto inicial, datos ruidosos o modelos mal condicionados.
 
-### Comparación numérica con otros métodos: gradiente descendente, Newton inexacto y BFGS sin restricciones
+### Comparación numérica con otros métodos: gradiente descendente, Newton inexacto y BFGS sin restricciones {#sec-comparacion}
 
 Con el objetivo de evaluar la eficacia del algoritmo **L-BFGS-B** en problemas con restricciones tipo caja consideramos el siguiente problema canónico
 

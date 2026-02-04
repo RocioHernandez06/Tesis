@@ -280,7 +280,7 @@
 \title{Inundaciones}
 \author{Yulissa del Rocío Hernández Vázquez \and Asesor: Dr.~Yofre
 Hernán García Gómez}
-\date{2026-02-01}
+\date{2026-02-03}
 \begin{document}
 \begin{titlepage}
 \hspace{-1.7cm} %Este comando es para mandar a la izquierda ;)
@@ -374,9 +374,7 @@ la demanda o en el tiempo de entrega.
 \textbf{Palabras clave}: logística humanitaria, ubicación--inventario,
 EOQ robusto, incertidumbre parametrizada, MINLP, L-BFGS-B, inundaciones.
 
-\bookmarksetup{startatroot}
-
-\chapter{Abstract}\label{abstract}
+\section{Abstract}\label{abstract}
 
 Humanitarian logistics in disaster contexts demands robust strategies
 that account for operational uncertainty. This work proposes a robust
@@ -1142,8 +1140,8 @@ Bertsimas y Thiele (2006) y Shapiro, Dentcheva, y Ruszczyński (2021).
 \begin{quote}
 \textbf{Proposición (No linealidad estricta).}\\
 La función \(Z(Q)\) definida en Sección~\ref{sec-ZEOQ} es diferenciable
-en \((0,\infty)\), pero no es convexa globalmente
-(Sección~\ref{sec-funcion_CD}) si \(\beta>0\) y \(\sigma_L>0\).\\
+en \((0,\infty)\), pero no es convexa globalmente (ver
+Sección~\ref{sec-funcion_CD}) si \(\beta>0\) y \(\sigma_L>0\).\\
 Si \(\sigma_L\) es constante: \[
 \frac{d^2 Z}{dQ^2}=\frac{2D(S+\beta C)}{Q^3}>0.
 \] Pero si \(\sigma_L=\sigma\sqrt{L(Q)}\) y \(L(Q)\) es no lineal,
@@ -1176,7 +1174,7 @@ bajo restricciones de asignación deterministas. Sin embargo:
 \end{itemize}
 
 Modelar \(d_j\) mediante \(\mathbb{E}[d_j]\) genera soluciones frágiles
-frente a escenarios adversos (Snyder (2006)).
+frente a escenarios adversos Snyder (2006).
 
 \subsubsection{Ejemplo ilustrativo: EOQ clásico vs.~EOQ extendido con
 stock de seguridad y
@@ -1283,7 +1281,7 @@ de las variables binarias.
 Como argumentan Wolsey (1998), Grossmann (2002) y Daskin (2013), esta
 pérdida de convexidad impide la aplicación directa de técnicas clásicas
 de optimización convexa, tales como las condiciones de
-Karush--Kuhn--Tucker(KKT Sección~\ref{sec-kkt}) para garantizar
+Karush--Kuhn--Tucker (KKT Sección~\ref{sec-kkt}) para garantizar
 optimalidad global, y exige el uso de métodos especializados para
 problemas mixtos entero-continuos.
 
@@ -1362,7 +1360,7 @@ garantizar optimalidad global mediante condiciones de optimalidad
 basadas en el análisis convexo clásico}.
 
 \subsubsection{Función objetivo y acoplamiento
-estructural}\label{funciuxf3n-objetivo-y-acoplamiento-estructural}
+estructural}\label{sec-acoplamiento}
 
 La función objetivo del modelo de ubicación de almacenes e inventario
 humanitario se define como:
@@ -3635,7 +3633,7 @@ optimización no lineal y estocástica de alta dimensionalidad.
 
 \subsection{\texorpdfstring{Comparación cuantitativa con EOQ clásico:
 efecto descendente en
-\(Q^*\)}{Comparación cuantitativa con EOQ clásico: efecto descendente en Q\^{}*}}\label{comparaciuxf3n-cuantitativa-con-eoq-cluxe1sico-efecto-descendente-en-q}
+\(Q^*\)}{Comparación cuantitativa con EOQ clásico: efecto descendente en Q\^{}*}}\label{sec-cuantitativa}
 
 Una crítica frecuente a la aplicación directa del modelo EOQ en
 contextos de alta incertidumbre, como la logística humanitaria es que,
@@ -5336,8 +5334,8 @@ de Nocedal y Wright (2006), analizar de forma unificada sus propiedades
 de convergencia, estabilidad y eficiencia computacional.
 
 Sea \(f : \mathbb{R}^n \to \mathbb{R}\) una función dos veces
-continuamente diferenciable. En cada iteración \(k\), se dispone de los
-incrementos
+continuamente diferenciable (ver Sección~\ref{sec-funcion_CD}). En cada
+iteración \(k\), se dispone de los incrementos
 
 \[
 s_k := x_{k+1} - x_k, \quad y_k := \nabla f(x_{k+1}) - \nabla f(x_k),
@@ -5444,10 +5442,11 @@ El método BFGS se distingue por:
 \item
   Su \textbf{convergencia superlineal} está garantizada bajo hipótesis
   estándar de suavidad, es decir, que \(f\) sea dos veces continuamente
-  diferenciable y que su gradiente (o, equivalentemente, su Hessiano)
-  sea Lipschitz continuo en una vecindad del minimizador, junto con el
-  uso de una búsqueda lineal que satisfaga las condiciones de Wolfe,
-  como se establece en Fletcher (1987), Sección 3.4.
+  diferenciable (ver Sección~\ref{sec-funcion_CD}) y que su gradiente
+  (o, equivalentemente, su Hessiano) sea Lipschitz continuo en una
+  vecindad del minimizador, junto con el uso de una búsqueda lineal que
+  satisfaga las condiciones de Wolfe, como se establece en Fletcher
+  (1987), Sección 3.4.
 \end{itemize}
 
 \subsubsection{\texorpdfstring{Ejemplo ilustrativo: actualización BFGS
@@ -6136,8 +6135,8 @@ optimización no lineal con restricciones tipo caja de la forma
 \quad \text{sujeto a} \quad \ell \le x \le u. 
 }\end{equation}
 
-Aquí, \(f : \mathbb{R}^n \to \mathbb{R}\) es continuamente
-diferenciable, y el conjunto factible
+Aquí, \(f : \mathbb{R}^n \to \mathbb{R}\) es continuamente diferenciable
+(ver Sección~\ref{sec-funcion_CD}), y el conjunto factible
 
 \[
 \Omega = \{x \in \mathbb{R}^n : \ell \le x \le u\}
@@ -6236,10 +6235,11 @@ demostración}\label{bosquejo-de-la-demostraciuxf3n}
   caso de minimización sobre un conjunto convexo cerrado
   \(\Omega \subset \mathbb{R}^n\) (Nocedal y Wright (2006), Lema 12.1,
   p.~333). Bajo las hipótesis del teorema, en particular, que \(f\) es
-  continuamente diferenciable con gradiente Lipschitz en un conjunto de
-  nivel compacto, y que los pasos \(\alpha_k\) satisfacen las
-  condiciones de Wolfe, la sucesión generada por un método de descenso
-  proyectado verifica \begin{equation}\phantomsection\label{eq-wol}{
+  continuamente diferenciable (ver Sección~\ref{sec-funcion_CD}) con
+  gradiente Lipschitz en un conjunto de nivel compacto, y que los pasos
+  \(\alpha_k\) satisfacen las condiciones de Wolfe, la sucesión generada
+  por un método de descenso proyectado verifica
+  \begin{equation}\phantomsection\label{eq-wol}{
   \sum_{k=0}^\infty \frac{(\nabla f(x_k)^\top d_k)^2}{\|d_k\|^2} < \infty. 
   }\end{equation}
 
@@ -6753,7 +6753,7 @@ magnitud del inverso del Hessiano, como se presenta en Nocedal y Wright
 
 \subsection{\texorpdfstring{Estimación empírica del número de
 iteraciones y dependencia del parámetro de memoria
-\(m\)}{Estimación empírica del número de iteraciones y dependencia del parámetro de memoria m}}\label{estimaciuxf3n-empuxedrica-del-nuxfamero-de-iteraciones-y-dependencia-del-paruxe1metro-de-memoria-m}
+\(m\)}{Estimación empírica del número de iteraciones y dependencia del parámetro de memoria m}}\label{sec-memoria}
 
 La variante L-BFGS-B incorpora un parámetro estructural crucial: el
 \textbf{tamaño de memoria limitada}, denotado \(m\), el cual representa
@@ -7146,7 +7146,7 @@ modelos mal condicionados.
 
 \subsection{Comparación numérica con otros métodos: gradiente
 descendente, Newton inexacto y BFGS sin
-restricciones}\label{comparaciuxf3n-numuxe9rica-con-otros-muxe9todos-gradiente-descendente-newton-inexacto-y-bfgs-sin-restricciones}
+restricciones}\label{sec-comparacion}
 
 Con el objetivo de evaluar la eficacia del algoritmo \textbf{L-BFGS-B}
 en problemas con restricciones tipo caja consideramos el siguiente
@@ -8479,8 +8479,8 @@ donde:
   incertidumbre y variabilidad en las necesidades.
 \item
   \(z_{\alpha}\): Valor crítico de la distribución normal que define el
-  nivel de confianza deseado (por ejemplo, para un 95 \% de confianza se
-  utiliza \(z_{0.95} \approx 1.64\)).
+  nivel de confianza deseado (por ejemplo, para un \(95 \%\) de
+  confianza se utiliza \(z_{0.95} \approx 1.64\)).
 \end{itemize}
 
 Este enfoque permite diseñar inventarios que no solo atiendan la demanda
@@ -8666,7 +8666,16 @@ En particular, se consideraron:
 
 }
 
-\caption{Mapa de Veracruz}
+\caption{Red logística optimizada para el estado de Veracruz bajo el
+Escenario 1 (único almacén). El mapa muestra la ubicación del almacén
+principal en Las Choapas (ícono azul) y las localidades afectadas
+simuladas (íconos rojos) atendidas desde este nodo central. Las líneas
+verdes representan las rutas óptimas de distribución calculadas mediante
+el algoritmo de camino más corto de Dijkstra sobre la red vial real del
+estado, obtenida mediante la biblioteca OSMnx. Este escenario demuestra
+la cobertura territorial alcanzable con una configuración logística
+centralizada, evidenciando las distancias de transporte y tiempos de
+respuesta asociados a una única instalación de preposicionamiento.}
 
 \end{figure}%
 
@@ -8790,7 +8799,16 @@ En particular, se consideraron:
 
 }
 
-\caption{Mapa de Veracruz}
+\caption{Red logística optimizada para el estado de Veracruz bajo el
+Escenario 2 (dos almacenes). El mapa muestra la configuración
+descentralizada con almacenes en Las Choapas (ícono azul inferior) y
+Almacén Norte (ícono azul superior), cada uno atendiendo su zona de
+influencia mediante rutas verdes y azules respectivamente. Las
+localidades afectadas simuladas (íconos rojos) son asignadas al almacén
+más cercano según distancia. Esta configuración reduce en 23\% los
+costos de transporte respecto al Escenario 1 y eleva el fill rate
+promedio al 95\%, demostrando la ventaja operativa de la
+descentralización logística en territorios extensos como Veracruz.}
 
 \end{figure}%
 
@@ -8799,12 +8817,12 @@ En particular, se consideraron:
 \setcounter{enumi}{2}
 \item
   \textbf{Variaciones de demanda}\\
-  Se analizaron incrementos y reducciones del 10 \% en la demanda de
+  Se analizaron incrementos y reducciones del \(10 \%\) en la demanda de
   zonas críticas, simulando cambios bruscos por intensificación o
   atenuación del desastre.
 \item
   \textbf{Requisito mínimo de servicio}\\
-  Se impuso como meta operativa alcanzar un \emph{fill rate} ≥ 90 \%
+  Se impuso como meta operativa alcanzar un \emph{fill rate} ≥ \(90 \%\)
   para todas las zonas afectadas.
 \item
   \textbf{Restricciones geográficas y de accesibilidad vial}\\
@@ -8822,15 +8840,15 @@ Los resultados muestran que:
   \textbf{Escenario 1 (un solo almacén)}: aunque se logra cubrir gran
   parte de la demanda, los tiempos de entrega y el costo de transporte
   aumentan significativamente, y el \emph{fill rate} promedio se sitúa
-  en 88 \%.
+  en \$ 88 \%\$.
 \item
   \textbf{Escenario 2 (dos almacenes)}: la descentralización logística
-  reduce un 23 \% los costos de transporte y eleva el \emph{fill rate}
-  promedio a 95 \%, cumpliendo la meta establecida.
+  reduce un \(23 \%\) los costos de transporte y eleva el \emph{fill
+  rate} promedio a \(95 \%\), cumpliendo la meta establecida.
 \item
   \textbf{Variaciones de demanda}: el modelo mantiene un \emph{fill
-  rate} superior al 90 \% para aumentos de hasta un 10 \% de la demanda,
-  aunque el costo total se incrementa proporcionalmente.
+  rate} superior al \(90 \%\) para aumentos de hasta un \(10 \%\) de la
+  demanda, aunque el costo total se incrementa proporcionalmente.
 \item
   La inclusión de restricciones geográficas mejora el realismo del
   modelo, aunque limita la asignación óptima en algunos casos.
@@ -9111,10 +9129,10 @@ se seleccionaron los siguientes almacenes:
 muestra las localidades afectadas por inundaciones, los almacenes
 estratégicos seleccionados y las rutas de conexión optimizadas entre
 ambos. Las líneas representan los caminos más cortos calculados con
-NetworkX, mientras que los íconos indican los tipos de nodos: 🔴
-localidades inundables y 🔵 almacenes activos. Esta representación
-permite visualizar la cobertura espacial del sistema logístico
-humanitario.}
+NetworkX, mientras que los íconos indican los tipos de nodos:
+localidades inundables (íconos rojos) y almacenes activos (íconos
+azules). Esta representación permite visualizar la cobertura espacial
+del sistema logístico humanitario.}
 
 \end{figure}%
 
@@ -9493,7 +9511,7 @@ activo mostró capacidad para mantener la cobertura total bajo diversas
 condiciones de estrés operativo.
 
 \subsection{Métricas de desempeño en condiciones
-estándar}\label{muxe9tricas-de-desempeuxf1o-en-condiciones-estuxe1ndar}
+estándar}\label{sec-metricas}
 
 \begin{itemize}
 \tightlist
@@ -9561,6 +9579,184 @@ resiliencia logística regional frente a desastres hidrometeorológicos,
 especialmente en el contexto del cambio climático, y permitiría replicar
 la eficiencia alcanzada en Cacahoatán en escenarios de mayor escala y
 complejidad.
+
+\bookmarksetup{startatroot}
+
+\chapter{Conclusiones}\label{conclusiones}
+
+Esta investigación ha desarrollado y validado rigurosamente un modelo de
+optimización determinista robusto para la gestión integrada de la
+ubicación de almacenes preposicionados y el control de inventario
+humanitario ante inundaciones en el sureste de México. El trabajo
+articula de manera coherente fundamentos teóricos de optimización no
+lineal, algoritmos numéricos de memoria limitada y aplicaciones
+empíricas en contextos de alta vulnerabilidad, estableciendo un marco
+metodológico reproducible para la planificación anticipada de respuestas
+a desastres. Las conclusiones que se presentan a continuación responden
+sistemáticamente a los tres objetivos específicos planteados, integrando
+las contribuciones teóricas de los Capítulos 4--5, los fundamentos
+algorítmicos del Capítulo 6 y los resultados empíricos de los Capítulos
+8--9.
+
+En relación con el \textbf{objetivo específico 1} adaptar un modelo de
+localización--inventario humanitario bajo incertidumbre parametrizada
+que extienda el modelo clásico de cantidad económica de pedido (EOQ)
+para incluir inventario de seguridad, faltantes estocásticos penalizados
+y decisiones binarias de apertura de almacenes, se concluye que la
+formulación propuesta supera rigurosamente las limitaciones
+estructurales del EOQ tradicional mediante tres innovaciones teóricas
+fundamentales. Como se demostró en la Sección~\ref{sec-extension}, la
+incorporación del inventario de seguridad parametrizado
+\(Z_\alpha \sigma_L\) y la penalización explícita por faltantes mediante
+el término \(\beta C\) transforman la función de costo total en una
+expresión no convexa y no separable:
+
+\[
+Z(Q) = \frac{D(S + \beta C)}{Q} + \frac{H}{2}Q + Z_\alpha \sigma_L H + DC,
+\]
+
+cuya estructura refleja con mayor fidelidad los riesgos operativos en
+contextos humanitarios. El análisis de las propiedades analíticas (ver
+Sección~\ref{sec-propiedades}) confirmó que, pese a la pérdida de
+convexidad global inducida por las variables binarias de apertura de
+almacenes, el subproblema continuo asociado a una configuración fija de
+infraestructura mantiene convexidad condicional, lo cual justifica
+teóricamente el enfoque de descomposición adoptado. Esta propiedad,
+formalizada en la Proposición (convexidad condicional) de la
+Sección~\ref{sec-acoplamiento}, garantiza que para cualquier vector fijo
+\(\bar{x} \in \{0,1\}^m\), el subproblema
+
+\[
+\min_{(y,s) \in X(\bar{x})} Z(\bar{x}, y, s)
+\]
+
+es un problema de programación lineal con conjunto factible poliédrico
+convexo. Además, el estudio comparativo cuantitativo (ver
+Sección~\ref{sec-cuantitativa}) evidenció que el modelo extendido
+produce políticas de inventario significativamente más robustas que el
+EOQ clásico: en el ejemplo ilustrativo con demanda estocástica, el
+tamaño óptimo de lote aumentó de \(Q_{\text{EOQ}} = 200\) a
+\(Q^* \approx 490\) unidades, reduciendo en un \(8.4\%\) el costo total
+esperado y mitigando drásticamente el riesgo de faltantes catastróficos.
+Esta adaptación teórica, fundamentada en los preliminares matemáticos
+del Capítulo 4 (convexidad, diferenciabilidad y estructura de
+conjuntos), constituye una contribución original que permite
+internalizar la incertidumbre sin recurrir a formulaciones estocásticas
+complejas, preservando así la trazabilidad analítica y la eficiencia
+computacional.
+
+Respecto al \textbf{objetivo específico 2} desarrollar un esquema de
+solución híbrido basado en optimización mixta entera no lineal (MINLP)
+que combine enumeración sobre variables binarias con el algoritmo
+L-BFGS-B para resolver eficientemente los subproblemas continuos no
+convexos, se concluye que la estrategia propuesta logra un equilibrio
+óptimo entre rigor teórico y viabilidad práctica. El Capítulo 6
+estableció las bases matemáticas para garantizar la convergencia global
+del método L-BFGS-B hacia puntos que satisfacen las condiciones de
+Karush--Kuhn--Tucker bajo restricciones tipo caja, demostrando que, bajo
+hipótesis de Lipschitz-continuidad del gradiente y compacidad del
+dominio, toda subsucesión convergente de iteraciones satisface
+\(\nabla_\Omega f(x_k) \to 0\) (Teorema 6.2,
+Sección~\ref{sec-teorema_convergencia}). Esta garantía teórica,
+complementada con el análisis de sensibilidad respecto al parámetro de
+memoria \(m\) (ver Sección~\ref{sec-memoria}), permitió configurar el
+algoritmo con \(m=10\) como valor óptimo para los problemas estudiados,
+logrando convergencia en menos de \(30\) iteraciones incluso en
+escenarios mal condicionados. La implementación computacional descrita
+en el Capítulo 7 validó empíricamente esta estrategia: al combinar la
+enumeración exhaustiva sobre las \(2^m\) configuraciones posibles de
+almacenes (factible dado el tamaño reducido de \(m\) en los casos de
+estudio) con la resolución eficiente de los subproblemas continuos
+mediante L-BFGS-B, se obtuvo una tasa de éxito del \(100\%\) en la
+convergencia para ambos escenarios analizados. Este esquema híbrido
+supera las limitaciones de métodos puramente heurísticos que no
+garantizan optimalidad y de enfoques exactos de gran escala que resultan
+computacionalmente prohibitivos, posicionándose como una alternativa
+robusta para problemas de localización--inventario con estructura mixta.
+La comparación numérica presentada en la Sección~\ref{sec-comparacion}
+demuestra que L-BFGS-B ofrece el mejor compromiso entre eficiencia
+(\(7\) iteraciones frente a \(1,183\) del gradiente descendente) y
+respeto a las restricciones físicas (a diferencia de BFGS sin
+proyección), justificando su elección como motor de optimización para
+los subproblemas continuos.
+
+En cuanto al \textbf{objetivo específico 3} verificar el desempeño del
+modelo propuesto mediante estudios de caso en regiones vulnerables a
+inundaciones en Veracruz y replicar en el estado de Chiapas, se concluye
+que la metodología desarrollada demuestra una notable adaptabilidad y
+robustez operativa en contextos geográficos y demográficos heterogéneos.
+Los resultados del Capítulo 8 para Veracruz evidenciaron que la
+descentralización logística mediante dos almacenes (Jesús Carranza y Las
+Choapas) reduce en un \(23\%\) los costos de transporte respecto a una
+configuración centralizada (\(648.31\) millones MXN vs.~\(837.54\)
+millones MXN), elevando simultáneamente el \emph{fill rate} promedio del
+\(88\%\) al \(95\%\). Por su parte, la aplicación en Cacahoatán, Chiapas
+(Capítulo 9), reveló que, pese a las limitaciones infraestructurales y
+la topografía accidentada características de la región, una
+configuración centralizada con un único almacén estratégico en Salvador
+Urbina logra cobertura del \(100\%\) de la población afectada (\(7,407\)
+habitantes) con un costo total anual optimizado de \(195.46\) millones
+MXN, aproximadamente el \(30\%\) del costo observado en Veracruz. Esta
+diferencia, atribuible a la menor escala territorial y demográfica del
+municipio chiapaneco, no compromete la eficiencia operativa, lo cual
+confirma que el modelo se adapta dinámicamente a las particularidades
+del territorio sin requerir recalibración estructural. La validación
+cruzada entre ambos escenarios demuestra que el enfoque propuesto no es
+un ejercicio teórico aislado, sino una herramienta práctica capaz de
+generar recomendaciones accionables para autoridades de protección
+civil, con implicaciones directas en la reducción de tiempos de
+respuesta y la mejora de la equidad en la distribución de recursos
+durante emergencias hidrometeorológicas. La robustez del modelo se
+verificó adicionalmente mediante pruebas de sensibilidad ante
+variaciones del \(10\%\) en la demanda, manteniendo un \emph{fill rate}
+superior al \(90\%\) en todos los escenarios analizados (ver
+Sección~\ref{sec-metricas}).
+
+En síntesis, esta investigación contribuye a la literatura de
+optimización aplicada y logística humanitaria mediante la integración
+coherente de tres elementos:
+
+\begin{enumerate}
+\def\labelenumi{(\roman{enumi})}
+\item
+  una formulación teórica rigurosa que extiende el EOQ clásico para
+  incorporar incertidumbre parametrizada sin sacrificar trazabilidad
+  analítica;
+\item
+  un esquema algorítmico híbrido con garantías de convergencia
+  teóricamente fundamentadas y eficiencia computacional validada
+  empíricamente; y
+\item
+  una verificación práctica en dos contextos mexicanos de alta
+  vulnerabilidad que demuestra la adaptabilidad y utilidad operativa del
+  modelo. Estas contribuciones no solo avanzan en el desarrollo
+  metodológico de la optimización mixta entera no lineal, sino que
+  también ofrecen un marco de trabajo replicable para la planificación
+  anticipada de respuestas a desastres en regiones con recursos
+  limitados.
+\end{enumerate}
+
+Como trabajo futuro, se propone extender el modelo actual en tres
+direcciones complementarias con fundamentación teórica sólida: primero,
+incorporar una formulación estocástica multiperiodo que considere la
+dinámica temporal de la demanda durante la fase de respuesta, superando
+así la simplificación de horizonte único adoptada en esta investigación
+mediante la integración de técnicas de programación estocástica con
+recurrencia, tal como lo plantea Shapiro, Dentcheva, y Ruszczyński
+(2021); segundo, integrar variables climáticas predictivas (como
+pronósticos de precipitación a \(72\) horas) para habilitar un sistema
+de reoptimización en tiempo real que ajuste las decisiones logísticas
+conforme evoluciona el evento hidrometeorológico,siguiendo los marcos de
+optimización robusta adaptable desarrollados por Bertsimas y Thiele
+(2006); y tercero, escalar la metodología a nivel estatal en Chiapas
+mediante una descomposición jerárquica que combine optimización a nivel
+municipal con coordinación regional, lo cual permitiría evaluar
+sinergias entre municipios y diseñar redes logísticas resilientes a
+nivel sistémico mediante técnicas de descomposición de Benders
+generalizado propuestas por Wolsey (1998). Estas extensiones no solo
+enriquecerían el modelo teórico, sino que también incrementarían su
+impacto práctico en la reducción de la vulnerabilidad territorial ante
+el cambio climático.
 
 \bookmarksetup{startatroot}
 
