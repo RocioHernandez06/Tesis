@@ -24,7 +24,6 @@ El entorno de trabajo se configuró en un equipo con sistema operativo **Windows
 
 La adopción de Python responde al interés de favorecer la **reproducibilidad y transparencia** de los resultados, principios fundamentales en la investigación científica contemporánea.  
 
----
 
 ## Estructura general del modelo computacional
 
@@ -43,7 +42,6 @@ Las etapas generales consideradas fueron:
 
 Esta organización modular ofrece una visión integral del flujo de trabajo y posibilita la reutilización de componentes en futuros proyectos de investigación aplicada.  
 
----
 
 ##  Implementación del algoritmo *L-BFGS-B*
 
@@ -53,7 +51,7 @@ El *L-BFGS-B* se caracteriza por su **eficiencia en memoria**, **capacidad para 
 
 En términos conceptuales, el algoritmo aproxima de forma iterativa el gradiente (ver la @sec-gradiente) y la matriz Hessiana del sistema, proyectando cada iteración dentro del espacio factible definido por los límites de las variables. La convergencia se alcanza cuando se satisfacen las condiciones de **Karush–Kuhn–Tucker (KKT)** @sec-kkt , que garantizan la optimalidad local.  
 
-Aunque la implementación práctica se realizó mediante la función `minimize()` del módulo `scipy.optimize`, el código fuente completo se incluye en los **Anexos** del documento, con el propósito de mantener el enfoque teórico del capítulo y conservar la legibilidad del texto principal.  
+Aunque la implementación práctica se realizó mediante la función `minimize()` del módulo `scipy.optimize`, el código fuente completo se encuentra disponible en el repositorio de GitHub de esta tesis @hernandez2026anexos, con el propósito de mantener el enfoque teórico del capítulo y conservar la legibilidad del texto principal.  
 
 De esta manera, el presente capítulo establece los fundamentos computacionales y metodológicos necesarios para el desarrollo del **modelo de optimización** que se formulará en el **Capítulo siguiente**, y que posteriormente se aplicará al caso de estudio en un municipio del estado de **Chiapas**.  
 
