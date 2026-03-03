@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Yulissa del Rocío Hernández Vázquez">
+
+<title>Modelo de Optimización para Localización de Almacenes Preposicionados e Inventario Humanitario</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="presentaciontesis_files/libs/clipboard/clipboard.min.js"></script>
+<script src="presentaciontesis_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="presentaciontesis_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="presentaciontesis_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="presentaciontesis_files/libs/quarto-html/popper.min.js"></script>
+<script src="presentaciontesis_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="presentaciontesis_files/libs/quarto-html/anchor.min.js"></script>
+<link href="presentaciontesis_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="presentaciontesis_files/libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="presentaciontesis_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="presentaciontesis_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="presentaciontesis_files/libs/bootstrap/bootstrap-4d7f0bce1131f3e5f9547cd857cfbfc8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul class="collapse">
+  <li><a href="#contenido" id="toc-contenido" class="nav-link active" data-scroll-target="#contenido">Contenido</a></li>
+  <li><a href="#introducción" id="toc-introducción" class="nav-link" data-scroll-target="#introducción">Introducción</a></li>
+  <li><a href="#objetivos" id="toc-objetivos" class="nav-link" data-scroll-target="#objetivos">Objetivos</a></li>
+  <li><a href="#marco-teórico-problema-de-localización" id="toc-marco-teórico-problema-de-localización" class="nav-link" data-scroll-target="#marco-teórico-problema-de-localización">Marco Teórico: Problema de Localización</a></li>
+  <li><a href="#restricciones-del-modelo" id="toc-restricciones-del-modelo" class="nav-link" data-scroll-target="#restricciones-del-modelo">Restricciones del Modelo</a></li>
+  <li><a href="#modelo-de-inventarios-eoq-con-demanda-estocástica" id="toc-modelo-de-inventarios-eoq-con-demanda-estocástica" class="nav-link" data-scroll-target="#modelo-de-inventarios-eoq-con-demanda-estocástica">Modelo de Inventarios EOQ con demanda Estocástica</a></li>
+  <li><a href="#inventario-de-seguridad-y-punto-de-reorden" id="toc-inventario-de-seguridad-y-punto-de-reorden" class="nav-link" data-scroll-target="#inventario-de-seguridad-y-punto-de-reorden">Inventario de Seguridad y Punto de Reorden</a></li>
+  <li><a href="#función-de-pérdida-normal" id="toc-función-de-pérdida-normal" class="nav-link" data-scroll-target="#función-de-pérdida-normal">Función de Pérdida Normal</a></li>
+  <li><a href="#función-objetivo-integrada" id="toc-función-objetivo-integrada" class="nav-link" data-scroll-target="#función-objetivo-integrada">Función Objetivo Integrada</a></li>
+  <li><a href="#componentes-del-costo-de-inventario" id="toc-componentes-del-costo-de-inventario" class="nav-link" data-scroll-target="#componentes-del-costo-de-inventario">Componentes del Costo de Inventario</a></li>
+  <li><a href="#peso-posicional-w_i" id="toc-peso-posicional-w_i" class="nav-link" data-scroll-target="#peso-posicional-w_i">Peso Posicional (<span class="math inline">\(w_i\)</span>)</a></li>
+  <li><a href="#métricas-de-desempeño" id="toc-métricas-de-desempeño" class="nav-link" data-scroll-target="#métricas-de-desempeño">Métricas de Desempeño</a></li>
+  <li><a href="#por-qué-l-bfgs-b-para-este-problema" id="toc-por-qué-l-bfgs-b-para-este-problema" class="nav-link" data-scroll-target="#por-qué-l-bfgs-b-para-este-problema">¿Por qué L-BFGS-B para este problema?</a></li>
+  <li><a href="#método-de-solución-algoritmo-l-bfgs-b" id="toc-método-de-solución-algoritmo-l-bfgs-b" class="nav-link" data-scroll-target="#método-de-solución-algoritmo-l-bfgs-b">Método de Solución: Algoritmo L-BFGS-B</a></li>
+  <li><a href="#fundamentos-cuasi-newton" id="toc-fundamentos-cuasi-newton" class="nav-link" data-scroll-target="#fundamentos-cuasi-newton">Fundamentos Cuasi-Newton</a></li>
+  <li><a href="#restricciones-tipo-caja-y-proyección-ortogonal" id="toc-restricciones-tipo-caja-y-proyección-ortogonal" class="nav-link" data-scroll-target="#restricciones-tipo-caja-y-proyección-ortogonal">Restricciones Tipo Caja y Proyección Ortogonal</a></li>
+  <li><a href="#condiciones-kkt-para-problemas-con-cotas" id="toc-condiciones-kkt-para-problemas-con-cotas" class="nav-link" data-scroll-target="#condiciones-kkt-para-problemas-con-cotas">Condiciones KKT para Problemas con Cotas</a></li>
+  <li><a href="#teorema-de-convergencia-global" id="toc-teorema-de-convergencia-global" class="nav-link" data-scroll-target="#teorema-de-convergencia-global">Teorema de Convergencia Global</a></li>
+  <li><a href="#implementación-computacional-entorno-y-herramientas" id="toc-implementación-computacional-entorno-y-herramientas" class="nav-link" data-scroll-target="#implementación-computacional-entorno-y-herramientas">Implementación Computacional: Entorno y Herramientas</a></li>
+  <li><a href="#implementación-computacional-estructura-y-parámetros" id="toc-implementación-computacional-estructura-y-parámetros" class="nav-link" data-scroll-target="#implementación-computacional-estructura-y-parámetros">Implementación Computacional: Estructura y Parámetros</a></li>
+  <li><a href="#aplicación-en-chiapas" id="toc-aplicación-en-chiapas" class="nav-link" data-scroll-target="#aplicación-en-chiapas">Aplicación en Chiapas</a></li>
+  <li><a href="#grupo-de-edades-y-productos-específicos" id="toc-grupo-de-edades-y-productos-específicos" class="nav-link" data-scroll-target="#grupo-de-edades-y-productos-específicos">Grupo de edades y productos específicos</a></li>
+  <li><a href="#cálculo-del-peso-posicional-caso-chiapas" id="toc-cálculo-del-peso-posicional-caso-chiapas" class="nav-link" data-scroll-target="#cálculo-del-peso-posicional-caso-chiapas">Cálculo del Peso Posicional — Caso Chiapas</a></li>
+  <li><a href="#escenarios-evaluados-cacahoatán" id="toc-escenarios-evaluados-cacahoatán" class="nav-link" data-scroll-target="#escenarios-evaluados-cacahoatán">Escenarios Evaluados — Cacahoatán</a></li>
+  <li><a href="#continuación-escenarios-evaluados-cacahoatán" id="toc-continuación-escenarios-evaluados-cacahoatán" class="nav-link" data-scroll-target="#continuación-escenarios-evaluados-cacahoatán">Continuación Escenarios Evaluados — Cacahoatán</a></li>
+  <li><a href="#análisis-de-sensibilidad" id="toc-análisis-de-sensibilidad" class="nav-link" data-scroll-target="#análisis-de-sensibilidad">Análisis de Sensibilidad</a></li>
+  <li><a href="#conclusiones" id="toc-conclusiones" class="nav-link" data-scroll-target="#conclusiones">Conclusiones</a></li>
+  <li><a href="#recomendaciones-para-cacahoatán" id="toc-recomendaciones-para-cacahoatán" class="nav-link" data-scroll-target="#recomendaciones-para-cacahoatán">Recomendaciones para Cacahoatán</a></li>
+  <li><a href="#referencias" id="toc-referencias" class="nav-link" data-scroll-target="#referencias">Referencias</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="presentaciontesis.pdf"><i class="bi bi-file-pdf"></i>Beamer</a></li></ul></div></nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Modelo de Optimización para Localización de Almacenes Preposicionados e Inventario Humanitario</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Yulissa del Rocío Hernández Vázquez </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="contenido" class="level2">
+<h2 class="anchored" data-anchor-id="contenido">Contenido</h2>
+<ol type="1">
+<li>Introducción</li>
+<li>Marco Teórico: Problema de Localización</li>
+<li>Modelo de Inventarios EOQ Estocástico</li>
+<li>Función Objetivo Integrada</li>
+<li>Métricas de Desempeño</li>
+<li>Aplicación en Chiapas</li>
+<li>Escenarios Evaluados</li>
+<li>Conclusiones</li>
+<li>Referencias</li>
+</ol>
+</section>
+<section id="introducción" class="level2">
+<h2 class="anchored" data-anchor-id="introducción">Introducción</h2>
+<div class="columns">
+<div class="column center" style="width:60%;">
+<p>La alta recurrencia de inundaciones y deslizamientos en afecta comunidades vulnerables. Este estudio busca optimizar la respuesta humanitaria mediante la planificación previa, la ubicación estratégica de almacenes y la gestión eficiente de recursos.</p>
+<p><img src="puente.png" class="img-fluid" style="width:55.0%"></p>
+</div><div class="column center" style="width:40%;">
+<p><img src="inundacion.png" class="img-fluid" style="width:100.0%"> <img src="rio.png" class="img-fluid" style="width:100.0%"></p>
+</div>
+</div>
+</section>
+<section id="objetivos" class="level2">
+<h2 class="anchored" data-anchor-id="objetivos">Objetivos</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p></p>
+<p>Modelo integrado de ubicación de almacenes + inventario humanitario para zonas inundables en el sureste de México.</p>
+</div><div class="column" style="width:45%;">
+<p><img src="chiapas_almacen.png" class="img-fluid" style="width:80.0%"></p>
+</div>
+</div>
+<p></p>
+</section>
+<section id="marco-teórico-problema-de-localización" class="level2">
+<h2 class="anchored" data-anchor-id="marco-teórico-problema-de-localización">Marco Teórico: Problema de Localización</h2>
+<p><strong>Conjuntos:</strong></p>
+<ul>
+<li><span class="math inline">\(\mathcal{I}\)</span>: Almacenes candidatos</li>
+<li><span class="math inline">\(\mathcal{J}\)</span>: Localidades demandantes</li>
+<li><span class="math inline">\(\mathcal{P}\)</span>: Productos humanitarios</li>
+</ul>
+<p><strong>Variables:</strong></p>
+<ul>
+<li><span class="math inline">\(x_i \in \{0,1\}\)</span>: ¿Abrir almacén en <span class="math inline">\(i\)</span>?</li>
+<li><span class="math inline">\(y_{ij} \geq 0\)</span>: Flujo <span class="math inline">\(i \to j\)</span></li>
+</ul>
+<p><strong>Parámetros clave:</strong></p>
+<ul>
+<li><span class="math inline">\(w_i\)</span>: Peso posicional (aptitud logística)</li>
+<li><span class="math inline">\(c_{ij}\)</span>: Costo unitario de transporte</li>
+<li><span class="math inline">\(f_i\)</span>: Costo fijo de apertura</li>
+<li><span class="math inline">\(d_j\)</span>: Demanda esperada en <span class="math inline">\(j\)</span></li>
+</ul>
+</section>
+<section id="restricciones-del-modelo" class="level2">
+<h2 class="anchored" data-anchor-id="restricciones-del-modelo">Restricciones del Modelo</h2>
+<p><strong>1. Balance de Inventario:</strong> <span class="math display">\[\sum_{j} x_{ij} \leq I_i \quad \forall i\]</span></p>
+<p><strong>2. Cobertura de Demanda:</strong> <span class="math display">\[\sum_{i} x_{ij} + z_j = s_j \quad \forall j\]</span></p>
+<p><strong>3. Activación Condicional (Big-M):</strong> <span class="math display">\[x_{ij} \leq M \cdot y_i \quad \forall i, j\]</span></p>
+<p><strong>4. Capacidad Máxima:</strong> <span class="math display">\[I_i \leq C_i \cdot y_i \quad \forall i\]</span></p>
+<p> <span class="math inline">\(M\)</span> es una constante suficientemente grande.</p>
+</section>
+<section id="modelo-de-inventarios-eoq-con-demanda-estocástica" class="level2">
+<h2 class="anchored" data-anchor-id="modelo-de-inventarios-eoq-con-demanda-estocástica">Modelo de Inventarios EOQ con demanda Estocástica</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Cantidad Económica de Pedido:</strong> <span class="math display">\[Q^* = \sqrt{\frac{2DS}{H}}\]</span></p>
+<p><strong>Componentes:</strong></p>
+<ul>
+<li><span class="math inline">\(D\)</span>: Demanda anual del producto</li>
+<li><span class="math inline">\(S\)</span>: Costo de ordenar por pedido</li>
+<li><span class="math inline">\(H\)</span>: Costo de mantener inventario</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><img src="ayuda.png" class="img-fluid" style="width:85.0%"></p>
+</div>
+</div>
+<p><strong>Adaptación para Contexto Humanitario</strong></p>
+<ul>
+<li><strong>Demanda estocástica</strong> por incertidumbre en afectación</li>
+<li><strong>Horizonte temporal</strong> ajustado a emergencias</li>
+<li><strong>Múltiples productos</strong> con características diferentes</li>
+</ul>
+</section>
+<section id="inventario-de-seguridad-y-punto-de-reorden" class="level2">
+<h2 class="anchored" data-anchor-id="inventario-de-seguridad-y-punto-de-reorden">Inventario de Seguridad y Punto de Reorden</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Inventario de Seguridad:</strong> <span class="math display">\[SS = Z_{\alpha} \cdot \sigma_d \cdot \sqrt{L}\]</span></p>
+<p><strong>Punto de Reorden:</strong> <span class="math display">\[R = d \cdot L + SS\]</span></p>
+</div><div class="column" style="width:50%;">
+<p><img src="ayu.png" class="img-fluid" style="width:85.0%"></p>
+</div>
+</div>
+<p><strong>donde:</strong></p>
+<ul>
+<li><span class="math inline">\(Z_{\alpha}\)</span>: Valor Z para nivel de servicio <span class="math inline">\(\alpha\)</span> (95%)</li>
+<li><span class="math inline">\(\sigma_d\)</span>: Desviación estándar de demanda diaria</li>
+<li><span class="math inline">\(L\)</span>: Tiempo de entrega en días</li>
+<li><span class="math inline">\(d\)</span>: Demanda diaria promedio</li>
+</ul>
+</section>
+<section id="función-de-pérdida-normal" class="level2">
+<h2 class="anchored" data-anchor-id="función-de-pérdida-normal">Función de Pérdida Normal</h2>
+<p>Para estimar el riesgo de escasez, usamos la función de pérdida asociada a la distribución normal:</p>
+<div class="columns">
+<div class="column" style="width:40%;">
+<p><span class="math display">\[E[Z] = \phi(Z) - Z(1 - \Phi(Z))\]</span></p>
+</div><div class="column" style="width:60%;">
+<p><img src="funcion_perdida.png" class="img-fluid" style="width:100.0%"></p>
+</div>
+</div>
+<p><strong>Aplicación en Fill Rate:</strong></p>
+<ul>
+<li><strong>Fill Rate</strong> proporción de demanda satisfecha</li>
+<li><strong>Relación directa</strong> con nivel de servicio</li>
+<li><strong>Base para cálculo</strong> de costos por escasez</li>
+</ul>
+</section>
+<section id="función-objetivo-integrada" class="level2">
+<h2 class="anchored" data-anchor-id="función-objetivo-integrada">Función Objetivo Integrada</h2>
+<p><strong>Minimización de Costos Totales:</strong></p>
+<p><span class="math display">\[
+\min Z = \sum_{i \in I} f_i Y_i + \sum_{i \in I} \sum_{j \in J} w_i c_{ij} Y_{ij} + \sum_{i \in I} \sum_{p \in P} TC_{ip}
+\]</span></p>
+<p><strong>Componentes:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 40%">
+<col style="width: 59%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Término</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\sum f_i Y_i\)</span></td>
+<td>Costo fijo de apertura de almacenes</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\sum w_i c_{ij} Y_{ij}\)</span></td>
+<td>Costo de transporte ponderado por aptitud logística</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\sum TC_{ip}\)</span></td>
+<td>Costo total de inventario por producto</td>
+</tr>
+</tbody>
+</table>
+<p> Balancear inversión en infraestructura, operación logística y nivel de servicio.</p>
+</section>
+<section id="componentes-del-costo-de-inventario" class="level2">
+<h2 class="anchored" data-anchor-id="componentes-del-costo-de-inventario">Componentes del Costo de Inventario</h2>
+<p><span class="math display">\[
+TC_{ip} =
+{\color{blue}\frac{C^{op}_i D^p_j}{Q^p_{ij}} +
+C^{sp}_i \left(\frac{Q^p_{ij}}{2} + SS\right) +
+C^p_i D^p_j} {\color{red}+
+\frac{D^p_j}{Q^p_{ij}} (C^f_i + \sigma_d E[Z] B)}
+\]</span></p>
+<ul>
+<li><span class="math inline">\({\textcolor{blue}{\textbf{Costo de pedido o preparación}}}\)</span>: se reduce al aumentar la cantidad pedida.<br>
+</li>
+<li><span class="math inline">\({\textcolor{blue}{\textbf{Costo del mantenimiento o almacenamiento}}}\)</span>: considerando el inventario promedio y la seguridad <span class="math inline">\(SS\)</span>.<br>
+</li>
+<li><span class="math inline">\({\textcolor{blue}{\textbf{Costo de adquisición}}}\)</span>: asociado a la demanda esperada <span class="math inline">\(D^p_j\)</span> del producto <span class="math inline">\(p\)</span>.<br>
+</li>
+<li><span class="math inline">\({\textcolor{red}{\textbf{Costo esperado de faltante}}}\)</span>: incorpora la variabilidad de la demanda <span class="math inline">\(\sigma_d\)</span> y el costo unitario de escasez <span class="math inline">\(B\)</span>.</li>
+</ul>
+</section>
+<section id="peso-posicional-w_i" class="level2">
+<h2 class="anchored" data-anchor-id="peso-posicional-w_i">Peso Posicional (<span class="math inline">\(w_i\)</span>)</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Multicriterio para Selección</strong></p>
+<p>Componentes del Peso Posicional <span class="math inline">\(w_i\)</span>:</p>
+<ul>
+<li><strong>Accesibilidad por carretera</strong></li>
+<li><strong>Existencia de servicios básicos</strong></li>
+<li><strong>Infraestructura disponible</strong></li>
+<li><strong>Población</strong></li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><img src="peso.png" class="img-fluid" style="width:85.0%"></p>
+</div>
+</div>
+<p><strong>Objetivo:</strong></p>
+<p>Priorizar localidades con <strong>mayor capacidad logística</strong> y <strong>menor vulnerabilidad estructural</strong></p>
+</section>
+<section id="métricas-de-desempeño" class="level2">
+<h2 class="anchored" data-anchor-id="métricas-de-desempeño">Métricas de Desempeño</h2>
+<p><strong>Fill Rate del Sistema:</strong> <span class="math display">\[FR_{sistema} = \frac{\sum_{i \in I} \sum_{p \in P} D_{ip} \cdot FR_{ip}}{\sum_{i \in I} \sum_{p \in P} D_{ip}}\text{,}\]</span></p>
+<p><strong>Costo Total por Persona Atendida:</strong> <span class="math display">\[Costo_{pe} = \frac{Costo_{t}}{Poblacion_{a}}\text{,}\]</span></p>
+<p><strong>Tiempo Promedio de Respuesta:</strong> <span class="math display">\[T_{respuesta} = \frac{\sum_{i \in I} \sum_{j \in J} t_{ij} \cdot Y_{ij}}{\sum_{i \in I} \sum_{j \in J} Y_{ij}}\text{,}\]</span></p>
+<p>donde:</p>
+<ul>
+<li><span class="math inline">\(t_{ij}\)</span> : tiempo de transporte (horas) desde el almacén <span class="math inline">\(𝑖\)</span> hasta la zona afectada <span class="math inline">\(𝑗\)</span>.</li>
+</ul>
+</section>
+<section id="por-qué-l-bfgs-b-para-este-problema" class="level2">
+<h2 class="anchored" data-anchor-id="por-qué-l-bfgs-b-para-este-problema">¿Por qué L-BFGS-B para este problema?</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+
+</div><div class="column" style="width:50%;">
+
+</div>
+</div>
+</section>
+<section id="método-de-solución-algoritmo-l-bfgs-b" class="level2">
+<h2 class="anchored" data-anchor-id="método-de-solución-algoritmo-l-bfgs-b">Método de Solución: Algoritmo L-BFGS-B</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+
+</div><div class="column" style="width:45%;">
+<p></p>
+</div>
+</div>
+</section>
+<section id="fundamentos-cuasi-newton" class="level2">
+<h2 class="anchored" data-anchor-id="fundamentos-cuasi-newton">Fundamentos Cuasi-Newton</h2>
+<p> Aproximar el Hessiano sin cálculo explícito</p>
+<p> <span class="math display">\[B_{k+1} s_k = y_k\]</span></p>
+<p>donde <span class="math inline">\(s_k = x_{k+1} - x_k\)</span>, <span class="math inline">\(y_k = \nabla f(x_{k+1}) - \nabla f(x_k)\)</span></p>
+<p> <span class="math display">\[H_{k+1} = (I - \rho_k s_k y_k^\top) H_k (I - \rho_k y_k s_k^\top) + \rho_k s_k s_k^\top\]</span> <span class="math display">\[\rho_k = (y_k^\top s_k)^{-1}\]</span></p>
+
+<p> <span class="math inline">\(y_k^\top s_k &gt; 0\)</span> (garantizada por Wolfe)</p>
+</section>
+<section id="restricciones-tipo-caja-y-proyección-ortogonal" class="level2">
+<h2 class="anchored" data-anchor-id="restricciones-tipo-caja-y-proyección-ortogonal">Restricciones Tipo Caja y Proyección Ortogonal</h2>
+<div class="columns">
+<div class="column" style="width:45%;">
+<p> <span class="math display">\[\Omega = \{x \in \mathbb{R}^n \mid \ell_i \leq x_i \leq u_i\}\]</span></p>
+
+<p> <span class="math display">\[P_\Omega(z) = \arg\min_{x \in \Omega} \frac{1}{2}\|x - z\|^2\]</span></p>
+</div><div class="column" style="width:45%;">
+<p> <span class="math display">\[[P_\Omega(z)]_i = \min\{u_i, \max\{\ell_i, z_i\}\}\]</span></p>
+
+<p> Proyección simple y eficiente (<span class="math inline">\(O(n)\)</span>)</p>
+</div>
+</div>
+</section>
+<section id="condiciones-kkt-para-problemas-con-cotas" class="level2">
+<h2 class="anchored" data-anchor-id="condiciones-kkt-para-problemas-con-cotas">Condiciones KKT para Problemas con Cotas</h2>
+<p></p>
+<p> El gradiente debe apuntar del dominio factible en las fronteras.</p>
+<p></p>
+<p><span class="math display">\[\nabla_\Omega f(x^*) := P_\Omega(x^* - \nabla f(x^*)) - x^* = 0\]</span></p>
+<p></p>
+<p>El algoritmo se detiene cuando: <span class="math display">\[\|\nabla_\Omega f(x_k)\| \leq \varepsilon\]</span></p>
+</section>
+<section id="teorema-de-convergencia-global" class="level2">
+<h2 class="anchored" data-anchor-id="teorema-de-convergencia-global">Teorema de Convergencia Global</h2>
+<p><strong>Hipótesis (Byrd et al., 1995):</strong></p>
+<p><strong>Garantía teórica:</strong> El algoritmo no diverge y encuentra puntos estacionarios factibles.</p>
+<p><strong>Resultado (Teorema 6.2):</strong> <span class="math display">\[\liminf_{k \to \infty} \|\nabla_\Omega f(x_k)\| = 0\]</span></p>
+<p><strong>Interpretación:</strong> Toda subsucesión convergente satisface las condiciones <strong>KKT</strong>.</p>
+<p> Valida que la solución numérica obtenida es óptima bajo restricciones de caja.</p>
+</section>
+<section id="implementación-computacional-entorno-y-herramientas" class="level2">
+<h2 class="anchored" data-anchor-id="implementación-computacional-entorno-y-herramientas">Implementación Computacional: Entorno y Herramientas</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+
+
+</div><div class="column" style="width:50%;">
+
+
+</div>
+</div>
+</section>
+<section id="implementación-computacional-estructura-y-parámetros" class="level2">
+<h2 class="anchored" data-anchor-id="implementación-computacional-estructura-y-parámetros">Implementación Computacional: Estructura y Parámetros</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+
+</div><div class="column" style="width:45%;">
+
+</div>
+</div>
+</section>
+<section id="aplicación-en-chiapas" class="level2">
+<h2 class="anchored" data-anchor-id="aplicación-en-chiapas">Aplicación en Chiapas</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<p><strong>Características de Chiapas:</strong></p>
+<ul>
+<li><strong>Alta vulnerabilidad</strong> a inundaciones y deslizamientos</li>
+<li><strong>Topografía compleja</strong> que afecta accesibilidad</li>
+<li><strong>Población dispersa</strong> en comunidades rurales</li>
+<li><strong>Recursos limitados</strong> para logística humanitaria</li>
+</ul>
+<p><strong>Productos Humanitarios Considerados:</strong></p>
+<ul>
+<li>Agua potable (2 litros/persona/día)</li>
+<li>Alimentos no perecederos</li>
+<li>Kits de medicamentos básicos</li>
+<li>Ropa y cobijas</li>
+<li>Artículos de higiene personal</li>
+</ul>
+</div><div class="column" style="width:40%;">
+<p><img src="chiapas.png" class="img-fluid" style="width:80.0%"> <img src="productos.png" class="img-fluid" style="width:100.0%"></p>
+</div>
+</div>
+</section>
+<section id="grupo-de-edades-y-productos-específicos" class="level2">
+<h2 class="anchored" data-anchor-id="grupo-de-edades-y-productos-específicos">Grupo de edades y productos específicos</h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<p><strong>Observaciones clave:</strong></p>
+<ul>
+<li>Necesidades varían según <strong>edad</strong>: niños, adultos y ancianos.<br>
+</li>
+<li><strong>Mujeres</strong> requieren kits de higiene distintos a los hombres.<br>
+</li>
+<li>La logística debe planificar la <strong>distribución según edad y género</strong> para optimizar recursos.</li>
+</ul>
+</div><div class="column" style="width:60%;">
+<p><img src="edades.png" class="img-fluid" style="width:100.0%"></p>
+</div>
+</div>
+</section>
+<section id="cálculo-del-peso-posicional-caso-chiapas" class="level2">
+<h2 class="anchored" data-anchor-id="cálculo-del-peso-posicional-caso-chiapas">Cálculo del Peso Posicional — Caso Chiapas</h2>
+<p>El peso posicional <span class="math inline">\(w_j\)</span> integra cinco dimensiones logísticas de relevancia humanitaria, cada una con ponderación del 20 %. Se normalizaron todas las variables en el rango <span class="math inline">\([0,1]\)</span>:</p>
+<p><span class="math display">\[w_i = 0.20 (Diconsa_i +  AccesoVial_i +  Escuelas_i +  Servicios_i + Poblacion_i)\]</span></p>
+<p><strong>Top 5 localidades con mayor potencial logístico (Cacahoatán):</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;"><strong>#</strong></th>
+<th style="text-align: left;"><strong>Localidad</strong></th>
+<th style="text-align: center;"><strong>Peso</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">Salvador Urbina</td>
+<td style="text-align: center;"><strong>1.000</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">Faja de Oro</td>
+<td style="text-align: center;"><strong>0.983</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">Cacahoatán</td>
+<td style="text-align: center;">0.849</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4</td>
+<td style="text-align: left;">Rosario Ixtal</td>
+<td style="text-align: center;">0.749</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">5</td>
+<td style="text-align: left;">Mixcum</td>
+<td style="text-align: center;">0.657</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="escenarios-evaluados-cacahoatán" class="level2">
+<h2 class="anchored" data-anchor-id="escenarios-evaluados-cacahoatán">Escenarios Evaluados — Cacahoatán</h2>
+<p><strong>Objetivo:</strong> Analizar la sensibilidad del modelo ante restricciones espaciales.</p>
+<p>🔹 Escenario A: Sin radio de afectación</p>
+<ul>
+<li>Se evaluaron <strong>2 almacenes candidatos</strong>.<br>
+</li>
+<li>El modelo seleccionó <strong>1 almacén óptimo</strong> que cubre las 4 localidades.<br>
+</li>
+<li>Solución <strong>eficiente en costo</strong> y <strong>plena cobertura</strong> del territorio.</li>
+</ul>
+<div class="columns">
+<div class="column" style="width:60%;">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Indicador</th>
+<th>Resultado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Cobertura</td>
+<td>100 %</td>
+</tr>
+<tr class="even">
+<td>Población atendida</td>
+<td>7,407 personas</td>
+</tr>
+<tr class="odd">
+<td>Localidades cubiertas</td>
+<td>4</td>
+</tr>
+<tr class="even">
+<td>Fill rate promedio</td>
+<td>100 %</td>
+</tr>
+<tr class="odd">
+<td>Costo total anual</td>
+<td>$195,459,693 MXN</td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:40%;">
+<p><img src="almacen.png" class="img-fluid" style="width:80.0%"></p>
+</div>
+</div>
+</section>
+<section id="continuación-escenarios-evaluados-cacahoatán" class="level2">
+<h2 class="anchored" data-anchor-id="continuación-escenarios-evaluados-cacahoatán">Continuación Escenarios Evaluados — Cacahoatán</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>🔹 Escenario B: Con radio de afectación <span class="math inline">\(r = 5\)</span> km</p>
+<ul>
+<li>El <strong>almacén 1</strong> queda <strong>dentro del radio de influencia</strong> del segundo.<br>
+</li>
+<li>El modelo selecciona el <strong>almacén 2</strong> como óptimo.<br>
+</li>
+<li>Se mantiene <strong>cobertura total</strong>, pero con <strong>mayor eficiencia espacial</strong>.</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><img src="radio.png" class="img-fluid" style="width:70.0%"></p>
+</div>
+</div>
+<div class="block" data-bg="gray!10">
+<p>La restricción geográfica redefine la ubicación óptima, evidenciando la importancia de integrar criterios espaciales en la localización humanitaria.</p>
+</div>
+</section>
+<section id="análisis-de-sensibilidad" class="level2">
+<h2 class="anchored" data-anchor-id="análisis-de-sensibilidad">Análisis de Sensibilidad</h2>
+<p><strong>Factor de Afectación:</strong></p>
+<ul>
+<li>Escenario base: <strong>30%</strong> de población afectada</li>
+<li>Análisis de sensibilidad: <strong>20% - 50%</strong></li>
+</ul>
+<p><strong>Nivel de Servicio:</strong></p>
+<ul>
+<li>Objetivo principal: <strong>95%</strong> fill rate</li>
+<li>Variación: <strong>90% - 99%</strong></li>
+</ul>
+<p><strong>Número de Almacenes:</strong></p>
+<ul>
+<li>Rango evaluado: <strong>1-2 almacenes</strong></li>
+<li>Trade-off: <strong>Costo vs.&nbsp;Cobertura</strong></li>
+</ul>
+</section>
+<section id="conclusiones" class="level2">
+<h2 class="anchored" data-anchor-id="conclusiones">Conclusiones</h2>
+<p>Hallazgos Principales</p>
+<p><strong>Efectividad del Modelo:</strong></p>
+<ul>
+<li><strong>Integración exitosa</strong> de localización e inventario</li>
+<li><strong>Balance óptimo</strong> entre costos y nivel de servicio</li>
+<li><strong>Aplicabilidad práctica</strong> en contextos reales</li>
+</ul>
+<p><strong>Contribuciones:</strong></p>
+<ul>
+<li><strong>Un marco decisional</strong> para planificación pre-desastre</li>
+<li><strong>Herramienta cuantitativa</strong> para agencias humanitarias</li>
+<li><strong>Base metodológica</strong> replicable en otros municipios</li>
+</ul>
+</section>
+<section id="recomendaciones-para-cacahoatán" class="level2">
+<h2 class="anchored" data-anchor-id="recomendaciones-para-cacahoatán">Recomendaciones para Cacahoatán</h2>
+<ul>
+<li><strong>Implementar configuración</strong> de un almacén</li>
+<li><strong>Mantener inventarios</strong> según cálculo EOQ con demanda Estocástica</li>
+<li><strong>Monitorear continuamente</strong> factores de riesgo</li>
+</ul>
+</section>
+<section id="referencias" class="level2">
+<h2 class="anchored" data-anchor-id="referencias">Referencias</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-BarojasPayan2021" class="csl-entry" role="listitem">
+Barojas-Payán, E., D. Sánchez-Partida, et al. 2021. <span>“Optimization Model to Locate Pre-Positioned Warehouses.”</span> In <em>Disaster Risk Reduction in Mexico</em>, edited by D. Sánchez-Partida, 169–98. Springer. <a href="https://doi.org/10.1007/978-3-030-67295-9_8">https://doi.org/10.1007/978-3-030-67295-9_8</a>.
+</div>
+<div id="ref-ArcGIS2024" class="csl-entry" role="listitem">
+Esri México. 2024. <span>“Visor de Infraestructura y Riesgos de Desastres.”</span> <a href="https://atlsrgochis.maps.arcgis.com/apps/webappviewer/index.html?id=e0e724ad2bb8423894b0cebd1f27a7d5">https://atlsrgochis.maps.arcgis.com/apps/webappviewer/index.html?id=e0e724ad2bb8423894b0cebd1f27a7d5</a>.
+</div>
+<div id="ref-INEGI2024" class="csl-entry" role="listitem">
+INEGI. 2024. <span>“Bases de Datos y Visor Geoespacial.”</span> <a href="https://www.inegi.org.mx/app/mapa/denue/">https://www.inegi.org.mx/app/mapa/denue/</a>.
+</div>
+<div id="ref-SEP2024" class="csl-entry" role="listitem">
+Secretaría de Educación Pública (SEP). 2024. <span>“Principales Cifras Del Sistema Educativo Nacional.”</span> <a href="https://www.planeacion.sep.gob.mx/principalescifras/">https://www.planeacion.sep.gob.mx/principalescifras/</a>.
+</div>
+<div id="ref-Taha2016" class="csl-entry" role="listitem">
+Taha, Hamdy A. 2016. <em>Operations Research: An Introduction</em>. 10th ed. Pearson.
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
