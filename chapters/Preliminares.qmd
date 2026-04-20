@@ -24,8 +24,7 @@ En la formulación de redes logísticas humanitarias, las decisiones suelen repr
 Estos conjuntos garantizan que las variables del modelo respeten restricciones físicas (por ejemplo, no es posible enviar una cantidad negativa de ayuda humanitaria).
 
 ## Convexidad y conjuntos especiales {#sec-conjuntosE}
-
-La convexidad juega un papel central en la teoría de optimización, ya que garantiza que cualquier mínimo local sea también un mínimo global, lo que simplifica enormemente la búsqueda de soluciones óptimas. En el contexto de redes logísticas humanitarias, muchos subproblemas como la asignación de flujos o el cálculo de inventarios dan lugar a regiones factibles convexas cuando las decisiones de apertura de almacenes están fijas. Sin embargo, la presencia de variables binarias (por ejemplo, decidir si abrir o no un centro de distribución) introduce no convexidad estructural, lo que complica el análisis y requiere métodos especializados. Comprender la geometría de los conjuntos convexos y poliedros permite identificar cuándo un subproblema es tratable, diseñar descomposiciones eficientes y justificar el uso de relajaciones convexas en algoritmos de solución.
+La convexidad juega un papel central en la teoría de optimización, ya que, cuando el conjunto factible es convexo y la función objetivo también es convexa sobre dicho conjunto, se garantiza que todo mínimo local es global. Esta propiedad simplifica enormemente la búsqueda de soluciones óptimas. En el contexto de redes logísticas humanitarias, muchos subproblemas como la asignación de flujos o el cálculo de inventarios dan lugar a regiones factibles convexas cuando las decisiones de apertura de almacenes están fijas. Sin embargo, la presencia de variables binarias (por ejemplo, decidir si abrir o no un centro de distribución) introduce no convexidad estructural, lo que complica el análisis y requiere métodos especializados. Comprender la geometría de los conjuntos convexos y poliedros permite identificar cuándo un subproblema es tratable, diseñar descomposiciones eficientes y justificar el uso de relajaciones convexas en algoritmos de solución.
 
 La estructura geométrica del espacio factible influye directamente en la complejidad del problema. En particular:
 
@@ -163,7 +162,7 @@ $$
 x^\top A x > 0 \quad \text{para todo } x \in \mathbb{R}^n,\ x \neq 0.
 $$
 
-Esta condición garantiza que la función $f$ es **estrictamente convexa** en una vecindad del punto $x$, y por tanto, si además $\nabla f(x) = 0$, entonces $x$ es un **mínimo local estricto**. En modelos de inventario humanitario, donde la función de costo incluye términos cuadráticos o aproximaciones de segundo orden (por ejemplo, en el cálculo del inventario de seguridad bajo demanda normal), la definición positiva del Hessiano asegura que los métodos de optimización basados en curvatura como Newton o L-BFGS converjan a soluciones estables y únicas en subproblemas continuos.
+Esta condición garantiza que la función $f$ es **estrictamente convexa** en una vecindad del punto $x$, y por tanto, si además $\nabla f(x) = 0$, entonces $x$ es un **mínimo local estricto**. En modelos de inventario humanitario, donde la función de costo incluye términos cuadráticos o aproximaciones de segundo orden (por ejemplo, en el cálculo del inventario de seguridad bajo demanda normal), la definición positiva del Hessiano en un punto crítico garantiza que dicho punto es un mínimo local estricto y asegura la convergencia local de los métodos basados en curvatura, como Newton o L-BFGS. No obstante, la unicidad de la solución óptima no se deduce únicamente de esta propiedad puntual, sino que requiere hipótesis globales adicionales, como la convexidad estricta de la función objetivo en todo el conjunto factible.
 
 ## Estructura general de problemas de optimización con restricciones {#sec-bigM}
 
@@ -187,9 +186,9 @@ Un componente esencial de esta estructura es la **vinculación entre variables d
 
 Esta estructura mixta introduce no convexidad y discontinuidad en el espacio de decisiones, lo que impide el uso directo de métodos basados en gradientes y motiva el uso de algoritmos especializados, como los discutidos en el Capítulo 5.
 
-## Teoría de probabilidad y variables aleatorias
+## Teoría de probabilidad y variables aleatorias {#sec-variables}
 
-En la logística humanitaria, la demanda de ayuda especialmente durante o después de eventos como inundaciones es inherentemente incierta y altamente variable. Modelar esta incertidumbre de forma adecuada es crucial: usar únicamente valores promedio ignora la posibilidad de eventos extremos, lo que puede llevar a niveles insuficientes de inventario y, en consecuencia, a faltantes críticos. Por ello, es necesario representar la demanda como una **variable aleatoria**, cuyo comportamiento se describe mediante herramientas de la teoría de probabilidad. Esta formulación permite cuantificar no solo la demanda esperada, sino también su variabilidad y el riesgo asociado a sus colas (eventos raros pero severos), aspectos esenciales para el cálculo del inventario de seguridad y la toma de decisiones robustas.
+En la logística humanitaria, la demanda de ayuda especialmente durante o después de eventos como inundaciones es inherentemente incierta y altamente variable. Modelar esta incertidumbre de forma adecuada es crucial: usar únicamente valores promedio ignora la posibilidad de eventos extremos, lo que puede llevar a niveles insuficientes de inventario y, en consecuencia, a faltantes críticos. Para abordar este desafío sin comprometer la tratabilidad del modelo de optimización, en este trabajo se emplean herramientas de la teoría de probabilidad **de forma previa** para caracterizar estadísticamente la demanda. Esta caracterización permite obtener estimaciones puntuales (demanda esperada y varianza) y derivar factores de seguridad ($Z_{\sigma}$), los cuales se incorporan posteriormente como parámetros fijos y deterministas en la formulación. De esta forma, se cuantifica tanto la magnitud esperada como la variabilidad y el riesgo asociado a las colas de la distribución (eventos raros pero severos), aspectos esenciales para el cálculo del inventario de seguridad y la toma de decisiones robustas dentro de un marco determinista
 
 - **Variable aleatoria (v.a.) absolutamente continua**: $\mathbb{P}(X \in A) = \int_A f_X(x)\,dx$, donde $f_X$ es la densidad respecto a la medida de Lebesgue. Esta formulación es esencial para modelar demandas con distribuciones suaves, como la normal.
 - **Distribución normal**: si $D_L \sim \mathcal{N}(\mu_L, \sigma_L^2)$, su densidad es  
@@ -197,7 +196,7 @@ En la logística humanitaria, la demanda de ayuda especialmente durante o despu�
   \phi_{D_L}(d) = \frac{1}{\sqrt{2\pi}\sigma_L} \exp\!\left(-\frac{(d - \mu_L)^2}{2\sigma_L^2}\right).
   $$
   Esta distribución se usa para aproximar la demanda durante el tiempo de entrega, lo que permite calcular el inventario de seguridad.
-- **Varianza**: para una v.a. $\tilde{X}$, $\operatorname{Var}(\tilde{X}) = \mathbb{E}[(\tilde{X} - \mathbb{E}[\tilde{X}])^2]$. La varianza cuantifica la incertidumbre en la demanda; ignorarla (por ejemplo, al usar solo $\mathbb{E}[d_j]$) puede inducir soluciones frágiles en eventos extremos.
+- **Varianza**: para una v.a. $X$, $\operatorname{Var}(X) = \mathbb{E}[(X - \mathbb{E}[X])^2]$. La varianza cuantifica la incertidumbre en la demanda; ignorarla (por ejemplo, al usar solo $\mathbb{E}[d_j]$) puede inducir soluciones frágiles en eventos extremos.
 
 ```{python}
 #| label: fig-normal-perdida
@@ -227,14 +226,14 @@ plt.grid(True, linestyle=':', alpha=0.7)
 plt.tight_layout()
 plt.show()
 ```
-- **Notación $\ll$**: indica que una cantidad es mucho menor que otra. Por ejemplo, en la Sección 3.4.4 se muestra que, si se ignora la incertidumbre en $L$, la varianza estimada puede ser $80 \ll 10\,080$, subestimando severamente el riesgo.
+- **Notación $\ll$**: indica que una cantidad es mucho menor que otra. Por ejemplo, en la @sec-impacto se muestra que, si se ignora la incertidumbre en $L$, la varianza estimada puede ser $80 \ll 10\,080$, subestimando severamente el riesgo.
 
-El **valor esperado** $\mathbb{E}[d_j]$ representa la demanda media en la localidad $j$. Aunque es común usarlo como estimador puntual en modelos deterministas, como se advierte en la Sección 3.1.2.3, esta simplificación puede ser inadecuada en logística humanitaria, donde la cola de la distribución (eventos extremos) es crítica.
+El **valor esperado** $\mathbb{E}[d_j]$ representa la demanda media en la localidad $j$. Aunque es común usarlo como estimador puntual en modelos deterministas, como se advierte en la @sec-determinista, esta simplificación puede ser inadecuada en logística humanitaria, donde la cola de la distribución (eventos extremos) es crítica.
 
 
 ## Optimización no lineal y condiciones de optimalidad {#sec-kkt}
 
-El problema de localización–inventario bajo incertidumbre da lugar a un modelo de optimización **no lineal**, debido a la presencia de términos como el inventario de seguridad (basado en la distribución normal) y funciones de penalización por faltantes. En este contexto, las **condiciones de Karush–Kuhn–Tucker (KKT)** proporcionan un marco teórico fundamental para caracterizar puntos candidatos a óptimos locales, siempre que se satisfagan ciertas condiciones de regularidad (calificación de restricciones). Sin embargo, dado que el problema incluye variables binarias y acoplamiento no lineal entre decisiones, el espacio factible es **no convexo y discontinuo**, lo que implica que las condiciones KKT aunque necesarias **no garantizan optimalidad global**. Esta limitación justifica el uso de métodos de solución especializados, como algoritmos de ramificación o heurísticas híbridas, que se discuten en capítulos posteriores.
+El problema de localización–inventario analizado en este trabajo da lugar a un modelo de optimización no lineal determinista. Aunque en la @sec-variables se introducen conceptos de teoría de probabilidad y variables aleatorias, estos se emplean exclusivamente para fundamentar la obtención paramétrica de los insumos del modelo (demanda esperada, varianza y factor de seguridad $Z_{\sigma}$). La incertidumbre no se representa mediante variables aleatorias ni formulaciones estocásticas dentro del problema de optimización; en su lugar, se internaliza de forma fija y determinista en los coeficientes de la función objetivo. Bajo esta estructura, las **condiciones de Karush–Kuhn–Tucker (KKT)** proporcionan un marco teórico fundamental para caracterizar puntos candidatos a óptimos locales, siempre que se satisfagan ciertas condiciones de regularidad (calificación de restricciones). Sin embargo, dado que el problema incluye variables binarias y acoplamiento no lineal entre decisiones, el espacio factible es **no convexo y discontinuo**, lo que implica que las condiciones KKT aunque necesarias **no garantizan optimalidad global**. Esta limitación justifica el uso de métodos de solución especializados, como algoritmos de ramificación o heurísticas híbridas, que se discuten en capítulos posteriores.
 
 - **Condiciones de Karush–Kuhn–Tucker (KKT)**: condiciones necesarias de optimalidad local bajo restricciones de desigualdad y calificación de restricciones. Como se expone en @LewisOverton2013, estas condiciones **no garantizan optimalidad global** en problemas no convexos, como el propuesto, donde la no convexidad surge de las variables binarias y la no linealidad en la incertidumbre.
 :::

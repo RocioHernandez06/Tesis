@@ -89,7 +89,7 @@ Esta función **no es convexa globalmente** cuando $\sigma_L$ depende de $Q$, co
 
 Esto demuestra que muchos métodos clásicos basados en convexidad y separabilidad (ver @sec-funcion_CD) resultan inaplicables en condiciones realistas.
 
-####  Limitaciones de modelos de localización deterministas
+####  Limitaciones de modelos de localización deterministas {#sec-determinista}
 
 El modelo clásico UFLP resuelve:
 
@@ -1386,7 +1386,7 @@ lo que induce una dependencia funcional compleja entre $L$ y la distribución de
 
 Aun en el caso de un único periodo (sin reposición), si se considera que el costo de preparación $K$ depende del número de localidades abiertas (como en el Capítulo 3), y cada localidad tiene su propio "tiempo efectivo de exposición" $L_i$, entonces $Z(Q)$ se convierte en una función **no separable y altamente no lineal** en el vector de decisiones $(Q_i, y_i)$, donde $y_i$ indica si se abre la localidad $i$.
 
-#### Ejemplo de impacto no lineal de $L$ en la varianza de la demanda
+#### Ejemplo de impacto no lineal de $L$ en la varianza de la demanda {#sec-impacto}
 
 Supongamos que la demanda diaria $\tilde{d} \sim \text{Normal}(10, 4)$ (media 10 unidades/día, varianza 4). El tiempo de entrega efectivo $L$ (en días) es aleatorio: $L = 10$ con probabilidad 0.5, y $L = 30$ con probabilidad 0.5.
 
