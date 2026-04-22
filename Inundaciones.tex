@@ -280,7 +280,7 @@
 \title{Inundaciones}
 \author{Yulissa del Rocío Hernández Vázquez \and Asesor: Dr.~Yofre
 Hernán García Gómez}
-\date{2026-02-23}
+\date{2026-04-19}
 \begin{document}
 \begin{titlepage}
 \hspace{-1.7cm} %Este comando es para mandar a la izquierda ;)
@@ -575,18 +575,19 @@ negativa de ayuda humanitaria).
 \section{Convexidad y conjuntos especiales}\label{sec-conjuntosE}
 
 La convexidad juega un papel central en la teoría de optimización, ya
-que garantiza que cualquier mínimo local sea también un mínimo global,
-lo que simplifica enormemente la búsqueda de soluciones óptimas. En el
-contexto de redes logísticas humanitarias, muchos subproblemas como la
-asignación de flujos o el cálculo de inventarios dan lugar a regiones
-factibles convexas cuando las decisiones de apertura de almacenes están
-fijas. Sin embargo, la presencia de variables binarias (por ejemplo,
-decidir si abrir o no un centro de distribución) introduce no convexidad
-estructural, lo que complica el análisis y requiere métodos
-especializados. Comprender la geometría de los conjuntos convexos y
-poliedros permite identificar cuándo un subproblema es tratable, diseñar
-descomposiciones eficientes y justificar el uso de relajaciones convexas
-en algoritmos de solución.
+que, cuando el conjunto factible es convexo y la función objetivo
+también es convexa sobre dicho conjunto, se garantiza que todo mínimo
+local es global. Esta propiedad simplifica enormemente la búsqueda de
+soluciones óptimas. En el contexto de redes logísticas humanitarias,
+muchos subproblemas como la asignación de flujos o el cálculo de
+inventarios dan lugar a regiones factibles convexas cuando las
+decisiones de apertura de almacenes están fijas. Sin embargo, la
+presencia de variables binarias (por ejemplo, decidir si abrir o no un
+centro de distribución) introduce no convexidad estructural, lo que
+complica el análisis y requiere métodos especializados. Comprender la
+geometría de los conjuntos convexos y poliedros permite identificar
+cuándo un subproblema es tratable, diseñar descomposiciones eficientes y
+justificar el uso de relajaciones convexas en algoritmos de solución.
 
 La estructura geométrica del espacio factible influye directamente en la
 complejidad del problema. En particular:
@@ -839,9 +840,13 @@ convexa} en una vecindad del punto \(x\), y por tanto, si además
 estricto}. En modelos de inventario humanitario, donde la función de
 costo incluye términos cuadráticos o aproximaciones de segundo orden
 (por ejemplo, en el cálculo del inventario de seguridad bajo demanda
-normal), la definición positiva del Hessiano asegura que los métodos de
-optimización basados en curvatura como Newton o L-BFGS converjan a
-soluciones estables y únicas en subproblemas continuos.
+normal), la definición positiva del Hessiano en un punto crítico
+garantiza que dicho punto es un mínimo local estricto y asegura la
+convergencia local de los métodos basados en curvatura, como Newton o
+L-BFGS. No obstante, la unicidad de la solución óptima no se deduce
+únicamente de esta propiedad puntual, sino que requiere hipótesis
+globales adicionales, como la convexidad estricta de la función objetivo
+en todo el conjunto factible.
 
 \section{Estructura general de problemas de optimización con
 restricciones}\label{sec-bigM}
@@ -888,20 +893,25 @@ en gradientes y motiva el uso de algoritmos especializados, como los
 discutidos en el Capítulo 5.
 
 \section{Teoría de probabilidad y variables
-aleatorias}\label{teoruxeda-de-probabilidad-y-variables-aleatorias}
+aleatorias}\label{sec-variables}
 
 En la logística humanitaria, la demanda de ayuda especialmente durante o
 después de eventos como inundaciones es inherentemente incierta y
 altamente variable. Modelar esta incertidumbre de forma adecuada es
 crucial: usar únicamente valores promedio ignora la posibilidad de
 eventos extremos, lo que puede llevar a niveles insuficientes de
-inventario y, en consecuencia, a faltantes críticos. Por ello, es
-necesario representar la demanda como una \textbf{variable aleatoria},
-cuyo comportamiento se describe mediante herramientas de la teoría de
-probabilidad. Esta formulación permite cuantificar no solo la demanda
-esperada, sino también su variabilidad y el riesgo asociado a sus colas
-(eventos raros pero severos), aspectos esenciales para el cálculo del
-inventario de seguridad y la toma de decisiones robustas.
+inventario y, en consecuencia, a faltantes críticos. Para abordar este
+desafío sin comprometer la tratabilidad del modelo de optimización, en
+este trabajo se emplean herramientas de la teoría de probabilidad
+\textbf{de forma previa} para caracterizar estadísticamente la demanda.
+Esta caracterización permite obtener estimaciones puntuales (demanda
+esperada y varianza) y derivar factores de seguridad (\(Z_{\sigma}\)),
+los cuales se incorporan posteriormente como parámetros fijos y
+deterministas en la formulación. De esta forma, se cuantifica tanto la
+magnitud esperada como la variabilidad y el riesgo asociado a las colas
+de la distribución (eventos raros pero severos), aspectos esenciales
+para el cálculo del inventario de seguridad y la toma de decisiones
+robustas dentro de un marco determinista
 
 \begin{itemize}
 \tightlist
@@ -919,9 +929,9 @@ inventario de seguridad y la toma de decisiones robustas.
   \] Esta distribución se usa para aproximar la demanda durante el
   tiempo de entrega, lo que permite calcular el inventario de seguridad.
 \item
-  \textbf{Varianza}: para una v.a. \(\tilde{X}\),
-  \(\operatorname{Var}(\tilde{X}) = \mathbb{E}[(\tilde{X} - \mathbb{E}[\tilde{X}])^2]\).
-  La varianza cuantifica la incertidumbre en la demanda; ignorarla (por
+  \textbf{Varianza}: para una v.a. \(X\),
+  \(\operatorname{Var}(X) = \mathbb{E}[(X - \mathbb{E}[X])^2]\). La
+  varianza cuantifica la incertidumbre en la demanda; ignorarla (por
   ejemplo, al usar solo \(\mathbb{E}[d_j]\)) puede inducir soluciones
   frágiles en eventos extremos.
 \end{itemize}
@@ -952,35 +962,41 @@ faltantes en la formulación del costo total.}
 \tightlist
 \item
   \textbf{Notación \(\ll\)}: indica que una cantidad es mucho menor que
-  otra. Por ejemplo, en la Sección 3.4.4 se muestra que, si se ignora la
-  incertidumbre en \(L\), la varianza estimada puede ser
+  otra. Por ejemplo, en la Sección~\ref{sec-impacto} se muestra que, si
+  se ignora la incertidumbre en \(L\), la varianza estimada puede ser
   \(80 \ll 10\,080\), subestimando severamente el riesgo.
 \end{itemize}
 
 El \textbf{valor esperado} \(\mathbb{E}[d_j]\) representa la demanda
 media en la localidad \(j\). Aunque es común usarlo como estimador
-puntual en modelos deterministas, como se advierte en la Sección
-3.1.2.3, esta simplificación puede ser inadecuada en logística
-humanitaria, donde la cola de la distribución (eventos extremos) es
-crítica.
+puntual en modelos deterministas, como se advierte en la
+Sección~\ref{sec-determinista}, esta simplificación puede ser inadecuada
+en logística humanitaria, donde la cola de la distribución (eventos
+extremos) es crítica.
 
 \section{Optimización no lineal y condiciones de
 optimalidad}\label{sec-kkt}
 
-El problema de localización--inventario bajo incertidumbre da lugar a un
-modelo de optimización \textbf{no lineal}, debido a la presencia de
-términos como el inventario de seguridad (basado en la distribución
-normal) y funciones de penalización por faltantes. En este contexto, las
-\textbf{condiciones de Karush--Kuhn--Tucker (KKT)} proporcionan un marco
-teórico fundamental para caracterizar puntos candidatos a óptimos
-locales, siempre que se satisfagan ciertas condiciones de regularidad
-(calificación de restricciones). Sin embargo, dado que el problema
-incluye variables binarias y acoplamiento no lineal entre decisiones, el
-espacio factible es \textbf{no convexo y discontinuo}, lo que implica
-que las condiciones KKT aunque necesarias \textbf{no garantizan
-optimalidad global}. Esta limitación justifica el uso de métodos de
-solución especializados, como algoritmos de ramificación o heurísticas
-híbridas, que se discuten en capítulos posteriores.
+El problema de localización--inventario analizado en este trabajo da
+lugar a un modelo de optimización no lineal determinista. Aunque en la
+Sección~\ref{sec-variables} se introducen conceptos de teoría de
+probabilidad y variables aleatorias, estos se emplean exclusivamente
+para fundamentar la obtención paramétrica de los insumos del modelo
+(demanda esperada, varianza y factor de seguridad \(Z_{\sigma}\)). La
+incertidumbre no se representa mediante variables aleatorias ni
+formulaciones estocásticas dentro del problema de optimización; en su
+lugar, se internaliza de forma fija y determinista en los coeficientes
+de la función objetivo. Bajo esta estructura, las \textbf{condiciones de
+Karush--Kuhn--Tucker (KKT)} proporcionan un marco teórico fundamental
+para caracterizar puntos candidatos a óptimos locales, siempre que se
+satisfagan ciertas condiciones de regularidad (calificación de
+restricciones). Sin embargo, dado que el problema incluye variables
+binarias y acoplamiento no lineal entre decisiones, el espacio factible
+es \textbf{no convexo y discontinuo}, lo que implica que las condiciones
+KKT aunque necesarias \textbf{no garantizan optimalidad global}. Esta
+limitación justifica el uso de métodos de solución especializados, como
+algoritmos de ramificación o heurísticas híbridas, que se discuten en
+capítulos posteriores.
 
 \begin{itemize}
 \tightlist
@@ -1176,7 +1192,7 @@ separabilidad (ver Sección~\ref{sec-funcion_CD}) resultan inaplicables
 en condiciones realistas.
 
 \subsubsection{Limitaciones de modelos de localización
-deterministas}\label{limitaciones-de-modelos-de-localizaciuxf3n-deterministas}
+deterministas}\label{sec-determinista}
 
 El modelo clásico UFLP resuelve:
 
@@ -3574,7 +3590,7 @@ decisiones \((Q_i, y_i)\), donde \(y_i\) indica si se abre la localidad
 
 \subsubsection{\texorpdfstring{Ejemplo de impacto no lineal de \(L\) en
 la varianza de la
-demanda}{Ejemplo de impacto no lineal de L en la varianza de la demanda}}\label{ejemplo-de-impacto-no-lineal-de-l-en-la-varianza-de-la-demanda}
+demanda}{Ejemplo de impacto no lineal de L en la varianza de la demanda}}\label{sec-impacto}
 
 Supongamos que la demanda diaria \(\tilde{d} \sim \text{Normal}(10, 4)\)
 (media 10 unidades/día, varianza 4). El tiempo de entrega efectivo \(L\)

@@ -25,7 +25,7 @@ Ambas decisiones condicionan el desempeño global del sistema en términos de co
 
 Aunque la demanda en estos escenarios es inherentemente incierta, en este trabajo se adopta un **enfoque determinista robusto**, ampliamente fundamentado en la teoría de inventarios bajo demanda aleatoria del artículo seminal @HadleyWhitin1963. Este enfoque no modela la incertidumbre mediante variables aleatorias ni formulaciones estocásticas, sino que la **incorpora de forma paramétrica** mediante un **stock de seguridad fijo**, derivado de estimaciones de la variabilidad de la demanda.
 
-Específicamente, se asume que la demanda en cada localidad $j\in\mathcal{J}$ posee un valor esperado $d_j>0$ y una desviación estándar $\sigma_j\geq0$, ambos tratados como **parámetros exógenos conocidos**. Dado un tiempo de reposición $L>0$ y un nivel de servicio objetivo $\alpha\in(0,1)$, se define el **factor de seguridad** como $Z=\Phi^{-1}(\alpha)$, donde $\Phi^{-1}$ denota la inversa de la función de distribución acumulada de la normal estándar. Aunque esta construcción tiene raíces probabilísticas, en el modelo propuesto **todos los elementos son deterministas**, y el término $Z\sigma\sqrt{L}$ se incorpora como un parámetro de ajuste que refleja la magnitud de la incertidumbre.
+Específicamente, se asume que la demanda en cada localidad $j\in\mathcal{J}$ posee un valor esperado $d_j>0$ y una desviación estándar $\sigma_j\geq0$, ambos tratados como **parámetros exógenos conocidos**. Dado un tiempo de reposición $L>0$ y un nivel de servicio objetivo $\alpha\in(0,1)$, se define el **factor de seguridad** como $Z=\Phi^{-1}(\alpha)$, donde $\Phi^{-1}$ denota la inversa de la función de distribución acumulada de la normal estándar. Aunque esta construcción se fundamenta en la teoría de probabilidad, en la etapa de optimización dichos valores se fijan como constantes. De este modo, se adopta una aproximación determinista basada en cuantiles de una distribución. Este enfoque permite formular un modelo de optimización no lineal determinista, donde el término $Z\sigma\sqrt{L}$ se incorpora como un parámetro exógeno que internaliza la magnitud de la incertidumbre sin introducir variables aleatorias ni operadores de esperanza dentro de la función objetivo.
 
 Este enfoque permite formular un **modelo de optimización no lineal determinista**, cuya estructura matemática se preserva intacta frente a la complejidad computacional inherente a los modelos estocásticos. La ausencia de esperanzas, escenarios o variables de segundo nivel garantiza trazabilidad analítica, estabilidad numérica y compatibilidad con métodos de optimización eficientes para problemas con cotas, como se discutirá en capítulos posteriores.
 
@@ -37,18 +37,26 @@ Los modelos clásicos de localización e inventario, como el Uncapacitated Facil
 
 El modelo EOQ se fundamenta en supuestos como:
 
-1. Demanda constante y conocida $D>0$.
-2. Tiempo de entrega determinista $L \geq 0$.
-3. Costos lineales: costo de pedido $S$, costo unitario de mantenimiento $H$, sin faltantes.
+1. Demanda constante y conocida: $D > 0$ (unidades por unidad de tiempo).
+2. Tiempo de entrega determinista y conocido: $L \geq 0$.
+3. Costos lineales y constantes: costo fijo por pedido $S > 0$, costo unitario de mantenimiento de inventario $H > 0$, y costo unitario de adquisición $C > 0$. No se permiten faltantes.
 4. Reposición instantánea y sin restricciones de capacidad, de acuerdo con los supuestos planteados por @HadleyWhitin1963.
 
-El costo total del modelo es:
+Bajo estos supuestos, la función de costo total promedio por unidad de tiempo se expresa como:
 
 $$
 Z^{EOQ}(Q)=\frac{D}{Q}S+\frac{Q}{2}H+DC,
 $$
 
-y su solución óptima clásica:
+donde:
+
+- $Q > 0$ es el tamaño del lote o cantidad de pedido (variable de decisión continua),
+- $D$ es la demanda esperada por periodo de planificación,
+- $S$ es el costo fijo asociado a la emisión de cada pedido,
+- $H$ es el costo unitario de mantener una unidad en inventario por unidad de tiempo,
+- $C$ es el costo unitario de adquisición del producto.
+
+La minimización de esta función conduce a la solución óptima clásica:
 
 $$
 Q^{EOQ}=\sqrt{\frac{2DS}{H}}.
@@ -60,6 +68,7 @@ Este resultado depende de la **deterministicidad** y la **convexidad estricta**.
 - $L$ es incierto debido a afectaciones en infraestructura.
 - Los faltantes deben modelarse mediante una penalización finita $\beta>0$.
 - Los costos pueden presentar economías de escala y no convexidades, es decir, situaciones donde el costo promedio por unidad disminuye al aumentar el volumen de pedido o transporte, como se discute en @Porteus2002.
+
 
 ####  Incapacidad del EOQ para capturar riesgo {#sec-ZEOQ}
 
