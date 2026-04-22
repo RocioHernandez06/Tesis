@@ -89,12 +89,13 @@ $$ {#eq-Zq}
 Esta función **no es convexa globalmente** cuando $\sigma_L$ depende de $Q$, como ocurre cuando existe congestión en transporte o variabilidad dependiente del tamaño del pedido, aspectos estudiados por @BertsimasThiele2006 y @ShapiroDentchevaRuszczynski2021.
 
 > **Proposición  (No linealidad estricta).**  
-> La función $Z(Q)$ definida en @sec-ZEOQ es diferenciable en $(0,\infty)$, pero no es convexa globalmente (ver @sec-funcion_CD) si $\beta>0$ y $\sigma_L>0$.  
-> Si $\sigma_L$ es constante:
+> La función $Z(Q)$ definida en @sec-ZEOQ es diferenciable en $(0,\infty)$. Su curvatura depende de $\sigma_L$:
+> - Si $\sigma_L$ es constante: entonces
 > $$
 > \frac{d^2 Z}{dQ^2}=\frac{2D(S+\beta C)}{Q^3}>0.
 > $$
-> Pero si $\sigma_L=\sigma\sqrt{L(Q)}$ y $L(Q)$ es no lineal, entonces $Z(Q)$ pierde convexidad.
+> por lo tanto $Z(Q)$ es estrictamente convexa.
+> - Si $\sigma_L = \sigma_L(Q)$ depende de $Q$: la segunda derivada incluye términos adicionales que pueden cambiar de signo, y $Z(Q)$ puede perder convexidad global.
 
 Esto demuestra que muchos métodos clásicos basados en convexidad y separabilidad (ver @sec-funcion_CD) resultan inaplicables en condiciones realistas.
 
