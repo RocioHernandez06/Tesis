@@ -15,7 +15,7 @@ website:
     hypothesis: true
 
 book:
-  title: "Inundaciones"
+  title: "Optimización integrada de localización-inventario en logística humanitaria mediante L-BFGS-B: formulación, implementación y análisis en el estado de Chiapas"
   reader-mode: true
   language: es
   date: today
