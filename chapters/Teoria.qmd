@@ -90,11 +90,13 @@ Esta función **no es convexa globalmente** cuando $\sigma_L$ depende de $Q$, co
 
 > **Proposición  (No linealidad estricta).**  
 > La función $Z(Q)$ definida en @sec-ZEOQ es diferenciable en $(0,\infty)$. Su curvatura depende de $\sigma_L$:
+>
 > - Si $\sigma_L$ es constante: entonces
 > $$
 > \frac{d^2 Z}{dQ^2}=\frac{2D(S+\beta C)}{Q^3}>0.
 > $$
 > por lo tanto $Z(Q)$ es estrictamente convexa.
+>
 > - Si $\sigma_L = \sigma_L(Q)$ depende de $Q$: la segunda derivada incluye términos adicionales que pueden cambiar de signo, y $Z(Q)$ puede perder convexidad global.
 
 Esto demuestra que muchos métodos clásicos basados en convexidad y separabilidad (ver @sec-funcion_CD) resultan inaplicables en condiciones realistas.
@@ -144,7 +146,7 @@ $$
 y su costo asociado es:
 
 $$
-Z_{EOQ}=\frac{200}{1000}\cdot100+\frac{2}{200}\cdot5+1000\cdot10
+Z_{EOQ}=\frac{100}{200}\cdot100+\frac{200}{2}\cdot5+1000\cdot10
 =500+500+10000=11000.
 $$
 
@@ -154,29 +156,29 @@ $$
 La función de costo adopta la forma:
 
 $$
-Z(Q)=\frac{Q}{D}(S+\beta C)+\left(\frac{2}{Q}+Z_{\alpha}\sigma\sqrt{L}\right)H+DC.
+Z(Q)=\frac{D}{Q}(S+\beta C)+\left(\frac{Q}{2}+Z_{\alpha}\sigma\sqrt{L}\right)H+DC.
 $$
 
 Sustituyendo los valores:
 
 
 \begin{align*}
-Z(Q) &= \frac{Q}{1000}(100+500) + \left(\frac{2}{Q} + 5.20\right)\cdot 5 + 10000 \\
-     &= \frac{Q}{600000} + 2.5Q + 10026.
+Z(Q) &= \frac{1000}{Q}(100+500) + \left(\frac{Q}{2} + 5.20\right)\cdot 5 + 10000 \\
+     &= \frac{600000}{Q} + 2.5Q + 10026.
 \end{align*}
 
 
 Minimizando esta función determinista:
 
 $$
-Q^{\ast}=\sqrt{\frac{2.5}{600000}}\approx489.9,\qquad
+Q^{\ast}=\sqrt{\frac{600000}{2.5}}\approx489.9,\qquad
 Z(Q^{\ast})\approx12475.44.
 $$
 
 Si, por error, se usara la política del EOQ clásico ($Q=200$):
 
 $$
-Z(200)=\frac{200}{600000}+2.5\cdot200+10026
+Z(200)=\frac{600000}{200}+2.5\cdot200+10026
 =3000+500+10026=13526,
 $$
 
@@ -282,20 +284,42 @@ Considérese:
   $c_{21}=12$, $c_{22}=7$,  
 - $M=100$.
 
-**(i) Abrir solo 1:**  
+
+Considérese:
+
+- $m=2$ almacenes,  
+- $n=2$ demandas con $d_1=d_2=50$,  
+- Costos fijos $f_1=300$, $f_2=400$,  
+- Costos de inventario $h_1=h_2=3$,  
+- Costos de transporte:  
+  $c_{11}=8$, $c_{12}=15$,  
+  $c_{21}=12$, $c_{22}=7$,  
+- $M=100$.
+
+Para cada configuración de apertura $x=(x_1,x_2)\in\{0,1\}^2$, se asignan los flujos $y_{ij}$ de manera que se satisfaga la demanda minimizando el costo de transporte:
+
+**(i) Abrir solo almacén 1:** $x=(1,0)$.  
+Asignación óptima: $y_{11}=50$, $y_{12}=50$, $y_{21}=y_{22}=0$.  
+Costo:  
 $$
-Z = 300 + 3\cdot 100 + (8\cdot 50 + 15\cdot 50)=1750.
+Z = f_1 x_1 + f_2 x_2 + h_1(y_{11}+y_{12}) + h_2(y_{21}+y_{22}) + c_{11}y_{11} + c_{12}y_{12} + c_{21}y_{21} + c_{22}y_{22}
+$$
+$$
+Z = 300(1) + 400(0) + 3(50+50) + 3(0) + 8(50) + 15(50) + 12(0) + 7(0) = 1750.
 $$
 
-**(ii) Abrir solo 2:**  
+**(ii) Abrir solo almacén 2:** $x=(0,1)$.  
+Asignación óptima: $y_{21}=50$, $y_{22}=50$, $y_{11}=y_{12}=0$.  
+Costo:  
 $$
-Z = 400 + 3\cdot 100 + (12\cdot 50 + 7\cdot 50)=1650.
+Z = 300(0) + 400(1) + 3(0) + 3(50+50) + 8(0) + 15(0) + 12(50) + 7(50) = 1650.
 $$
 
-**(iii) Abrir ambos:**  
-Asignación eficiente, pero mayor costo fijo:  
+**(iii) Abrir ambos:** $x=(1,1)$.  
+Asignación eficiente por costo mínimo: para $j=1$, $c_{11}=8 < c_{21}=12 \Rightarrow y_{11}=50$; para $j=2$, $c_{22}=7 < c_{12}=15 \Rightarrow y_{22}=50$. Luego $y_{12}=y_{21}=0$.  
+Costo:  
 $$
-Z = 300 + 400 + 3\cdot 100 + (8\cdot 50 + 7\cdot 50)=1750.
+Z = 300(1) + 400(1) + 3(50) + 3(50) + 8(50) + 15(0) + 12(0) + 7(50) = 1750.
 $$
 
 La mejor configuración es abrir únicamente el almacén 2. Este resultado ilustra una propiedad fundamental de los problemas que combinan variables discretas y continuas: la solución óptima puede cambiar de manera discontinua ante perturbaciones arbitrariamente pequeñas en los parámetros del problema. Por ejemplo, si $f_2$ disminuye a $350$, la solución óptima se mantiene; pero si $f_1$ baja a $250$, podría resultar óptimo abrir el almacén $1$.
@@ -515,8 +539,9 @@ $$
 \sum_{j\in\mathcal{J}} y_{ij} \le s_i^{\max} x_i,\qquad \forall i\in\mathcal{I}.
 $$ {#eq-capacidad-smax}
 
-En ausencia de un tope operativo se toma $s_i^{\max}=+\infty$ (modelo no capacitado); en práctica real $s_i^{\max}$ suele venir de disponibilidad física, limitaciones regulatorias o logísticas.
+En ausencia de un tope operativo se toma $s_i^{\max}=+\infty$ (modelo no capacitado); en la práctica real $s_i^{\max}$ suele venir de disponibilidad física, limitaciones regulatorias o logísticas.
 
+**Observación sobre Big-M.** Si $s_i^{\max}$ es finito, la restricción @eq-capacidad-smax hace redundante la condición de Big-M genérica para el flujo. Dado que $y_{ij}\ge 0$, al tener $x_i=0$ la desigualdad fuerza necesariamente a $\sum_{j\in\mathcal{J}} y_{ij}=0$, lo que implica $y_{ij}=0$ para todo $j$. En consecuencia, no es necesario introducir una restricción adicional del tipo $y_{ij}\le M x_i$; utilizar la capacidad real $s_i^{\max}$ proporciona una cota superior más ajustada (*tight formulation*), fortalece la relajación lineal y evita la degradación numérica asociada a constantes $M$ arbitrariamente grandes.
 
 #### Propiedades y observaciones formales
 
@@ -761,7 +786,7 @@ $$ {#eq-funcion-obje}
 
 Aquí, $h_i \ge 0$ es el **costo unitario de mantenimiento de inventario** en la instalación $i$. El término modela el costo asociado al volumen total preposicionado (equivalente al total despachado en el modelo determinista base).
 
-La función $Z$ es **afín en $y$** para $x$ fijo, y **lineal en $x$** cuando $y$ es tratado como variable libre. Sin embargo, en el dominio restringido $\mathcal{X}$, la interacción discontinua entre ambas familias de variables induce una **estructura global no lineal**.
+La función $Z$ es **afín en $y$** para $x$ fijo, y **lineal en $x$** cuando $y$ se trata como variable libre. Sin embargo, la complejidad estructural del problema no proviene de una no linealidad intrínseca en $Z$, sino de la **no convexidad y desconexidad del dominio factible $\mathcal{X}$**, inducida por las restricciones binarias y de acoplamiento lógico. Esta geometría del espacio de decisiones es la que impide el análisis convexo clásico y exige técnicas de optimización entera mixta.
 
 > **Observación (Interpretación económica de los términos de (@eq-funcion-obje))**  
 > - (A): decisiones estratégicas de largo plazo.  
@@ -818,16 +843,18 @@ Considérese el escenario:
 - $c_{11} = 10$, $c_{21} = 12$,  
 - $h_1 = 3$, $h_2 = 2$.
 
-**Caso 1: $x = (1, 0)$, $y_{11} = 12$, $y_{21} = 0$**
+**Caso 1: $x = (1, 0)$, $y_{11} = 10$ (cobertura exacta de la demanda)**
 
 $$
 \begin{aligned}
 Z(x,y)
 &= f_1 x_1 + f_2 x_2 + (c_{11}+h_1)\,y_{11} + (c_{21}+h_2)\,y_{21} \\
-&= 300 + 0 + (10+3)\cdot 12 + (12+2)\cdot 0 \\
-&= 300 + 156 = 456.
+&= 300 + 0 + (10+3)\cdot 10 + (12+2)\cdot 0 \\
+&= 300 + 130 = 430.
 \end{aligned}
 $$
+
+*(Nota: si se optara por sobreabastecer con $y_{11}=12$, el costo sería $300 + 13\cdot 12 = 456$. Esto confirma que la estructura de costos penaliza naturalmente el exceso, ya que cada unidad adicional incrementa linealmente los términos de transporte y mantenimiento.)*
 
 **Caso 2: $x = (0,1)$, $y_{21} = 10$**
 
@@ -841,9 +868,7 @@ $$
 Z = 300 + 400 + 13\cdot 6 + 14\cdot 4 = 834.
 $$
 
-
-El valor mínimo se obtiene abriendo únicamente la instalación 1, con inventario despachado $12$ (mayor que la demanda), lo cual es admisible y económicamente óptimo bajo estos parámetros.
-
+El valor mínimo se obtiene abriendo únicamente la instalación 1, con envío exacto $y_{11} = d_1 = 10$. Este resultado ilustra que, aunque el modelo permite enviar más de la demanda, la minimización del costo total desincentiva el sobreabastecimiento, ya que cada unidad adicional incrementa directamente los gastos de transporte e inventario.
 
 La función objetivo $Z(x, y)$ formaliza el análisis de compromisos entre inversión en infraestructura, costos operativos e inventario preposicionado. Su estructura afín por partes y la no convexidad del dominio $\mathcal{X}$ definen un Mixed Integer Linear Programming (MILP) clásico, aunque constituyen la base teórica necesaria para extensiones no lineales, robustas o estocásticas. La existencia garantizada de al menos una solución óptima justifica el enfoque algorítmico planteado en el Capítulo siguiente.
 
@@ -869,13 +894,15 @@ El modelo EOQ se fundamenta en los siguientes supuestos deterministas, los cuale
 
 5. **No se permiten faltantes**: Todo el volumen demandado debe ser satisfecho inmediatamente desde el inventario disponible. Por tanto, el nivel de inventario nunca puede ser negativo.
 
-6. **Reposición instantánea y lote único**: Cada vez que el inventario llega a cero, se emite un pedido de tamaño fijo $Q > 0$, el cual es recibido íntegramente y de forma inmediata, restableciendo el inventario al nivel $Q$.
+6. **Política de lote único y entrega completa**: La reposición se efectúa mediante órdenes de tamaño fijo $Q> 0$ que se entregan en una sola partida. Al llegar el inventario a cero, se emite el pedido y el stock se restablece al nivel $Q$, conforme al tiempo de entrega nulo establecido en el supuesto 2.
 
 Dado este conjunto de hipótesis, la evolución del inventario $x(t)$ en el tiempo sigue una trayectoria determinista en forma de diente de sierra: decrece linealmente desde $Q$ hasta $0$ a una tasa constante $d$, y luego se reabastece instantáneamente a $Q$. El periodo del ciclo es entonces $T = Q/d$. Estos supuestos, si bien facilitan el análisis, imponen una estructura rígida que limita severamente la aplicabilidad del modelo en contextos donde la demanda es estocástica, los tiempos de entrega son inciertos o los faltantes son inevitables, situaciones comunes en operaciones humanitarias.
 
 La formulación matemática del modelo EOQ se deriva directamente de estos supuestos, como se detalla en la sección siguiente. No obstante, ya en este punto es pertinente señalar que la idealización determinista del EOQ contrasta fuertemente con las condiciones operativas en logística humanitaria, donde la incertidumbre en la demanda y la criticidad de los faltantes exigen modelos más robustos y flexibles.
 
 ###  Derivación analítica del tamaño óptimo de pedido
+
+Se adopta una aproximación determinista basada en cuantiles de una distribución. Este enfoque permite formular un modelo de optimización no lineal determinista. Bajo este esquema, el problema del lote económico consiste en determinar el tamaño de pedido $Q> 0$ que minimiza el costo total promedio por unidad de tiempo. La formulación se basa en la descomposición del costo total en sus componentes: costo fijo de emisión de pedidos y costo variable de mantenimiento de inventario.
 
 Bajo los supuestos deterministas descritos en la sección anterior, el problema del lote económico consiste en determinar el tamaño de pedido $Q > 0$ que minimiza el costo total promedio por unidad de tiempo. La formulación se basa en la descomposición del costo total en sus componentes: costo fijo de emisión de pedidos y costo variable de mantenimiento de inventario.
 
@@ -886,7 +913,7 @@ $$
 
 Por otro lado, la evolución del inventario $x(t)$ en cada ciclo es lineal y decreciente, comenzando en $Q$ y finalizando en $0$. El inventario promedio en el ciclo es:
 $$
-\bar{x} = \frac{1}{T} \int_0^T x(t) \, dt = \frac{1}{Q/d} \int_0^{Q/d} (Q - d t) \, dt = \frac{Q}{2}.
+\bar{x} = \frac{1}{T} \int_0^T x(t) \, dt = \frac{1}{Q/d} \int_0^{Q/d} (Q - d\cdot t) \, dt = \frac{Q}{2}.
 $$
 En consecuencia, el costo promedio de mantenimiento por unidad de tiempo es:
 $$

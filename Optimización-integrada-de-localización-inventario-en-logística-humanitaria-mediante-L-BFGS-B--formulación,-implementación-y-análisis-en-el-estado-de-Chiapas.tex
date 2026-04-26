@@ -282,7 +282,7 @@ humanitaria mediante L-BFGS-B: formulación, implementación y análisis en
 el estado de Chiapas}
 \author{Yulissa del Rocío Hernández Vázquez \and Asesor: Dr.~Yofre
 Hernán García Gómez}
-\date{2026-04-22}
+\date{2026-04-25}
 \begin{document}
 \begin{titlepage}
 \hspace{-1.7cm} %Este comando es para mandar a la izquierda ;)
@@ -1206,12 +1206,27 @@ Bertsimas y Thiele (2006) y Shapiro, Dentcheva, y Ruszczyński (2021).
 \begin{quote}
 \textbf{Proposición (No linealidad estricta).}\\
 La función \(Z(Q)\) definida en Sección~\ref{sec-ZEOQ} es diferenciable
-en \((0,\infty)\), pero no es convexa globalmente (ver
-Sección~\ref{sec-funcion_CD}) si \(\beta>0\) y \(\sigma_L>0\).\\
-Si \(\sigma_L\) es constante: \[
-\frac{d^2 Z}{dQ^2}=\frac{2D(S+\beta C)}{Q^3}>0.
-\] Pero si \(\sigma_L=\sigma\sqrt{L(Q)}\) y \(L(Q)\) es no lineal,
-entonces \(Z(Q)\) pierde convexidad.
+en \((0,\infty)\). Su curvatura depende de \(\sigma_L\):
+\end{quote}
+
+\begin{quote}
+\begin{itemize}
+\tightlist
+\item
+  Si \(\sigma_L\) es constante: entonces \[
+  \frac{d^2 Z}{dQ^2}=\frac{2D(S+\beta C)}{Q^3}>0.
+  \] por lo tanto \(Z(Q)\) es estrictamente convexa.
+\end{itemize}
+\end{quote}
+
+\begin{quote}
+\begin{itemize}
+\tightlist
+\item
+  Si \(\sigma_L = \sigma_L(Q)\) depende de \(Q\): la segunda derivada
+  incluye términos adicionales que pueden cambiar de signo, y \(Z(Q)\)
+  puede perder convexidad global.
+\end{itemize}
 \end{quote}
 
 Esto demuestra que muchos métodos clásicos basados en convexidad y
